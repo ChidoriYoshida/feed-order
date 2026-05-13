@@ -72,47 +72,47 @@ table.orders-tbl tr:hover td{background:#f0f5fb;}
 .mixed-tag{background:#ED7D31;color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700;}
 .rec-size{background:var(--green);color:#fff;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:700;}
 #order-sheet{display:none;}
-.os-page{width:277mm;margin:12px auto;background:#fff;padding:7mm 9mm;box-shadow:var(--shadow);}
-.os-header{display:grid;grid-template-columns:55mm 1fr 55mm;align-items:start;margin-bottom:4mm;}
-.os-no{font-size:13px;font-weight:700;}
+.os-page{width:190mm;margin:12px auto;background:#fff;padding:7mm 9mm;box-shadow:var(--shadow);page-break-after:always;}
+.os-header{display:grid;grid-template-columns:45mm 1fr 45mm;align-items:start;margin-bottom:3mm;}
+.os-no{font-size:12px;font-weight:700;}
 .os-center{text-align:center;}
-.os-company{font-size:15px;font-weight:700;letter-spacing:.05em;}
-.os-title{font-size:13px;font-weight:700;letter-spacing:.12em;}
-.os-right{text-align:right;font-size:11px;line-height:1.8;}
-.os-date{font-size:15px;font-weight:700;}
-.os-fax{font-size:10px;color:#444;margin-bottom:2mm;line-height:1.7;}
-.os-delivery{display:flex;align-items:center;gap:5mm;margin-bottom:2mm;}
-.os-delivery .dlabel{font-size:13px;font-weight:700;border:1.5px solid #000;padding:1px 5px;}
-.os-delivery .ddate{font-size:16px;font-weight:700;}
-.os-unit{margin-left:auto;font-size:11px;font-weight:600;}
-table.os-tbl{width:100%;border-collapse:collapse;font-size:10px;}
-table.os-tbl th,table.os-tbl td{border:1px solid #666;text-align:center;padding:2px 3px;vertical-align:middle;}
-table.os-tbl thead th{background:#ddd;font-weight:700;font-size:9.5px;line-height:1.3;}
-table.os-tbl thead th.brand-h{font-size:9px;}
+.os-company{font-size:13px;font-weight:700;letter-spacing:.05em;}
+.os-title{font-size:12px;font-weight:700;letter-spacing:.12em;}
+.os-right{text-align:right;font-size:10px;line-height:1.8;}
+.os-date{font-size:13px;font-weight:700;}
+.os-fax{font-size:9px;color:#444;margin-bottom:2mm;line-height:1.7;}
+.os-delivery{display:flex;align-items:center;gap:4mm;margin-bottom:2mm;}
+.os-delivery .dlabel{font-size:12px;font-weight:700;border:1.5px solid #000;padding:1px 4px;}
+.os-delivery .ddate{font-size:14px;font-weight:700;}
+.os-unit{margin-left:auto;font-size:10px;font-weight:600;}
+table.os-tbl{width:100%;border-collapse:collapse;font-size:9px;}
+table.os-tbl th,table.os-tbl td{border:1px solid #666;text-align:center;padding:2px 2px;vertical-align:middle;}
+table.os-tbl thead th{background:#ddd;font-weight:700;font-size:8.5px;line-height:1.3;}
+table.os-tbl thead th.brand-h{font-size:8px;}
 table.os-tbl .os-farm0 td{background:#D6E8F7;}
 table.os-tbl .os-farm1 td{background:#E8E6FB;}
 table.os-tbl .os-farm2 td{background:#FDE9C8;}
 table.os-tbl .os-bag td{background:#EBF3FA;font-style:italic;}
 table.os-tbl .os-total td{background:#1A3A5C;color:#fff;font-weight:700;}
-table.os-tbl .qty-val{font-size:12px;font-weight:700;color:#1A3A5C;}
+table.os-tbl .qty-val{font-size:11px;font-weight:700;color:#1A3A5C;}
 table.os-tbl .os-total .qty-val{color:#fff;}
 .os-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:3mm;}
-.os-contact{font-size:11px;}
-.os-sign{display:grid;grid-template-columns:repeat(3,34mm);gap:0;}
-.sign-box .sh{background:#2E6DA4;color:#fff;text-align:center;padding:2px;font-size:9px;font-weight:700;}
-.sign-box .sb{height:13mm;border:1px solid #999;}
+.os-contact{font-size:10px;}
+.os-sign{display:grid;grid-template-columns:repeat(3,28mm);gap:0;}
+.sign-box .sh{background:#2E6DA4;color:#fff;text-align:center;padding:2px;font-size:8px;font-weight:700;}
+.sign-box .sb{height:12mm;border:1px solid #999;}
 .sign-box .sf{background:#f0f0f0;text-align:center;font-size:7px;color:#bbb;border:1px solid #bbb;border-top:none;}
 @media print{
   .toolbar,.tab-bar,#tab-orders,#tab-plan,.no-print{display:none!important;}
   body{background:#fff;}
   #order-sheet{display:block!important;}
-  .os-page{margin:0;box-shadow:none;padding:6mm 8mm;width:100%;}
-  @page{size:A3 landscape;margin:0;}
+  .os-page{margin:0;box-shadow:none;padding:8mm 10mm;width:100%;page-break-after:always;}
+  @page{size:A4 portrait;margin:0;}
 }
 </style>
 </head>
 <body>
-<div class="toolbar no-print">
+  <div class="toolbar no-print">
   <h1>🚛 飼料注文 管理システム</h1>
   <button class="tbtn tbtn-green" onclick="loadOrders()">🔄 注文を取得</button>
   <button class="tbtn tbtn-blue"  onclick="runOptimize()">⚡ 配車計画</button>
@@ -191,14 +191,14 @@ table.os-tbl .os-total .qty-val{color:#fff;}
 </div>
 <div id="tab-sheet" style="display:none;">
   <div style="margin:8px 12px;display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
-    <button class="tbtn tbtn-gray" onclick="window.print()">🖨 FAX印刷（A3横）</button>
+    <button class="tbtn tbtn-gray" onclick="window.print()">🖨 FAX印刷（A4縦）</button>
     <button class="tbtn tbtn-blue" onclick="downloadHTML()">💾 HTMLを保存</button>
     <div style="font-size:11px;color:var(--muted);align-self:center;">← 印刷前に内容を確認・修正できます</div>
   </div>
   <div id="sheet-wrap"></div>
 </div>
 <div id="order-sheet"></div>
-  <script>
+<script>
 const TANK_MASTER={'古井農場':[{no:'11',house:'育成'},{no:'12',house:'育成'},{no:'21',house:'母豚'},{no:'22',house:'母豚'},{no:'23',house:'母豚'},{no:'24',house:'母豚'},{no:'25',house:'母豚'},{no:'26',house:'母豚'},{no:'27',house:'母豚'},{no:'28',house:'母豚'},{no:'29',house:'母豚'},{no:'30',house:'母豚'},{no:'31',house:'分娩'},{no:'32',house:'分娩'},{no:'33',house:'分娩'},{no:'34',house:'分娩'},{no:'35',house:'分娩'},{no:'36',house:'分娩'},{no:'37',house:'分娩'},{no:'38',house:'分娩'},{no:'41',house:'子豚'},{no:'42',house:'子豚'},{no:'43',house:'子豚'},{no:'44',house:'子豚'}],'第2農場':[{no:'50',house:'201'},{no:'51',house:'202-203'},{no:'52',house:'204'},{no:'53',house:'205-206'},{no:'54',house:'207-208'},{no:'55',house:'209'},{no:'56',house:'210-211'},{no:'57',house:'212-213'},{no:'58',house:'214-215'},{no:'59',house:'216-217'}],'第3農場':[{no:'A-1',house:'301'},{no:'A-2',house:'301'},{no:'A-3',house:'302'},{no:'A-4',house:'302'},{no:'B-1',house:'303'},{no:'B-2',house:'303'},{no:'B-3',house:'304'},{no:'B-4',house:'304'},{no:'C-1',house:'305'},{no:'C-2',house:'305'},{no:'C-3',house:'306'},{no:'C-4',house:'306'},{no:'D-1',house:'307'},{no:'D-2',house:'307'},{no:'D-3',house:'308'},{no:'D-4',house:'308'},{no:'E-1',house:'309'},{no:'E-2',house:'309'},{no:'E-3',house:'310'},{no:'E-4',house:'310'},{no:'F-1',house:'311'},{no:'F-2',house:'311'},{no:'F-3',house:'312'},{no:'F-4',house:'312'}]};
 const BAG_BRANDS=['ママコロ餌付','ママコロ前期','ミュー前期','やまとX'];
 const BRAND_MASTER={'古井農場':['シンサウメイク','たから母豚','たから授乳','たから12','たから20PL','たから40PL','たから70PL','ママコロ餌付','ママコロ前期','ミュー前期','やまとX'],'第2農場':['たから20PL','たから40PL','たから70PL'],'第3農場':['たから20PL','たから40PL','たから70PL']};
@@ -209,7 +209,6 @@ const FARM_IDX={'古井農場':0,'第2農場':1,'第3農場':2};
 const TRUCK_SIZES=[2,3,4,5,6,7,8];
 const MAX_T=12;
 const GAS_URL='https://script.google.com/macros/s/AKfycbyTBTPjewF9RDfODEXEmReu06WxctAJ7i8C8SWEs9B3n8JnSPpJ7O4R_5JqUXWXrZRV/exec';
-
 let allOrders=[],plan=[],dispOrders=[],idCnt=1;
 
 function switchTab(name){
@@ -230,7 +229,18 @@ function loadOrders(){
     if(btn){btn.textContent='🔄 注文を取得';btn.disabled=false;}
     if(!res||!res.orders){showToast('取得エラーが発生しました');return;}
     var raw=res.orders.map(function(o,i){
-      return{id:o['ID']||(idCnt+i),date:String(o['配送日']||'').replace(/\//g,'-').substring(0,10),staff:o['担当者']||'',farm:o['農場']||'',tank:o['タンク']||'',brand:o['銘柄']||'',qty:parseFloat(o['数量(t)'])||0,additive:o['添加剤']==='有'?'yes':'no',isBag:o['紙袋']==='紙袋'};
+      var dateStr=(function(v){
+        var s=String(v||'');
+        if(s.match(/^\d{4}-\d{2}-\d{2}$/))return s;
+        if(s.match(/^\d{4}\/\d{2}\/\d{2}$/))return s.replace(/\//g,'-').substring(0,10);
+        var dt=new Date(s);
+        if(!isNaN(dt)){
+          var p=[dt.getFullYear(),String(dt.getMonth()+1).padStart(2,'0'),String(dt.getDate()).padStart(2,'0')];
+          return p.join('-');
+        }
+        return s.substring(0,10);
+      })(o['配送日']);
+      return{id:o['ID']||(idCnt+i),date:dateStr,staff:o['担当者']||'',farm:o['農場']||'',tank:o['タンク']||'',brand:o['銘柄']||'',qty:parseFloat(o['数量(t)'])||0,additive:o['添加剤']==='有'?'yes':'no',isBag:o['紙袋']==='紙袋'};
     }).filter(function(o){return o.farm&&o.brand&&o.qty>0;});
     var existIds=new Set(allOrders.map(function(o){return String(o.id);}));
     var newOnes=raw.filter(function(o){return!existIds.has(String(o.id));});
@@ -389,7 +399,9 @@ function renderPlan(){
 function buildSheet(){
   if(!plan.length){showToast('先に配車計画を作成してください');return;}
   const dates=[...new Set(plan.map(t=>t.date))].sort();
-  const d=new Date(dates[0]+'T00:00:00');
+  const repDate=dates[0];
+  const dp=repDate.split('-');
+  const d=new Date(parseInt(dp[0]),parseInt(dp[1])-1,parseInt(dp[2]));
   const wd=['日','月','火','水','木','金','土'][d.getDay()];
   const rows=[];
   plan.forEach(t=>[...t.items].sort((a,b)=>FARM_IDX[a.farm]-FARM_IDX[b.farm]).forEach(o=>rows.push({...o,truck:t.id})));
@@ -399,18 +411,18 @@ function buildSheet(){
     const cols=ALL_BRANDS.map(b=>b===o.brand?Number(o.qty):'');
     return`<tr class="${o.isBag?'os-bag':farmCls[o.farm]||''}">
       <td style="text-align:center;font-weight:700;">${o.truck}</td>
-      <td style="white-space:nowrap;font-size:9px;"><span style="border:1.5px solid ${o.farm==='古井農場'?'#4472C4':o.farm==='第2農場'?'#7B66D6':'#ED7D31'};border-radius:50%;padding:0 2px;font-size:9px;">${o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第2':'第3'}</span></td>
-      <td style="text-align:center;font-weight:600;">${o.tank}${o.isBag?'<br><span style="font-size:8px;color:#666;">紙袋</span>':''}</td>
+      <td style="white-space:nowrap;font-size:8px;"><span style="border:1.5px solid ${o.farm==='古井農場'?'#4472C4':o.farm==='第2農場'?'#7B66D6':'#ED7D31'};border-radius:50%;padding:0 2px;font-size:8px;">${o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第2':'第3'}</span></td>
+      <td style="text-align:center;font-weight:600;">${o.tank}${o.isBag?'<br><span style="font-size:7px;color:#666;">紙袋</span>':''}</td>
       ${cols.map(v=>`<td class="${v?'qty-val':''}">${v||''}</td>`).join('')}
-      <td style="text-align:center;font-size:9px;">${o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span>　無':'有　<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>'}</td>
+      <td style="text-align:center;font-size:8px;">${o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span>　無':'有　<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>'}</td>
     </tr>`;
   }).join('');
   const totCols=ALL_BRANDS.map(b=>{const tot=rows.reduce((s,o)=>s+(o.brand===b?Number(o.qty):0),0);return`<td class="${tot?'qty-val':''}">${tot||''}</td>`;}).join('');
-  const emptyRows=Array(3).fill(`<tr><td></td><td style="white-space:nowrap;font-size:9px;">古井　第2　第3</td><td></td>${ALL_BRANDS.map(()=>'<td></td>').join('')}<td></td></tr>`).join('');
+  const emptyRows=Array(3).fill(`<tr><td></td><td style="font-size:8px;">古井/第2/第3</td><td></td>${ALL_BRANDS.map(()=>'<td></td>').join('')}<td></td></tr>`).join('');
   const today=new Date();
   const sheetHTML=`<div class="os-page" contenteditable="true">
     <div class="os-header">
-      <div class="os-no">No. <span style="border-bottom:1.5px solid #000;padding:0 8px;font-size:14px;">1</span></div>
+      <div class="os-no">No. <span style="border-bottom:1.5px solid #000;padding:0 6px;font-size:13px;">1</span></div>
       <div class="os-center"><div class="os-company">南九州フィードワン販売㈱</div><div class="os-title">飼　料　注　文　書</div></div>
       <div class="os-right"><span class="os-date">${today.getFullYear()-2018}年${today.getMonth()+1}月${today.getDate()}日</span><br>㈲ひこちゃん牧場<br>古井農場</div>
     </div>
@@ -419,23 +431,23 @@ function buildSheet(){
     <table class="os-tbl">
       <thead>
         <tr>
-          <th rowspan="2" style="width:10mm;">便</th>
-          <th rowspan="2" style="width:14mm;">農場</th>
-          <th rowspan="2" style="width:13mm;">タンクNo.</th>
-          ${TANK_BRANDS.map(b=>`<th class="brand-h" style="width:11mm;">${b.replace('たから','たから<br>').replace('シンサウメイク','シンサ<br>ウメイク')}</th>`).join('')}
-          <th colspan="${BAG_BRANDS.length}" style="background:#e0e8f0;border-left:2px solid #444;font-size:9px;">紙袋製品（重量制限なし）</th>
-          <th rowspan="2" style="width:14mm;">添加剤</th>
+          <th rowspan="2" style="width:8mm;">便</th>
+          <th rowspan="2" style="width:12mm;">農場</th>
+          <th rowspan="2" style="width:12mm;">タンクNo.</th>
+          ${TANK_BRANDS.map(b=>`<th class="brand-h" style="width:10mm;">${b.replace('たから','たから<br>').replace('シンサウメイク','シンサ<br>ウメイク')}</th>`).join('')}
+          <th colspan="${BAG_BRANDS.length}" style="background:#e0e8f0;border-left:2px solid #444;font-size:8px;">紙袋製品</th>
+          <th rowspan="2" style="width:12mm;">添加剤</th>
         </tr>
         <tr>${BAG_BRANDS.map((b,i)=>`<th class="brand-h" style="background:#e0e8f0;${i===0?'border-left:2px solid #444;':''}">${b}</th>`).join('')}</tr>
         <tr>
-          <th colspan="3" style="font-size:8px;background:#e8f0e8;">◀ タンク製品（12t/便）</th>
+          <th colspan="3" style="font-size:7px;background:#e8f0e8;">◀ タンク製品（12t/便）</th>
           ${TANK_BRANDS.map(()=>'<th style="background:#e8f0e8;"></th>').join('')}
           ${BAG_BRANDS.map(()=>'<th style="background:#e0e8f0;"></th>').join('')}
           <th style="background:#e8f0e8;"></th>
         </tr>
       </thead>
       <tbody>${dataRows}${emptyRows}
-        <tr class="os-total"><td colspan="3" style="text-align:right;font-size:10px;">合　計（t）</td>${totCols}<td></td></tr>
+        <tr class="os-total"><td colspan="3" style="text-align:right;font-size:9px;">合　計（t）</td>${totCols}<td></td></tr>
       </tbody>
     </table>
     <div class="os-footer">
@@ -453,9 +465,11 @@ function buildSheet(){
 
 function fmtDate(s){
   if(!s)return'';
-  const d=new Date(s+'T00:00:00');
-  const wd=['日','月','火','水','木','金','土'][d.getDay()];
-  return`${d.getMonth()+1}/${d.getDate()}（${wd}）`;
+  const p=String(s).split(/[-\/]/);
+  if(p.length<3)return s;
+  const dt=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
+  const wd=['日','月','火','水','木','金','土'][dt.getDay()];
+  return(dt.getMonth()+1)+'/'+dt.getDate()+'（'+wd+'）';
 }
 
 function downloadHTML(){
