@@ -328,14 +328,14 @@ function updateDateBand(){
 function renderTanks(){
   var tanks=TANK_MASTER[farm]||[];
   document.getElementById('tank-grid').innerHTML=tanks.map(function(t){
-    return '<button class="tank-btn'+(selTank===t.no?' active':'')+'" data-no="'+t.no+'" data-house="'+t.house+'">'+t.no+'<br><span style="font-size:9px;opacity:.7">'+t.house+'</span></button>';
+    return '<button class="tank-btn'+(selTank===t.no?' active':'')+'" data-no="'+t.no+'" data-house="'+t.house+'">t.no+'<br><span style="font-size:9px;opacity:.7">'+t.house+'</span></button>';
   }).join('');
 }
 
 function renderBrands(){
   var brands=BRAND_MASTER[farm]||[];
   document.getElementById('brand-list').innerHTML=brands.map(function(b){
-    return '<button class="brand-btn'+(selBrand===b.key?' active':'')+'" data-key="'+b.key+'" data-bag="'+(b.bag?1:0)+'">'+b.key+(b.bag?'<span class="bag-tag">紙袋</span>':'')+' </button>';
+    return '<button class="brand-btn'+(selBrand===b.key?' active':'')+'" data-key="'+b.key+'" data-bag="'+(b.bag?1:0)+'">b.key+(b.bag?'<span class="bag-tag">紙袋</span>':'')+' </button>';
   }).join('');
 }
 
@@ -386,7 +386,7 @@ function renderOrders(){
     var bc=BADGE_CLS[o.farm]||'';
     var addLbl=o.additive==='yes'?'添加剤：有':'添加剤：無';
     var addCls=o.additive==='yes'?'add-yes':'add-no';
-    return '<div class="order-item"><div class="oi-body"><div class="oi-main"><span class="badge '+bc+'">'+fl+'</span> タンク '+o.tank+' '+o.qty+'t</div><div class="oi-sub">'+o.brand+' <span class="badge '+addCls+'">'+addLbl+'</span>'+(o.isBag?' 紙袋':'')+'  担当：'+o.staff+'</div></div><button class="oi-del" data-id="'+o.id+'">x</button></div>';
+    return '<div class="order-item"><div class="oi-body"><div class="oi-main"><span class="badge '+bc+'">fl+'</span> タンク '+o.tank+' '+o.qty+'t</div><div class="oi-sub">'+o.brand+' <span class="badge '+addCls+'">addLbl+'</span>'+(o.isBag?' 紙袋':'')+'  担当：'+o.staff+'</div></div><button class="oi-del" data-id="'+o.id+'">x</button></div>';
   }).join('');
   list.onclick=function(e){
     var b=e.target.closest('.oi-del');
@@ -480,7 +480,7 @@ function renderCalendar(){
   var html='';
   for(var h=0;h<heads.length;h++){
     var hcls=h===0?' sun':h===6?' sat':'';
-    html+='<div class="cal-head'+hcls+'">'+heads[h]+'</div>';
+    html+='<div class="cal-head'+hcls+'">heads[h]+'</div>';
   }
   var first=new Date(calYear,calMonth,1);
   var last=new Date(calYear,calMonth+1,0);
@@ -488,7 +488,7 @@ function renderCalendar(){
   for(var i=0;i<startDow;i++){
     var pd=new Date(calYear,calMonth,1-startDow+i);
     var pdow=pd.getDay();
-    html+='<div class="cal-cell other"><div class="day-num'+(pdow===0?' sun':pdow===6?' sat':'')+'">'+pd.getDate()+'</div></div>';
+    html+='<div class="cal-cell other"><div class="day-num'+(pdow===0?' sun':pdow===6?' sat':'')+'">pd.getDate()+'</div></div>';
   }
   for(var day=1;day<=last.getDate();day++){
     var dateStr=calYear+'-'+pad(calMonth+1)+'-'+pad(day);
@@ -513,13 +513,13 @@ function renderCalendar(){
       dots+='<div class="dot '+(FARM_DOT_CLS[fkeys[fi]]||'')+'"></div>';
     }
     var cntHTML=dayOrders.length>0?'<div class="cnt-lbl">'+dayOrders.length+'件</div>':'';
-    html+='<div class="'+cls+'" data-date="'+dateStr+'" onclick="selectDate(\''+dateStr+'\')"><div class="'+numCls+'">'+numHTML+'</div><div class="dot-row">'+dots+'</div>'+cntHTML+'</div>';
+    html+='<div class="'+cls+'" data-date="'+dateStr+'" onclick="selectDate(\''+dateStr+'\')"><div class="'+numCls+'">numHTML+'</div><div class="dot-row">'+dots+'</div>'+cntHTML+'</div>';
   }
   var used=(startDow+last.getDate())%7;
   var remain=used===0?0:7-used;
   for(var ri=0;ri<remain;ri++){
     var rdow=(startDow+last.getDate()+ri)%7;
-    html+='<div class="cal-cell other"><div class="day-num'+(rdow===6?' sat':'')+'">'+（ri+1)+'</div></div>';
+    html+='<div class="cal-cell other"><div class="day-num'+(rdow===6?' sat':'')+'">（ri+1)+'</div></div>';
   }
   grid.innerHTML=html;
 }
@@ -561,7 +561,7 @@ function showDetail(dateStr){
     var isDup=o.tank&&tankCount[o.tank]>1;
     var bc=BADGE_CLS[o.farm]||'';
     var fl=FARM_LABELS[o.farm]||o.farm;
-    rowsHTML+='<div class="det-row"><span class="badge '+bc+'">'+fl+'</span><div class="det-info"><div class="det-tank">タンク '+o.tank+(isDup?' <span style="color:#c00;font-size:10px;">重複</span>':'')+'</div><div class="det-brand">'+o.brand+' / '+o.staff+'</div></div><div><div class="det-qty">'+o.qty+'t</div>'+(o.additive==='yes'?'<div class="det-add">添加剤有</div>':'')+'</div></div>';
+    rowsHTML+='<div class="det-row"><span class="badge '+bc+'">fl+'</span><div class="det-info"><div class="det-tank">タンク '+o.tank+(isDup?' <span style="color:#c00;font-size:10px;">重複</span>':'')+'</div><div class="det-brand">'+o.brand+' / '+o.staff+'</div></div><div><div class="det-qty">'+o.qty+'t</div>'+(o.additive==='yes'?'<div class="det-add">添加剤有</div>':'')+'</div></div>';
   }
   document.getElementById('detail-panel').innerHTML=
     '<div class="detail-date-lbl">'+(d.getMonth()+1)+'月'+d.getDate()+'日（'+wd+'）<span class="detail-badge">'+dayOrders.length+'件 / '+totalQty.toFixed(1)+'t</span></div>'+
