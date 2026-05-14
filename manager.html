@@ -72,7 +72,7 @@ table.orders-tbl tr:hover td{background:#f0f5fb;}
 .mixed-tag{background:#ED7D31;color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700;}
 .rec-size{background:var(--green);color:#fff;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:700;}
 #order-sheet{display:none;}
-.os-page{width:190mm;margin:12px auto;background:#fff;padding:7mm 9mm;box-shadow:var(--shadow);page-break-after:always;}
+.os-page{width:190mm;margin:12px auto 0;background:#fff;padding:7mm 9mm;box-shadow:var(--shadow);}
 .os-header{display:grid;grid-template-columns:45mm 1fr 45mm;align-items:start;margin-bottom:3mm;}
 .os-no{font-size:12px;font-weight:700;}
 .os-center{text-align:center;}
@@ -86,7 +86,7 @@ table.orders-tbl tr:hover td{background:#f0f5fb;}
 .os-delivery .ddate{font-size:14px;font-weight:700;}
 .os-unit{margin-left:auto;font-size:10px;font-weight:600;}
 table.os-tbl{width:100%;border-collapse:collapse;font-size:9px;}
-table.os-tbl th,table.os-tbl td{border:1px solid #666;text-align:center;padding:2px 2px;vertical-align:middle;}
+table.os-tbl th,table.os-tbl td{border:1px solid #666;text-align:center;padding:2px;vertical-align:middle;}
 table.os-tbl thead th{background:#ddd;font-weight:700;font-size:8.5px;line-height:1.3;}
 table.os-tbl thead th.brand-h{font-size:8px;}
 table.os-tbl .os-farm0 td{background:#D6E8F7;}
@@ -102,11 +102,13 @@ table.os-tbl .os-total .qty-val{color:#fff;}
 .sign-box .sh{background:#2E6DA4;color:#fff;text-align:center;padding:2px;font-size:8px;font-weight:700;}
 .sign-box .sb{height:12mm;border:1px solid #999;}
 .sign-box .sf{background:#f0f0f0;text-align:center;font-size:7px;color:#bbb;border:1px solid #bbb;border-top:none;}
+.os-page-sep{width:190mm;margin:0 auto;height:8mm;background:#eef2f7;border-left:1px dashed #ccc;border-right:1px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;color:#aaa;}
 @media print{
   .toolbar,.tab-bar,#tab-orders,#tab-plan,.no-print{display:none!important;}
   body{background:#fff;}
   #order-sheet{display:block!important;}
   .os-page{margin:0;box-shadow:none;padding:8mm 10mm;width:100%;page-break-after:always;}
+  .os-page-sep{display:none!important;}
   @page{size:A4 portrait;margin:0;}
 }
 </style>
@@ -191,9 +193,9 @@ table.os-tbl .os-total .qty-val{color:#fff;}
 </div>
 <div id="tab-sheet" style="display:none;">
   <div style="margin:8px 12px;display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
-    <button class="tbtn tbtn-gray" onclick="window.print()">🖨 FAX印刷（A4縦）</button>
+    <button class="tbtn tbtn-gray" onclick="window.print()">🖨 FAX印刷（A4縦・納品日ごと）</button>
     <button class="tbtn tbtn-blue" onclick="downloadHTML()">💾 HTMLを保存</button>
-    <div style="font-size:11px;color:var(--muted);align-self:center;">← 印刷前に内容を確認・修正できます</div>
+    <div style="font-size:11px;color:var(--muted);align-self:center;">← 納品日ごとに1枚ずつ印刷されます</div>
   </div>
   <div id="sheet-wrap"></div>
 </div>
@@ -398,69 +400,83 @@ function renderPlan(){
 
 function buildSheet(){
   if(!plan.length){showToast('先に配車計画を作成してください');return;}
-  const dates=[...new Set(plan.map(t=>t.date))].sort();
-  const repDate=dates[0];
-  const dp=repDate.split('-');
-  const d=new Date(parseInt(dp[0]),parseInt(dp[1])-1,parseInt(dp[2]));
-  const wd=['日','月','火','水','木','金','土'][d.getDay()];
-  const rows=[];
-  plan.forEach(t=>[...t.items].sort((a,b)=>FARM_IDX[a.farm]-FARM_IDX[b.farm]).forEach(o=>rows.push({...o,truck:t.id})));
-  allOrders.filter(o=>o.isBag).forEach(o=>rows.push({...o,truck:'－'}));
-  const farmCls={'古井農場':'os-farm0','第2農場':'os-farm1','第3農場':'os-farm2'};
-  const dataRows=rows.map(o=>{
-    const cols=ALL_BRANDS.map(b=>b===o.brand?Number(o.qty):'');
-    return`<tr class="${o.isBag?'os-bag':farmCls[o.farm]||''}">
-      <td style="text-align:center;font-weight:700;">${o.truck}</td>
-      <td style="white-space:nowrap;font-size:8px;"><span style="border:1.5px solid ${o.farm==='古井農場'?'#4472C4':o.farm==='第2農場'?'#7B66D6':'#ED7D31'};border-radius:50%;padding:0 2px;font-size:8px;">${o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第2':'第3'}</span></td>
-      <td style="text-align:center;font-weight:600;">${o.tank}${o.isBag?'<br><span style="font-size:7px;color:#666;">紙袋</span>':''}</td>
-      ${cols.map(v=>`<td class="${v?'qty-val':''}">${v||''}</td>`).join('')}
-      <td style="text-align:center;font-size:8px;">${o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span>　無':'有　<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>'}</td>
-    </tr>`;
-  }).join('');
-  const totCols=ALL_BRANDS.map(b=>{const tot=rows.reduce((s,o)=>s+(o.brand===b?Number(o.qty):0),0);return`<td class="${tot?'qty-val':''}">${tot||''}</td>`;}).join('');
-  const emptyRows=Array(3).fill(`<tr><td></td><td style="font-size:8px;">古井/第2/第3</td><td></td>${ALL_BRANDS.map(()=>'<td></td>').join('')}<td></td></tr>`).join('');
   const today=new Date();
-  const sheetHTML=`<div class="os-page" contenteditable="true">
-    <div class="os-header">
-      <div class="os-no">No. <span style="border-bottom:1.5px solid #000;padding:0 6px;font-size:13px;">1</span></div>
-      <div class="os-center"><div class="os-company">南九州フィードワン販売㈱</div><div class="os-title">飼　料　注　文　書</div></div>
-      <div class="os-right"><span class="os-date">${today.getFullYear()-2018}年${today.getMonth()+1}月${today.getDate()}日</span><br>㈲ひこちゃん牧場<br>古井農場</div>
-    </div>
-    <div class="os-fax">Fax送付先　　志布志飼料㈱御中（0994-73-1334）　　坂元運送㈱御中（099-262-0638）</div>
-    <div class="os-delivery"><span class="dlabel">≪配達日≫</span><span class="ddate">${d.getMonth()+1}月${d.getDate()}日（${wd}）</span><span class="os-unit">単位：t</span></div>
-    <table class="os-tbl">
-      <thead>
-        <tr>
-          <th rowspan="2" style="width:8mm;">便</th>
-          <th rowspan="2" style="width:12mm;">農場</th>
-          <th rowspan="2" style="width:12mm;">タンクNo.</th>
-          ${TANK_BRANDS.map(b=>`<th class="brand-h" style="width:10mm;">${b.replace('たから','たから<br>').replace('シンサウメイク','シンサ<br>ウメイク')}</th>`).join('')}
-          <th colspan="${BAG_BRANDS.length}" style="background:#e0e8f0;border-left:2px solid #444;font-size:8px;">紙袋製品</th>
-          <th rowspan="2" style="width:12mm;">添加剤</th>
-        </tr>
-        <tr>${BAG_BRANDS.map((b,i)=>`<th class="brand-h" style="background:#e0e8f0;${i===0?'border-left:2px solid #444;':''}">${b}</th>`).join('')}</tr>
-        <tr>
-          <th colspan="3" style="font-size:7px;background:#e8f0e8;">◀ タンク製品（12t/便）</th>
-          ${TANK_BRANDS.map(()=>'<th style="background:#e8f0e8;"></th>').join('')}
-          ${BAG_BRANDS.map(()=>'<th style="background:#e0e8f0;"></th>').join('')}
-          <th style="background:#e8f0e8;"></th>
-        </tr>
-      </thead>
-      <tbody>${dataRows}${emptyRows}
-        <tr class="os-total"><td colspan="3" style="text-align:right;font-size:9px;">合　計（t）</td>${totCols}<td></td></tr>
-      </tbody>
-    </table>
-    <div class="os-footer">
-      <div class="os-contact">古井農場　場長　山本　090-3666-3807</div>
-      <div class="os-sign">
-        <div class="sign-box"><div class="sh">担当者</div><div class="sb"></div><div class="sf">印</div></div>
-        <div class="sign-box"><div class="sh">確　認</div><div class="sb"></div><div class="sf">印</div></div>
-        <div class="sign-box"><div class="sh">承　認</div><div class="sb"></div><div class="sf">印</div></div>
+  const farmCls={'古井農場':'os-farm0','第2農場':'os-farm1','第3農場':'os-farm2'};
+  const dates=[...new Set(plan.map(t=>t.date))].sort();
+  let allPagesHTML='';
+
+  dates.forEach((date,pageIdx)=>{
+    const dp=date.split('-');
+    const d=new Date(parseInt(dp[0]),parseInt(dp[1])-1,parseInt(dp[2]));
+    const wd=['日','月','火','水','木','金','土'][d.getDay()];
+    const dayTrucks=plan.filter(t=>t.date===date);
+    const rows=[];
+    dayTrucks.forEach(t=>[...t.items].sort((a,b)=>FARM_IDX[a.farm]-FARM_IDX[b.farm]).forEach(o=>rows.push({...o,truck:t.id})));
+    if(pageIdx===0){
+      allOrders.filter(o=>o.isBag).forEach(o=>rows.push({...o,truck:'－'}));
+    }
+    const dataRows=rows.map(o=>{
+      const cols=ALL_BRANDS.map(b=>b===o.brand?Number(o.qty):'');
+      return`<tr class="${o.isBag?'os-bag':farmCls[o.farm]||''}">
+        <td style="text-align:center;font-weight:700;">${o.truck}</td>
+        <td style="white-space:nowrap;font-size:8px;"><span style="border:1.5px solid ${o.farm==='古井農場'?'#4472C4':o.farm==='第2農場'?'#7B66D6':'#ED7D31'};border-radius:50%;padding:0 2px;font-size:8px;">${o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第2':'第3'}</span></td>
+        <td style="text-align:center;font-weight:600;">${o.tank}${o.isBag?'<br><span style="font-size:7px;color:#666;">紙袋</span>':''}</td>
+        ${cols.map(v=>`<td class="${v?'qty-val':''}">${v||''}</td>`).join('')}
+        <td style="text-align:center;font-size:8px;">${o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span>　無':'有　<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>'}</td>
+      </tr>`;
+    }).join('');
+    const totCols=ALL_BRANDS.map(b=>{
+      const tot=rows.filter(o=>!o.isBag).reduce((s,o)=>s+(o.brand===b?Number(o.qty):0),0);
+      return`<td class="${tot?'qty-val':''}">${tot||''}</td>`;
+    }).join('');
+    const emptyRows=Array(3).fill(`<tr><td></td><td style="font-size:8px;">古井/第2/第3</td><td></td>${ALL_BRANDS.map(()=>'<td></td>').join('')}<td></td></tr>`).join('');
+
+    if(pageIdx>0) allPagesHTML+='<div class="os-page-sep">── 次のページ（'+fmtDate(date)+'）──</div>';
+
+    allPagesHTML+=`<div class="os-page" contenteditable="true">
+      <div class="os-header">
+        <div class="os-no">No. <span style="border-bottom:1.5px solid #000;padding:0 6px;font-size:13px;">${pageIdx+1}</span></div>
+        <div class="os-center"><div class="os-company">南九州フィードワン販売㈱</div><div class="os-title">飼　料　注　文　書</div></div>
+        <div class="os-right"><span class="os-date">${today.getFullYear()-2018}年${today.getMonth()+1}月${today.getDate()}日</span><br>㈲ひこちゃん牧場<br>古井農場</div>
       </div>
-    </div>
-  </div>`;
-  document.getElementById('sheet-wrap').innerHTML=sheetHTML;
-  document.getElementById('order-sheet').innerHTML=sheetHTML;
+      <div class="os-fax">Fax送付先　　志布志飼料㈱御中（0994-73-1334）　　坂元運送㈱御中（099-262-0638）</div>
+      <div class="os-delivery"><span class="dlabel">≪配達日≫</span><span class="ddate">${d.getMonth()+1}月${d.getDate()}日（${wd}）</span><span class="os-unit">単位：t</span></div>
+      <table class="os-tbl">
+        <thead>
+          <tr>
+            <th rowspan="2" style="width:8mm;">便</th>
+            <th rowspan="2" style="width:12mm;">農場</th>
+            <th rowspan="2" style="width:12mm;">タンクNo.</th>
+            ${TANK_BRANDS.map(b=>`<th class="brand-h" style="width:10mm;">${b.replace('たから','たから<br>').replace('シンサウメイク','シンサ<br>ウメイク')}</th>`).join('')}
+            <th colspan="${BAG_BRANDS.length}" style="background:#e0e8f0;border-left:2px solid #444;font-size:8px;">紙袋製品</th>
+            <th rowspan="2" style="width:12mm;">添加剤</th>
+          </tr>
+          <tr>${BAG_BRANDS.map((b,i)=>`<th class="brand-h" style="background:#e0e8f0;${i===0?'border-left:2px solid #444;':''}">${b}</th>`).join('')}</tr>
+          <tr>
+            <th colspan="3" style="font-size:7px;background:#e8f0e8;">◀ タンク製品（12t/便）</th>
+            ${TANK_BRANDS.map(()=>'<th style="background:#e8f0e8;"></th>').join('')}
+            ${BAG_BRANDS.map(()=>'<th style="background:#e0e8f0;"></th>').join('')}
+            <th style="background:#e8f0e8;"></th>
+          </tr>
+        </thead>
+        <tbody>${dataRows}${emptyRows}
+          <tr class="os-total"><td colspan="3" style="text-align:right;font-size:9px;">合　計（t）</td>${totCols}<td></td></tr>
+        </tbody>
+      </table>
+      <div class="os-footer">
+        <div class="os-contact">古井農場　場長　山本　090-3666-3807</div>
+        <div class="os-sign">
+          <div class="sign-box"><div class="sh">担当者</div><div class="sb"></div><div class="sf">印</div></div>
+          <div class="sign-box"><div class="sh">確　認</div><div class="sb"></div><div class="sf">印</div></div>
+          <div class="sign-box"><div class="sh">承　認</div><div class="sb"></div><div class="sf">印</div></div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('sheet-wrap').innerHTML=allPagesHTML;
+  document.getElementById('order-sheet').innerHTML=allPagesHTML;
+  showToast(dates.length+'日分の注文書を作成しました');
 }
 
 function fmtDate(s){
