@@ -71,7 +71,6 @@ table.orders-tbl tr:hover td{background:#f0f5fb;}
 .truck-total{background:#f5f7fa;border-top:1.5px solid var(--blue);font-weight:700;}
 .mixed-tag{background:#ED7D31;color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700;}
 .rec-size{background:var(--green);color:#fff;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:700;}
-/* 注文書 */
 .os-page{width:190mm;margin:12px auto 0;background:#fff;padding:7mm 9mm;box-shadow:var(--shadow);}
 .os-page-sep{width:190mm;margin:0 auto;height:8mm;background:#eef2f7;display:flex;align-items:center;justify-content:center;font-size:10px;color:#aaa;border-left:1px dashed #ccc;border-right:1px dashed #ccc;}
 .os-header{display:grid;grid-template-columns:45mm 1fr 45mm;align-items:start;margin-bottom:3mm;}
@@ -102,7 +101,6 @@ table.os-tbl .os-total .qty-val{color:#fff;}
 .sign-box .sh{background:#2E6DA4;color:#fff;text-align:center;padding:2px;font-size:8px;font-weight:700;}
 .sign-box .sb{height:12mm;border:1px solid #999;}
 .sign-box .sf{background:#f0f0f0;text-align:center;font-size:7px;color:#bbb;border:1px solid #bbb;border-top:none;}
-/* アーカイブ */
 .arch-item{border:0.5px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;}
 .arch-main{font-size:13px;font-weight:600;color:var(--navy);}
 .arch-sub{font-size:11px;color:var(--muted);margin-top:2px;}
@@ -124,7 +122,7 @@ table.os-tbl .os-total .qty-val{color:#fff;}
   <button class="tbtn tbtn-blue"  onclick="runOptimize()">⚡ 配車計画</button>
   <button class="tbtn tbtn-blue"  onclick="buildSheet();switchTab('sheet')" id="btn-sheet" disabled>📄 注文書作成</button>
   <button class="tbtn tbtn-orange" onclick="printAndArchive()">🖨 印刷・完了</button>
-  <button class="tbtn tbtn-gray"  onclick="switchTab('archive')">📁 過去の注文書</button>
+  <button class="tbtn tbtn-gray"  onclick="switchTab('archive');loadArchive()">📁 過去の注文書</button>
 </div>
 <div class="tab-bar no-print">
   <div class="tab active" onclick="switchTab('orders')" id="t-orders">受信注文</div>
@@ -132,8 +130,6 @@ table.os-tbl .os-total .qty-val{color:#fff;}
   <div class="tab" onclick="switchTab('sheet')"  id="t-sheet">注文書確認</div>
   <div class="tab" onclick="switchTab('archive');loadArchive()" id="t-archive">📁 過去の注文書</div>
 </div>
-
-<!-- 受信注文 -->
 <div id="tab-orders">
   <div class="kpi-grid">
     <div class="kpi"><div class="kpi-label">表示件数</div><div class="kpi-val" id="k-cnt">0</div><div class="kpi-unit">件</div></div>
@@ -194,15 +190,11 @@ table.os-tbl .os-total .qty-val{color:#fff;}
     <button class="tbtn tbtn-blue" onclick="manualAdd()">＋ 追加</button>
   </div>
 </div>
-
-<!-- 配車計画 -->
 <div id="tab-plan" style="display:none;">
   <div id="plan-wrap" style="margin:12px;">
     <div class="card"><div style="text-align:center;padding:20px;color:var(--muted);">「配車計画」ボタンを押してください</div></div>
   </div>
 </div>
-
-<!-- 注文書確認 -->
 <div id="tab-sheet" style="display:none;">
   <div style="margin:8px 12px;display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
     <button class="tbtn tbtn-orange" onclick="printAndArchive()">🖨 印刷して完了（注文を削除）</button>
@@ -211,12 +203,10 @@ table.os-tbl .os-total .qty-val{color:#fff;}
   </div>
   <div id="sheet-wrap"></div>
 </div>
-
-<!-- 過去の注文書 -->
 <div id="tab-archive" style="display:none;">
   <div class="card">
     <div class="section-title">過去の注文書（1ヶ月間保存）</div>
-    <div id="archive-list"><div style="text-align:center;padding:20px;color:var(--muted);">読み込み中...</div></div>
+    <div id="archive-list"><div style="text-align:center;padding:20px;color:var(--muted);">「📁 過去の注文書」をクリックして読み込んでください</div></div>
   </div>
 </div>
 <script>
@@ -230,7 +220,7 @@ const FARM_IDX={'古井農場':0,'第2農場':1,'第3農場':2};
 const TRUCK_SIZES=[2,3,4,5,6,7,8];
 const MAX_T=12;
 const GAS_URL='https://script.google.com/macros/s/AKfycbyTBTPjewF9RDfODEXEmReu06WxctAJ7i8C8SWEs9B3n8JnSPpJ7O4R_5JqUXWXrZRV/exec';
-let allOrders=[],plan=[],dispOrders=[],idCnt=1,currentSheetHTML='';
+let allOrders=[],plan=[],dispOrders=[],idCnt=1,currentPlan=null;
 
 function switchTab(name){
   ['orders','plan','sheet','archive'].forEach(n=>{
@@ -239,7 +229,6 @@ function switchTab(name){
   });
 }
 
-/* ── 注文取得 ── */
 function loadOrders(){
   var btn=document.querySelector('.tbtn-green');
   if(btn){btn.textContent='取得中...';btn.disabled=true;}
@@ -247,15 +236,10 @@ function loadOrders(){
     if(btn){btn.textContent='🔄 注文を取得';btn.disabled=false;}
     if(!res||!res.orders){showToast('取得エラーが発生しました');return;}
     var raw=res.orders.map(function(o,i){
-      return{
-        id:o['ID']||(idCnt+i),
-        date:parseDate(o['配送日']),
-        staff:o['担当者']||'',farm:o['農場']||'',
-        tank:o['タンク']||'',brand:o['銘柄']||'',
-        qty:parseFloat(o['数量(t)'])||0,
-        additive:o['添加剤']==='有'?'yes':'no',
-        isBag:o['紙袋']==='紙袋'
-      };
+      return{id:o['ID']||(idCnt+i),date:parseDate(o['配送日']),staff:o['担当者']||'',
+        farm:o['農場']||'',tank:o['タンク']||'',brand:o['銘柄']||'',
+        qty:parseFloat(o['数量(t)'])||0,additive:o['添加剤']==='有'?'yes':'no',
+        isBag:o['紙袋']==='紙袋'};
     }).filter(function(o){return o.farm&&o.brand&&o.qty>0;});
     var existIds=new Set(allOrders.map(function(o){return String(o.id);}));
     var newOnes=raw.filter(function(o){return!existIds.has(String(o.id));});
@@ -272,11 +256,10 @@ function parseDate(v){
   if(s.match(/^\d{4}-\d{2}-\d{2}$/))return s;
   if(s.match(/^\d{4}\/\d{2}\/\d{2}$/))return s.replace(/\//g,'-').substring(0,10);
   var dt=new Date(s);
-  if(!isNaN(dt)){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+  if(!isNaN(dt))return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
   return s.substring(0,10);
 }
 
-/* ── フィルタ ── */
 function filterOrders(){
   const d=document.getElementById('filter-date').value;
   dispOrders=d?allOrders.filter(o=>o.date===d):[...allOrders];
@@ -284,7 +267,6 @@ function filterOrders(){
 }
 function clearFilter(){document.getElementById('filter-date').value='';dispOrders=[...allOrders];renderOrdersTable(dispOrders);updateKPI();}
 
-/* ── 一覧描画 ── */
 function renderOrdersTable(list){
   const tbody=document.getElementById('orders-tbody');
   if(!list.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--muted);">注文がありません</td></tr>';return;}
@@ -303,7 +285,6 @@ function renderOrdersTable(list){
   updateKPI();
 }
 
-/* ローカルのみ削除（GASは削除しない） */
 function deleteLocal(id){
   allOrders=allOrders.filter(o=>o.id!==id);
   dispOrders=dispOrders.filter(o=>o.id!==id);
@@ -350,7 +331,6 @@ function manualAdd(){
   renderOrdersTable(dispOrders);updateKPI();showToast('追加しました');
 }
 
-/* ── 配車計画（dispOrdersのみ） ── */
 function runOptimize(){
   if(!dispOrders.length){showToast('表示中の注文がありません');return;}
   const dates=[...new Set(dispOrders.map(o=>o.date))].sort();
@@ -374,7 +354,9 @@ function runOptimize(){
     t.farms=[...new Set(t.items.map(x=>x.farm))].sort((a,b)=>FARM_IDX[a]-FARM_IDX[b]);
     t.mixed=t.farms.length>1;
   });
-  plan=trucks;renderPlan();
+  plan=trucks;
+  currentPlan={trucks:plan,bagOrders:dispOrders.filter(o=>o.isBag),dispOrders:[...dispOrders]};
+  renderPlan();
   document.getElementById('btn-sheet').disabled=false;
   switchTab('plan');
 }
@@ -428,21 +410,25 @@ function renderPlan(){
   </div>`:'');
 }
 
-/* ── 注文書生成 ── */
 function buildSheet(){
   if(!plan.length){showToast('先に配車計画を作成してください');return;}
+  document.getElementById('sheet-wrap').innerHTML=renderSheetHTML(plan,dispOrders);
+  showToast([...new Set(plan.map(t=>t.date))].length+'日分の注文書を作成しました');
+}
+
+function renderSheetHTML(trucks,orders){
   const today=new Date();
   const farmCls={'古井農場':'os-farm0','第2農場':'os-farm1','第3農場':'os-farm2'};
-  const dates=[...new Set(plan.map(t=>t.date))].sort();
+  const dates=[...new Set(trucks.map(t=>t.date))].sort();
   let html='';
   dates.forEach((date,pi)=>{
     const dp=date.split('-');
     const d=new Date(parseInt(dp[0]),parseInt(dp[1])-1,parseInt(dp[2]));
     const wd=['日','月','火','水','木','金','土'][d.getDay()];
-    const dayTrucks=plan.filter(t=>t.date===date);
+    const dayTrucks=trucks.filter(t=>t.date===date);
     const rows=[];
     dayTrucks.forEach(t=>[...t.items].sort((a,b)=>FARM_IDX[a.farm]-FARM_IDX[b.farm]).forEach(o=>rows.push({...o,truck:t.id})));
-    if(pi===0) dispOrders.filter(o=>o.isBag).forEach(o=>rows.push({...o,truck:'－'}));
+    if(pi===0) orders.filter(o=>o.isBag).forEach(o=>rows.push({...o,truck:'－'}));
     const dataRows=rows.map(o=>{
       const cols=ALL_BRANDS.map(b=>b===o.brand?Number(o.qty):'');
       return`<tr class="${o.isBag?'os-bag':farmCls[o.farm]||''}">
@@ -461,22 +447,20 @@ function buildSheet(){
     if(pi>0) html+='<div class="os-page-sep">── 次のページ（'+fmtDate(date)+'）──</div>';
     html+=`<div class="os-page">
       <div class="os-header">
-        <div class="os-no">No. <span style="border-bottom:1.5px solid #000;padding:0 6px;font-size:13px;">${pi+1}</span></div>
+        <div class="os-no">No.<span style="border-bottom:1.5px solid #000;padding:0 6px;font-size:13px;">${pi+1}</span></div>
         <div class="os-center"><div class="os-company">南九州フィードワン販売㈱</div><div class="os-title">飼　料　注　文　書</div></div>
         <div class="os-right"><span class="os-date">${today.getFullYear()-2018}年${today.getMonth()+1}月${today.getDate()}日</span><br>㈲ひこちゃん牧場<br>古井農場</div>
       </div>
       <div class="os-fax">Fax送付先　　志布志飼料㈱御中（0994-73-1334）　　坂元運送㈱御中（099-262-0638）</div>
       <div class="os-delivery"><span class="dlabel">≪配達日≫</span><span class="ddate">${d.getMonth()+1}月${d.getDate()}日（${wd}）</span><span class="os-unit">単位：t</span></div>
       <table class="os-tbl">
-        <thead>
-          <tr>
-            <th style="width:8mm;">便</th>
-            <th style="width:11mm;">農場</th>
-            <th style="width:11mm;">タンク</th>
-            ${ALL_BRANDS.map(b=>`<th style="width:10mm;">${b.replace('たから','たから<br>').replace('シンサウメイク','シンサ<br>ウメイク').replace('ママコロ','ママ<br>コロ').replace('ミュー前期','ミュー<br>前期').replace('やまとX','やまと<br>X')}</th>`).join('')}
-            <th style="width:12mm;">添加剤</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th style="width:8mm;">便</th>
+          <th style="width:11mm;">農場</th>
+          <th style="width:11mm;">タンク</th>
+          ${ALL_BRANDS.map(b=>`<th style="width:10mm;">${b.replace('たから','たから<br>').replace('シンサウメイク','シンサ<br>ウメイク').replace('ママコロ','ママ<br>コロ').replace('ミュー前期','ミュー<br>前期').replace('やまとX','やまと<br>X')}</th>`).join('')}
+          <th style="width:12mm;">添加剤</th>
+        </tr></thead>
         <tbody>${dataRows}${emptyRows}
           <tr class="os-total"><td colspan="3" style="text-align:right;font-size:9px;">合　計（t）</td>${totCols}<td></td></tr>
         </tbody>
@@ -491,14 +475,11 @@ function buildSheet(){
       </div>
     </div>`;
   });
-  currentSheetHTML=html;
-  document.getElementById('sheet-wrap').innerHTML=html;
-  showToast(dates.length+'日分の注文書を作成しました');
+  return html;
 }
 
-/* ── 印刷して完了 ── */
 function printAndArchive(){
-  if(!currentSheetHTML){showToast('先に注文書を作成してください');return;}
+  if(!plan.length){showToast('先に注文書を作成してください');return;}
   if(!confirm('印刷後、受信注文から削除してアーカイブに保存します。よろしいですか？'))return;
   window.print();
   /* GASから削除 */
@@ -506,49 +487,61 @@ function printAndArchive(){
   gasCall('delete_printed',{ids:ids},function(res){
     if(res&&res.result==='success') showToast(res.deleted+'件をスプレッドシートから削除しました');
   });
-  /* アーカイブ保存（日付ごと） */
+  /* アーカイブ保存：注文データとplanをJSONで保存 */
   const dates=[...new Set(dispOrders.map(o=>o.date))].sort();
+  const payload={trucks:plan,orders:dispOrders};
   dates.forEach(function(date){
-    gasCall('save_archive',{date:date,html:currentSheetHTML},function(){});
+    gasCall('save_archive',{date:date,payload:payload},function(res){
+      if(res&&res.result==='success') showToast('アーカイブに保存しました');
+    });
   });
   /* ローカルから削除 */
   const dispIds=new Set(dispOrders.map(o=>o.id));
   allOrders=allOrders.filter(o=>!dispIds.has(o.id));
-  dispOrders=[];plan=[];currentSheetHTML='';
+  dispOrders=[];plan=[];currentPlan=null;
   renderOrdersTable([]);updateKPI();
   document.getElementById('sheet-wrap').innerHTML='';
   document.getElementById('btn-sheet').disabled=true;
   switchTab('orders');
-  showToast('完了しました。過去の注文書はアーカイブから確認できます。');
+  showToast('完了！過去の注文書はアーカイブタブで確認できます。');
 }
 
-/* ── アーカイブ ── */
 function loadArchive(){
   document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">読み込み中...</div>';
   gasCall('get_archive',null,function(res){
-    if(!res||!res.archives){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">取得エラー</div>';return;}
-    if(!res.archives.length){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">保存された注文書はありません</div>';return;}
-    document.getElementById('archive-list').innerHTML=res.archives.sort((a,b)=>b.date.localeCompare(a.date)).map((a,i)=>`
+    if(!res||!res.archives){
+      document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">取得エラー</div>';return;
+    }
+    if(!res.archives.length){
+      document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">保存された注文書はありません</div>';return;
+    }
+    window._archives=res.archives.sort((a,b)=>b.date.localeCompare(a.date));
+    document.getElementById('archive-list').innerHTML=window._archives.map((a,i)=>`
       <div class="arch-item">
         <div>
           <div class="arch-main">配達日：${a.date}</div>
-          <div class="arch-sub">保存日時：${a.saved}　／　保存期限：${a.expire}</div>
+          <div class="arch-sub">保存日時：${a.saved}　保存期限：${a.expire}</div>
         </div>
         <button class="arch-btn" onclick="viewArchive(${i})">表示</button>
       </div>`).join('');
-    window._archives=res.archives;
   });
 }
 
 function viewArchive(i){
   const a=window._archives[i];
-  if(!a)return;
-  const w=window.open('','_blank');
-  w.document.write('<html><head><meta charset="UTF-8"><title>注文書 '+a.date+'</title><style>body{font-family:sans-serif;margin:0;padding:0;}@media print{@page{size:A4 portrait;margin:0;}.os-page{page-break-after:always;}}</style></head><body>'+a.html+'</body></html>');
-  w.document.close();
+  if(!a) return;
+  try{
+    const payload=JSON.parse(a.payload);
+    const trucks=payload.trucks||[];
+    const orders=payload.orders||[];
+    const html=renderSheetHTML(trucks,orders);
+    const style=document.querySelector('style').outerHTML;
+    const w=window.open('','_blank');
+    w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書 '+a.date+'</title>'+style+'<style>body{background:#fff;}.no-print{display:none;}.os-page{margin:12px auto;box-shadow:0 2px 8px rgba(0,0,0,.1);}@media print{.os-page{margin:0;box-shadow:none;page-break-after:always;}@page{size:A4 portrait;margin:0;}}</style></head><body><div style="padding:8px;background:#1A3A5C;color:#fff;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;"><span>注文書アーカイブ　配達日：'+a.date+'</span><button onclick="window.print()" style="background:#1D9E75;color:#fff;border:none;border-radius:6px;padding:6px 16px;cursor:pointer;font-weight:700;">🖨 印刷</button></div>'+html+'</body></html>');
+    w.document.close();
+  }catch(e){showToast('表示エラー: '+e.message);}
 }
 
-/* ── GAS通信（JSONP） ── */
 function gasCall(action,data,cb){
   var cbName='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
   var script=document.createElement('script');
@@ -556,8 +549,7 @@ function gasCall(action,data,cb){
   script.onerror=function(){delete window[cbName];if(script.parentNode)document.body.removeChild(script);cb(null);};
   var url=GAS_URL+'?action='+action+'&callback='+cbName;
   if(data) url+='&data='+encodeURIComponent(JSON.stringify(data));
-  script.src=url;
-  document.body.appendChild(script);
+  script.src=url;document.body.appendChild(script);
 }
 
 function fmtDate(s){
@@ -567,13 +559,6 @@ function fmtDate(s){
   const dt=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
   const wd=['日','月','火','水','木','金','土'][dt.getDay()];
   return(dt.getMonth()+1)+'/'+dt.getDate()+'（'+wd+'）';
-}
-
-function downloadHTML(){
-  const d=new Date();
-  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='飼料注文書_'+( d.getMonth()+1)+'月'+d.getDate()+'日.html';a.click();
 }
 
 let toastTimer;
