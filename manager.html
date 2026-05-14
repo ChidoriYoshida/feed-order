@@ -13,25 +13,27 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#eef2f7;color:var(--text);font-size:13px;}
-.toolbar{background:var(--navy);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.toolbar{background:var(--navy);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);flex-wrap:wrap;}
 .toolbar h1{font-size:14px;font-weight:700;flex:1;letter-spacing:.04em;}
-.tbtn{border:none;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.03em;}
+.tbtn{border:none;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .tbtn-green{background:var(--green);color:#fff;}
 .tbtn-green:hover{background:var(--green-d);}
 .tbtn-blue{background:var(--blue);color:#fff;}
 .tbtn-blue:hover{background:#185fa5;}
+.tbtn-orange{background:#E67E22;color:#fff;}
+.tbtn-orange:hover{background:#CA6F1E;}
 .tbtn-gray{background:#ccc;color:#333;}
 .tbtn-gray:hover{background:#bbb;}
 .tbtn-red{background:#c0392b;color:#fff;}
-.tab-bar{background:#fff;border-bottom:2px solid var(--border);display:flex;gap:0;position:sticky;top:44px;z-index:90;}
-.tab{padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap;}
+.tab-bar{background:#fff;border-bottom:2px solid var(--border);display:flex;gap:0;position:sticky;top:48px;z-index:90;overflow-x:auto;}
+.tab{padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap;}
 .tab.active{color:var(--navy);border-bottom-color:var(--navy);}
 .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin:12px;padding:14px;}
 .section-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
 .section-title::before{content:'';width:3px;height:13px;background:var(--blue);border-radius:2px;}
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px;}
 .kpi{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px;text-align:center;}
-.kpi-label{font-size:10px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.04em;}
+.kpi-label{font-size:10px;color:var(--muted);margin-bottom:4px;font-weight:600;}
 .kpi-val{font-size:22px;font-weight:700;color:var(--navy);}
 .kpi-unit{font-size:11px;color:var(--muted);}
 .tbl-wrap{overflow-x:auto;}
@@ -53,14 +55,12 @@ table.orders-tbl tr:hover td{background:#f0f5fb;}
 .btn-del{background:none;border:none;color:#c0392b;cursor:pointer;font-size:15px;padding:2px 5px;}
 .truck-card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px;}
 .truck-head{background:var(--navy);color:#fff;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
-.truck-num{font-size:14px;font-weight:700;}
 .truck-meta{font-size:11px;color:#9bb;display:flex;gap:10px;flex-wrap:wrap;}
-.bar-outer{height:6px;background:#e0e0e0;margin:0;}
+.bar-outer{height:6px;background:#e0e0e0;}
 .bar-inner{height:100%;transition:width .4s;}
 .bar-green{background:var(--green);}
 .bar-amber{background:#EF9F27;}
 .bar-red{background:#c0392b;}
-.truck-body{padding:0;}
 .truck-items-tbl{width:100%;border-collapse:collapse;font-size:11.5px;}
 .truck-items-tbl th{background:#eef2f7;padding:5px 8px;text-align:center;font-size:10px;color:var(--muted);border-bottom:1px solid var(--border);}
 .truck-items-tbl td{padding:6px 8px;border-bottom:0.5px solid #eee;vertical-align:middle;}
@@ -71,8 +71,9 @@ table.orders-tbl tr:hover td{background:#f0f5fb;}
 .truck-total{background:#f5f7fa;border-top:1.5px solid var(--blue);font-weight:700;}
 .mixed-tag{background:#ED7D31;color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700;}
 .rec-size{background:var(--green);color:#fff;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:700;}
-#order-sheet{display:none;}
+/* 注文書 */
 .os-page{width:190mm;margin:12px auto 0;background:#fff;padding:7mm 9mm;box-shadow:var(--shadow);}
+.os-page-sep{width:190mm;margin:0 auto;height:8mm;background:#eef2f7;display:flex;align-items:center;justify-content:center;font-size:10px;color:#aaa;border-left:1px dashed #ccc;border-right:1px dashed #ccc;}
 .os-header{display:grid;grid-template-columns:45mm 1fr 45mm;align-items:start;margin-bottom:3mm;}
 .os-no{font-size:12px;font-weight:700;}
 .os-center{text-align:center;}
@@ -87,12 +88,11 @@ table.orders-tbl tr:hover td{background:#f0f5fb;}
 .os-unit{margin-left:auto;font-size:10px;font-weight:600;}
 table.os-tbl{width:100%;border-collapse:collapse;font-size:9px;}
 table.os-tbl th,table.os-tbl td{border:1px solid #666;text-align:center;padding:2px;vertical-align:middle;}
-table.os-tbl thead th{background:#ddd;font-weight:700;font-size:8.5px;line-height:1.3;}
-table.os-tbl thead th.brand-h{font-size:8px;}
+table.os-tbl thead th{background:#ddd;font-weight:700;font-size:8px;line-height:1.3;}
 table.os-tbl .os-farm0 td{background:#D6E8F7;}
 table.os-tbl .os-farm1 td{background:#E8E6FB;}
 table.os-tbl .os-farm2 td{background:#FDE9C8;}
-table.os-tbl .os-bag td{background:#EBF3FA;font-style:italic;}
+table.os-tbl .os-bag td{background:#EBF3FA;}
 table.os-tbl .os-total td{background:#1A3A5C;color:#fff;font-weight:700;}
 table.os-tbl .qty-val{font-size:11px;font-weight:700;color:#1A3A5C;}
 table.os-tbl .os-total .qty-val{color:#fff;}
@@ -102,11 +102,15 @@ table.os-tbl .os-total .qty-val{color:#fff;}
 .sign-box .sh{background:#2E6DA4;color:#fff;text-align:center;padding:2px;font-size:8px;font-weight:700;}
 .sign-box .sb{height:12mm;border:1px solid #999;}
 .sign-box .sf{background:#f0f0f0;text-align:center;font-size:7px;color:#bbb;border:1px solid #bbb;border-top:none;}
-.os-page-sep{width:190mm;margin:0 auto;height:8mm;background:#eef2f7;border-left:1px dashed #ccc;border-right:1px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;color:#aaa;}
+/* アーカイブ */
+.arch-item{border:0.5px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;}
+.arch-main{font-size:13px;font-weight:600;color:var(--navy);}
+.arch-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.arch-btn{background:var(--blue);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-weight:600;}
 @media print{
-  .toolbar,.tab-bar,#tab-orders,#tab-plan,.no-print{display:none!important;}
+  .toolbar,.tab-bar,#tab-orders,#tab-plan,#tab-archive,.no-print{display:none!important;}
   body{background:#fff;}
-  #order-sheet{display:block!important;}
+  #tab-sheet{display:block!important;}
   .os-page{margin:0;box-shadow:none;padding:8mm 10mm;width:100%;page-break-after:always;}
   .os-page-sep{display:none!important;}
   @page{size:A4 portrait;margin:0;}
@@ -119,22 +123,26 @@ table.os-tbl .os-total .qty-val{color:#fff;}
   <button class="tbtn tbtn-green" onclick="loadOrders()">🔄 注文を取得</button>
   <button class="tbtn tbtn-blue"  onclick="runOptimize()">⚡ 配車計画</button>
   <button class="tbtn tbtn-blue"  onclick="buildSheet();switchTab('sheet')" id="btn-sheet" disabled>📄 注文書作成</button>
-  <button class="tbtn tbtn-gray"  onclick="window.print()">🖨 FAX印刷</button>
+  <button class="tbtn tbtn-orange" onclick="printAndArchive()">🖨 印刷・完了</button>
+  <button class="tbtn tbtn-gray"  onclick="switchTab('archive')">📁 過去の注文書</button>
 </div>
 <div class="tab-bar no-print">
   <div class="tab active" onclick="switchTab('orders')" id="t-orders">受信注文</div>
-  <div class="tab" onclick="switchTab('plan')" id="t-plan">配車計画</div>
-  <div class="tab" onclick="switchTab('sheet')" id="t-sheet">注文書確認</div>
+  <div class="tab" onclick="switchTab('plan')"   id="t-plan">配車計画</div>
+  <div class="tab" onclick="switchTab('sheet')"  id="t-sheet">注文書確認</div>
+  <div class="tab" onclick="switchTab('archive');loadArchive()" id="t-archive">📁 過去の注文書</div>
 </div>
+
+<!-- 受信注文 -->
 <div id="tab-orders">
   <div class="kpi-grid">
-    <div class="kpi"><div class="kpi-label">受信件数</div><div class="kpi-val" id="k-cnt">0</div><div class="kpi-unit">件</div></div>
+    <div class="kpi"><div class="kpi-label">表示件数</div><div class="kpi-val" id="k-cnt">0</div><div class="kpi-unit">件</div></div>
     <div class="kpi"><div class="kpi-label">タンク製品</div><div class="kpi-val" id="k-tank">0.0</div><div class="kpi-unit">t</div></div>
     <div class="kpi"><div class="kpi-label">紙袋製品</div><div class="kpi-val" id="k-bag">0.0</div><div class="kpi-unit">t</div></div>
     <div class="kpi"><div class="kpi-label">想定台数</div><div class="kpi-val" id="k-trucks">-</div><div class="kpi-unit">台</div></div>
   </div>
   <div class="card">
-    <div class="section-title">受信注文一覧</div>
+    <div class="section-title">受信注文一覧　<span style="font-size:11px;font-weight:400;color:var(--muted);">※表示中の注文のみ配車計画されます</span></div>
     <div style="margin-bottom:8px;display:flex;gap:8px;flex-wrap:wrap;">
       <input type="date" id="filter-date" onchange="filterOrders()" style="border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;">
       <button class="tbtn tbtn-gray" onclick="clearFilter()">全表示</button>
@@ -150,8 +158,8 @@ table.os-tbl .os-total .qty-val{color:#fff;}
     </div>
   </div>
   <div class="card">
-    <div class="section-title">手動追加（注文担当者用）</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:10px;">
+    <div class="section-title">手動追加</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px;">
       <div>
         <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">農場</div>
         <select id="m-farm" onchange="onMFarmChange()" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;font-size:12px;">
@@ -186,20 +194,31 @@ table.os-tbl .os-total .qty-val{color:#fff;}
     <button class="tbtn tbtn-blue" onclick="manualAdd()">＋ 追加</button>
   </div>
 </div>
+
+<!-- 配車計画 -->
 <div id="tab-plan" style="display:none;">
   <div id="plan-wrap" style="margin:12px;">
     <div class="card"><div style="text-align:center;padding:20px;color:var(--muted);">「配車計画」ボタンを押してください</div></div>
   </div>
 </div>
+
+<!-- 注文書確認 -->
 <div id="tab-sheet" style="display:none;">
   <div style="margin:8px 12px;display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
-    <button class="tbtn tbtn-gray" onclick="window.print()">🖨 FAX印刷（A4縦・納品日ごと）</button>
-    <button class="tbtn tbtn-blue" onclick="downloadHTML()">💾 HTMLを保存</button>
-    <div style="font-size:11px;color:var(--muted);align-self:center;">← 納品日ごとに1枚ずつ印刷されます</div>
+    <button class="tbtn tbtn-orange" onclick="printAndArchive()">🖨 印刷して完了（注文を削除）</button>
+    <button class="tbtn tbtn-blue"   onclick="window.print()">🖨 印刷のみ</button>
+    <div style="font-size:11px;color:var(--muted);align-self:center;">「印刷して完了」で受信注文から自動削除・履歴保存されます</div>
   </div>
   <div id="sheet-wrap"></div>
 </div>
-<div id="order-sheet"></div>
+
+<!-- 過去の注文書 -->
+<div id="tab-archive" style="display:none;">
+  <div class="card">
+    <div class="section-title">過去の注文書（1ヶ月間保存）</div>
+    <div id="archive-list"><div style="text-align:center;padding:20px;color:var(--muted);">読み込み中...</div></div>
+  </div>
+</div>
 <script>
 const TANK_MASTER={'古井農場':[{no:'11',house:'育成'},{no:'12',house:'育成'},{no:'21',house:'母豚'},{no:'22',house:'母豚'},{no:'23',house:'母豚'},{no:'24',house:'母豚'},{no:'25',house:'母豚'},{no:'26',house:'母豚'},{no:'27',house:'母豚'},{no:'28',house:'母豚'},{no:'29',house:'母豚'},{no:'30',house:'母豚'},{no:'31',house:'分娩'},{no:'32',house:'分娩'},{no:'33',house:'分娩'},{no:'34',house:'分娩'},{no:'35',house:'分娩'},{no:'36',house:'分娩'},{no:'37',house:'分娩'},{no:'38',house:'分娩'},{no:'41',house:'子豚'},{no:'42',house:'子豚'},{no:'43',house:'子豚'},{no:'44',house:'子豚'}],'第2農場':[{no:'50',house:'201'},{no:'51',house:'202-203'},{no:'52',house:'204'},{no:'53',house:'205-206'},{no:'54',house:'207-208'},{no:'55',house:'209'},{no:'56',house:'210-211'},{no:'57',house:'212-213'},{no:'58',house:'214-215'},{no:'59',house:'216-217'}],'第3農場':[{no:'A-1',house:'301'},{no:'A-2',house:'301'},{no:'A-3',house:'302'},{no:'A-4',house:'302'},{no:'B-1',house:'303'},{no:'B-2',house:'303'},{no:'B-3',house:'304'},{no:'B-4',house:'304'},{no:'C-1',house:'305'},{no:'C-2',house:'305'},{no:'C-3',house:'306'},{no:'C-4',house:'306'},{no:'D-1',house:'307'},{no:'D-2',house:'307'},{no:'D-3',house:'308'},{no:'D-4',house:'308'},{no:'E-1',house:'309'},{no:'E-2',house:'309'},{no:'E-3',house:'310'},{no:'E-4',house:'310'},{no:'F-1',house:'311'},{no:'F-2',house:'311'},{no:'F-3',house:'312'},{no:'F-4',house:'312'}]};
 const BAG_BRANDS=['ママコロ餌付','ママコロ前期','ミュー前期','やまとX'];
@@ -211,60 +230,61 @@ const FARM_IDX={'古井農場':0,'第2農場':1,'第3農場':2};
 const TRUCK_SIZES=[2,3,4,5,6,7,8];
 const MAX_T=12;
 const GAS_URL='https://script.google.com/macros/s/AKfycbyTBTPjewF9RDfODEXEmReu06WxctAJ7i8C8SWEs9B3n8JnSPpJ7O4R_5JqUXWXrZRV/exec';
-let allOrders=[],plan=[],dispOrders=[],idCnt=1;
+let allOrders=[],plan=[],dispOrders=[],idCnt=1,currentSheetHTML='';
 
 function switchTab(name){
-  ['orders','plan','sheet'].forEach(n=>{
+  ['orders','plan','sheet','archive'].forEach(n=>{
     document.getElementById('tab-'+n).style.display=n===name?'':'none';
     document.getElementById('t-'+n).classList.toggle('active',n===name);
   });
 }
 
+/* ── 注文取得 ── */
 function loadOrders(){
   var btn=document.querySelector('.tbtn-green');
   if(btn){btn.textContent='取得中...';btn.disabled=true;}
-  var cbName='cb_'+Date.now();
-  var script=document.createElement('script');
-  window[cbName]=function(res){
-    delete window[cbName];
-    if(script.parentNode)document.body.removeChild(script);
+  gasCall('get',null,function(res){
     if(btn){btn.textContent='🔄 注文を取得';btn.disabled=false;}
     if(!res||!res.orders){showToast('取得エラーが発生しました');return;}
     var raw=res.orders.map(function(o,i){
-      var dateStr=(function(v){
-        var s=String(v||'');
-        if(s.match(/^\d{4}-\d{2}-\d{2}$/))return s;
-        if(s.match(/^\d{4}\/\d{2}\/\d{2}$/))return s.replace(/\//g,'-').substring(0,10);
-        var dt=new Date(s);
-        if(!isNaN(dt)){
-          var p=[dt.getFullYear(),String(dt.getMonth()+1).padStart(2,'0'),String(dt.getDate()).padStart(2,'0')];
-          return p.join('-');
-        }
-        return s.substring(0,10);
-      })(o['配送日']);
-      return{id:o['ID']||(idCnt+i),date:dateStr,staff:o['担当者']||'',farm:o['農場']||'',tank:o['タンク']||'',brand:o['銘柄']||'',qty:parseFloat(o['数量(t)'])||0,additive:o['添加剤']==='有'?'yes':'no',isBag:o['紙袋']==='紙袋'};
+      return{
+        id:o['ID']||(idCnt+i),
+        date:parseDate(o['配送日']),
+        staff:o['担当者']||'',farm:o['農場']||'',
+        tank:o['タンク']||'',brand:o['銘柄']||'',
+        qty:parseFloat(o['数量(t)'])||0,
+        additive:o['添加剤']==='有'?'yes':'no',
+        isBag:o['紙袋']==='紙袋'
+      };
     }).filter(function(o){return o.farm&&o.brand&&o.qty>0;});
     var existIds=new Set(allOrders.map(function(o){return String(o.id);}));
     var newOnes=raw.filter(function(o){return!existIds.has(String(o.id));});
     newOnes.forEach(function(o){if(!o.id)o.id=idCnt++;});
     allOrders=allOrders.concat(newOnes);
-    renderOrders();updateKPI();
+    dispOrders=[...allOrders];
+    renderOrdersTable(dispOrders);updateKPI();
     showToast(newOnes.length+'件の注文を取得しました');
-  };
-  script.onerror=function(){
-    delete window[cbName];
-    if(script.parentNode)document.body.removeChild(script);
-    if(btn){btn.textContent='🔄 注文を取得';btn.disabled=false;}
-    showToast('通信エラー。電波を確認してください');
-  };
-  script.src=GAS_URL+'?action=get&callback='+cbName;
-  document.body.appendChild(script);
+  });
 }
 
-function filterOrders(){const d=document.getElementById('filter-date').value;dispOrders=d?allOrders.filter(o=>o.date===d):[...allOrders];renderOrdersTable(dispOrders);}
-function clearFilter(){document.getElementById('filter-date').value='';dispOrders=[...allOrders];renderOrdersTable(dispOrders);}
-function renderOrders(){dispOrders=[...allOrders];renderOrdersTable(dispOrders);}
+function parseDate(v){
+  var s=String(v||'');
+  if(s.match(/^\d{4}-\d{2}-\d{2}$/))return s;
+  if(s.match(/^\d{4}\/\d{2}\/\d{2}$/))return s.replace(/\//g,'-').substring(0,10);
+  var dt=new Date(s);
+  if(!isNaN(dt)){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+  return s.substring(0,10);
+}
 
+/* ── フィルタ ── */
+function filterOrders(){
+  const d=document.getElementById('filter-date').value;
+  dispOrders=d?allOrders.filter(o=>o.date===d):[...allOrders];
+  renderOrdersTable(dispOrders);updateKPI();
+}
+function clearFilter(){document.getElementById('filter-date').value='';dispOrders=[...allOrders];renderOrdersTable(dispOrders);updateKPI();}
+
+/* ── 一覧描画 ── */
 function renderOrdersTable(list){
   const tbody=document.getElementById('orders-tbody');
   if(!list.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--muted);">注文がありません</td></tr>';return;}
@@ -278,19 +298,29 @@ function renderOrdersTable(list){
     <td style="text-align:right;font-weight:600;">${o.qty}t</td>
     <td style="text-align:center;"><span class="badge ${o.additive==='yes'?'add-yes':'add-no'}">${o.additive==='yes'?'有':'無'}</span></td>
     <td style="text-align:center;">${o.staff||''}</td>
-    <td><button class="btn-del" onclick="deleteOrder(${o.id})">×</button></td>
+    <td><button class="btn-del" onclick="deleteLocal(${o.id})">×</button></td>
   </tr>`).join('');
   updateKPI();
 }
 
-function deleteOrder(id){allOrders=allOrders.filter(o=>o.id!==id);renderOrders();}
-function clearAll(){if(!confirm('全注文を削除しますか？'))return;allOrders=[];plan=[];renderOrders();document.getElementById('plan-wrap').innerHTML='<div class="card"><div style="text-align:center;padding:20px;color:var(--muted);">配車計画がありません</div></div>';}
+/* ローカルのみ削除（GASは削除しない） */
+function deleteLocal(id){
+  allOrders=allOrders.filter(o=>o.id!==id);
+  dispOrders=dispOrders.filter(o=>o.id!==id);
+  renderOrdersTable(dispOrders);updateKPI();
+}
+function clearAll(){
+  if(!confirm('表示中の全注文をローカルから削除しますか？'))return;
+  const dispIds=new Set(dispOrders.map(o=>o.id));
+  allOrders=allOrders.filter(o=>!dispIds.has(o.id));
+  dispOrders=[];renderOrdersTable([]);updateKPI();
+}
 
 function updateKPI(){
-  const tankQty=allOrders.filter(o=>!o.isBag).reduce((s,o)=>s+Number(o.qty),0);
-  const bagQty=allOrders.filter(o=>o.isBag).reduce((s,o)=>s+Number(o.qty),0);
+  const tankQty=dispOrders.filter(o=>!o.isBag).reduce((s,o)=>s+Number(o.qty),0);
+  const bagQty=dispOrders.filter(o=>o.isBag).reduce((s,o)=>s+Number(o.qty),0);
   const estTrucks=Math.ceil(tankQty/MAX_T);
-  document.getElementById('k-cnt').textContent=allOrders.length;
+  document.getElementById('k-cnt').textContent=dispOrders.length;
   document.getElementById('k-tank').textContent=tankQty.toFixed(1);
   document.getElementById('k-bag').textContent=bagQty.toFixed(1);
   document.getElementById('k-trucks').textContent=estTrucks||'-';
@@ -315,16 +345,18 @@ function manualAdd(){
   const qty=parseFloat(document.getElementById('m-qty').value);
   const add=document.getElementById('m-add').value;
   if(!brand||isNaN(qty)||qty<=0){showToast('銘柄と数量を入力してください');return;}
-  allOrders.push({id:idCnt++,farm,date,tank,brand,qty,additive:add,isBag:BAG_BRANDS.includes(brand),staff:'手動'});
-  renderOrders();showToast('追加しました');
+  const o={id:idCnt++,farm,date,tank,brand,qty,additive:add,isBag:BAG_BRANDS.includes(brand),staff:'手動'};
+  allOrders.push(o);dispOrders.push(o);
+  renderOrdersTable(dispOrders);updateKPI();showToast('追加しました');
 }
 
+/* ── 配車計画（dispOrdersのみ） ── */
 function runOptimize(){
-  if(!allOrders.length){showToast('注文がありません');return;}
-  const dates=[...new Set(allOrders.map(o=>o.date))].sort();
+  if(!dispOrders.length){showToast('表示中の注文がありません');return;}
+  const dates=[...new Set(dispOrders.map(o=>o.date))].sort();
   const trucks=[];
   for(const date of dates){
-    const items=[...allOrders.filter(o=>o.date===date&&!o.isBag)].sort((a,b)=>b.qty-a.qty);
+    const items=[...dispOrders.filter(o=>o.date===date&&!o.isBag)].sort((a,b)=>b.qty-a.qty);
     for(const o of items){
       let placed=false;
       for(const t of trucks){
@@ -350,7 +382,7 @@ function runOptimize(){
 function renderPlan(){
   const wrap=document.getElementById('plan-wrap');
   if(!plan.length){wrap.innerHTML='<div class="card"><div style="text-align:center;padding:20px;color:var(--muted);">配車計画がありません</div></div>';return;}
-  const bagOrders=allOrders.filter(o=>o.isBag);
+  const bagOrders=dispOrders.filter(o=>o.isBag);
   const bagTotal=bagOrders.reduce((s,o)=>s+Number(o.qty),0);
   const fi=['bf0','bf1','bf2'];
   wrap.innerHTML=plan.map(t=>{
@@ -361,7 +393,7 @@ function renderPlan(){
     return`<div class="truck-card">
       <div class="truck-head">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <span class="truck-num">運搬車 ${t.id}</span>${farmBadges}${t.mixed?'<span class="mixed-tag">混載</span>':''}
+          <span style="font-size:14px;font-weight:700;">運搬車 ${t.id}</span>${farmBadges}${t.mixed?'<span class="mixed-tag">混載</span>':''}
         </div>
         <div class="truck-meta">
           <span>納品日：${fmtDate(t.date)}</span>
@@ -370,24 +402,22 @@ function renderPlan(){
         </div>
       </div>
       <div class="bar-outer"><div class="bar-inner ${barCls}" style="width:${pct.toFixed(1)}%"></div></div>
-      <div class="truck-body">
-        <table class="truck-items-tbl">
-          <thead><tr><th>農場</th><th>タンク</th><th>銘柄</th><th>数量</th><th>添加剤</th><th>担当</th></tr></thead>
-          <tbody>
-          ${[...t.items].sort((a,b)=>FARM_IDX[a.farm]-FARM_IDX[b.farm]).map(o=>`<tr>
-            <td class="tc"><span class="badge ${fi[FARM_IDX[o.farm]]}">${FARM_LABELS[o.farm]}</span></td>
-            <td class="tc fw">${o.tank}</td><td>${o.brand}</td>
-            <td class="tr fw">${Number(o.qty).toFixed(1)}t</td>
-            <td class="tc"><span class="badge ${o.additive==='yes'?'add-yes':'add-no'}">${o.additive==='yes'?'有':'無'}</span></td>
-            <td class="tc" style="color:var(--muted);font-size:10px;">${o.staff||''}</td>
-          </tr>`).join('')}
-          <tr class="truck-total"><td colspan="3" class="tr">合　計</td><td class="tr fw">${t.usedQty.toFixed(1)}t</td><td></td><td></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <table class="truck-items-tbl">
+        <thead><tr><th>農場</th><th>タンク</th><th>銘柄</th><th>数量</th><th>添加剤</th><th>担当</th></tr></thead>
+        <tbody>
+        ${[...t.items].sort((a,b)=>FARM_IDX[a.farm]-FARM_IDX[b.farm]).map(o=>`<tr>
+          <td class="tc"><span class="badge ${fi[FARM_IDX[o.farm]]}">${FARM_LABELS[o.farm]}</span></td>
+          <td class="tc fw">${o.tank}</td><td>${o.brand}</td>
+          <td class="tr fw">${Number(o.qty).toFixed(1)}t</td>
+          <td class="tc"><span class="badge ${o.additive==='yes'?'add-yes':'add-no'}">${o.additive==='yes'?'有':'無'}</span></td>
+          <td class="tc" style="color:var(--muted);font-size:10px;">${o.staff||''}</td>
+        </tr>`).join('')}
+        <tr class="truck-total"><td colspan="3" class="tr">合　計</td><td class="tr fw">${t.usedQty.toFixed(1)}t</td><td></td><td></td></tr>
+        </tbody>
+      </table>
     </div>`;
   }).join('')+(bagOrders.length?`<div class="card" style="border-left:4px solid var(--blue);">
-    <div class="section-title">紙袋製品（古井農場のみ・重量制限なし）</div>
+    <div class="section-title">紙袋製品（重量制限なし）</div>
     <table class="truck-items-tbl" style="font-size:12px;">
       <thead><tr><th>銘柄</th><th>数量</th><th>添加剤</th><th>担当</th></tr></thead>
       <tbody>
@@ -398,29 +428,27 @@ function renderPlan(){
   </div>`:'');
 }
 
+/* ── 注文書生成 ── */
 function buildSheet(){
   if(!plan.length){showToast('先に配車計画を作成してください');return;}
   const today=new Date();
   const farmCls={'古井農場':'os-farm0','第2農場':'os-farm1','第3農場':'os-farm2'};
   const dates=[...new Set(plan.map(t=>t.date))].sort();
-  let allPagesHTML='';
-
-  dates.forEach((date,pageIdx)=>{
+  let html='';
+  dates.forEach((date,pi)=>{
     const dp=date.split('-');
     const d=new Date(parseInt(dp[0]),parseInt(dp[1])-1,parseInt(dp[2]));
     const wd=['日','月','火','水','木','金','土'][d.getDay()];
     const dayTrucks=plan.filter(t=>t.date===date);
     const rows=[];
     dayTrucks.forEach(t=>[...t.items].sort((a,b)=>FARM_IDX[a.farm]-FARM_IDX[b.farm]).forEach(o=>rows.push({...o,truck:t.id})));
-    if(pageIdx===0){
-      allOrders.filter(o=>o.isBag).forEach(o=>rows.push({...o,truck:'－'}));
-    }
+    if(pi===0) dispOrders.filter(o=>o.isBag).forEach(o=>rows.push({...o,truck:'－'}));
     const dataRows=rows.map(o=>{
       const cols=ALL_BRANDS.map(b=>b===o.brand?Number(o.qty):'');
       return`<tr class="${o.isBag?'os-bag':farmCls[o.farm]||''}">
         <td style="text-align:center;font-weight:700;">${o.truck}</td>
-        <td style="white-space:nowrap;font-size:8px;"><span style="border:1.5px solid ${o.farm==='古井農場'?'#4472C4':o.farm==='第2農場'?'#7B66D6':'#ED7D31'};border-radius:50%;padding:0 2px;font-size:8px;">${o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第2':'第3'}</span></td>
-        <td style="text-align:center;font-weight:600;">${o.tank}${o.isBag?'<br><span style="font-size:7px;color:#666;">紙袋</span>':''}</td>
+        <td style="white-space:nowrap;font-size:8px;"><span style="border:1.5px solid ${o.farm==='古井農場'?'#4472C4':o.farm==='第2農場'?'#7B66D6':'#ED7D31'};border-radius:50%;padding:0 2px;">${o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第2':'第3'}</span></td>
+        <td style="text-align:center;font-weight:600;">${o.tank}</td>
         ${cols.map(v=>`<td class="${v?'qty-val':''}">${v||''}</td>`).join('')}
         <td style="text-align:center;font-size:8px;">${o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span>　無':'有　<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>'}</td>
       </tr>`;
@@ -429,13 +457,11 @@ function buildSheet(){
       const tot=rows.filter(o=>!o.isBag).reduce((s,o)=>s+(o.brand===b?Number(o.qty):0),0);
       return`<td class="${tot?'qty-val':''}">${tot||''}</td>`;
     }).join('');
-    const emptyRows=Array(3).fill(`<tr><td></td><td style="font-size:8px;">古井/第2/第3</td><td></td>${ALL_BRANDS.map(()=>'<td></td>').join('')}<td></td></tr>`).join('');
-
-    if(pageIdx>0) allPagesHTML+='<div class="os-page-sep">── 次のページ（'+fmtDate(date)+'）──</div>';
-
-    allPagesHTML+=`<div class="os-page" contenteditable="true">
+    const emptyRows=Array(3).fill(`<tr><td></td><td></td><td></td>${ALL_BRANDS.map(()=>'<td></td>').join('')}<td></td></tr>`).join('');
+    if(pi>0) html+='<div class="os-page-sep">── 次のページ（'+fmtDate(date)+'）──</div>';
+    html+=`<div class="os-page">
       <div class="os-header">
-        <div class="os-no">No. <span style="border-bottom:1.5px solid #000;padding:0 6px;font-size:13px;">${pageIdx+1}</span></div>
+        <div class="os-no">No. <span style="border-bottom:1.5px solid #000;padding:0 6px;font-size:13px;">${pi+1}</span></div>
         <div class="os-center"><div class="os-company">南九州フィードワン販売㈱</div><div class="os-title">飼　料　注　文　書</div></div>
         <div class="os-right"><span class="os-date">${today.getFullYear()-2018}年${today.getMonth()+1}月${today.getDate()}日</span><br>㈲ひこちゃん牧場<br>古井農場</div>
       </div>
@@ -444,19 +470,11 @@ function buildSheet(){
       <table class="os-tbl">
         <thead>
           <tr>
-            <th rowspan="2" style="width:8mm;">便</th>
-            <th rowspan="2" style="width:12mm;">農場</th>
-            <th rowspan="2" style="width:12mm;">タンクNo.</th>
-            ${TANK_BRANDS.map(b=>`<th class="brand-h" style="width:10mm;">${b.replace('たから','たから<br>').replace('シンサウメイク','シンサ<br>ウメイク')}</th>`).join('')}
-            <th colspan="${BAG_BRANDS.length}" style="background:#e0e8f0;border-left:2px solid #444;font-size:8px;">紙袋製品</th>
-            <th rowspan="2" style="width:12mm;">添加剤</th>
-          </tr>
-          <tr>${BAG_BRANDS.map((b,i)=>`<th class="brand-h" style="background:#e0e8f0;${i===0?'border-left:2px solid #444;':''}">${b}</th>`).join('')}</tr>
-          <tr>
-            <th colspan="3" style="font-size:7px;background:#e8f0e8;">◀ タンク製品（12t/便）</th>
-            ${TANK_BRANDS.map(()=>'<th style="background:#e8f0e8;"></th>').join('')}
-            ${BAG_BRANDS.map(()=>'<th style="background:#e0e8f0;"></th>').join('')}
-            <th style="background:#e8f0e8;"></th>
+            <th style="width:8mm;">便</th>
+            <th style="width:11mm;">農場</th>
+            <th style="width:11mm;">タンク</th>
+            ${ALL_BRANDS.map(b=>`<th style="width:10mm;">${b.replace('たから','たから<br>').replace('シンサウメイク','シンサ<br>ウメイク').replace('ママコロ','ママ<br>コロ').replace('ミュー前期','ミュー<br>前期').replace('やまとX','やまと<br>X')}</th>`).join('')}
+            <th style="width:12mm;">添加剤</th>
           </tr>
         </thead>
         <tbody>${dataRows}${emptyRows}
@@ -473,10 +491,73 @@ function buildSheet(){
       </div>
     </div>`;
   });
-
-  document.getElementById('sheet-wrap').innerHTML=allPagesHTML;
-  document.getElementById('order-sheet').innerHTML=allPagesHTML;
+  currentSheetHTML=html;
+  document.getElementById('sheet-wrap').innerHTML=html;
   showToast(dates.length+'日分の注文書を作成しました');
+}
+
+/* ── 印刷して完了 ── */
+function printAndArchive(){
+  if(!currentSheetHTML){showToast('先に注文書を作成してください');return;}
+  if(!confirm('印刷後、受信注文から削除してアーカイブに保存します。よろしいですか？'))return;
+  window.print();
+  /* GASから削除 */
+  const ids=dispOrders.map(o=>o.id);
+  gasCall('delete_printed',{ids:ids},function(res){
+    if(res&&res.result==='success') showToast(res.deleted+'件をスプレッドシートから削除しました');
+  });
+  /* アーカイブ保存（日付ごと） */
+  const dates=[...new Set(dispOrders.map(o=>o.date))].sort();
+  dates.forEach(function(date){
+    gasCall('save_archive',{date:date,html:currentSheetHTML},function(){});
+  });
+  /* ローカルから削除 */
+  const dispIds=new Set(dispOrders.map(o=>o.id));
+  allOrders=allOrders.filter(o=>!dispIds.has(o.id));
+  dispOrders=[];plan=[];currentSheetHTML='';
+  renderOrdersTable([]);updateKPI();
+  document.getElementById('sheet-wrap').innerHTML='';
+  document.getElementById('btn-sheet').disabled=true;
+  switchTab('orders');
+  showToast('完了しました。過去の注文書はアーカイブから確認できます。');
+}
+
+/* ── アーカイブ ── */
+function loadArchive(){
+  document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">読み込み中...</div>';
+  gasCall('get_archive',null,function(res){
+    if(!res||!res.archives){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">取得エラー</div>';return;}
+    if(!res.archives.length){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">保存された注文書はありません</div>';return;}
+    document.getElementById('archive-list').innerHTML=res.archives.sort((a,b)=>b.date.localeCompare(a.date)).map((a,i)=>`
+      <div class="arch-item">
+        <div>
+          <div class="arch-main">配達日：${a.date}</div>
+          <div class="arch-sub">保存日時：${a.saved}　／　保存期限：${a.expire}</div>
+        </div>
+        <button class="arch-btn" onclick="viewArchive(${i})">表示</button>
+      </div>`).join('');
+    window._archives=res.archives;
+  });
+}
+
+function viewArchive(i){
+  const a=window._archives[i];
+  if(!a)return;
+  const w=window.open('','_blank');
+  w.document.write('<html><head><meta charset="UTF-8"><title>注文書 '+a.date+'</title><style>body{font-family:sans-serif;margin:0;padding:0;}@media print{@page{size:A4 portrait;margin:0;}.os-page{page-break-after:always;}}</style></head><body>'+a.html+'</body></html>');
+  w.document.close();
+}
+
+/* ── GAS通信（JSONP） ── */
+function gasCall(action,data,cb){
+  var cbName='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+  var script=document.createElement('script');
+  window[cbName]=function(res){delete window[cbName];if(script.parentNode)document.body.removeChild(script);cb(res);};
+  script.onerror=function(){delete window[cbName];if(script.parentNode)document.body.removeChild(script);cb(null);};
+  var url=GAS_URL+'?action='+action+'&callback='+cbName;
+  if(data) url+='&data='+encodeURIComponent(JSON.stringify(data));
+  script.src=url;
+  document.body.appendChild(script);
 }
 
 function fmtDate(s){
@@ -490,18 +571,20 @@ function fmtDate(s){
 
 function downloadHTML(){
   const d=new Date();
-  const fname=`飼料注文書_${d.getMonth()+1}月${d.getDate()}日.html`;
   const blob=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='飼料注文書_'+( d.getMonth()+1)+'月'+d.getDate()+'日.html';a.click();
 }
 
 let toastTimer;
 function showToast(msg){
   let t=document.getElementById('_toast');
-  if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(40px);background:#1A3A5C;color:#fff;padding:9px 20px;border-radius:20px;font-size:12px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;';document.body.appendChild(t);}
+  if(!t){t=document.createElement('div');t.id='_toast';
+    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(40px);background:#1A3A5C;color:#fff;padding:9px 20px;border-radius:20px;font-size:12px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;';
+    document.body.appendChild(t);}
   t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(40px)';},2500);
+  toastTimer=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(40px)';},3000);
 }
 </script>
 </body>
