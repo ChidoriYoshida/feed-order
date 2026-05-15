@@ -476,6 +476,10 @@ function loadCalendar(){
         var s = String(o['\u914d\u9001\u65e5']||'');
         if(s.indexOf('/')>=0) s=s.replace(/\//g,'-');
         s=s.substring(0,10);
+var parts=s.split('-');
+if(parts.length===3){
+  s=parts[0]+'-'+parts[1].padStart(2,'0')+'-'+parts[2].padStart(2,'0');
+}
         var f = String(o['\u8fb2\u5834']||'');
         if(s && f){
           calOrders.push({
