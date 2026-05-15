@@ -313,7 +313,7 @@ function renderOrdersTable(list){
   var trCls={'古井農場':'tr-farm0','第2農場':'tr-farm1','第3農場':'tr-farm2'};
   tbody.innerHTML=list.map(function(o){
     return '<tr class="'+(o.isBag?'tr-bag':trCls[o.farm]||'')+'">'
-      +'<td><span class="badge '+(fi[o.farm]||'')+'">'+（FARM_LABELS[o.farm]||o.farm)+'</span></td>'
+     +'<td><span class="badge '+(fi[o.farm]||'')+'">'+( FARM_LABELS[o.farm]||o.farm)+'</span></td>'
       +'<td style="text-align:center;">'+fmtDate(o.date)+'</td>'
       +'<td style="text-align:center;font-weight:600;">'+o.tank+(o.isBag?' <span class="bag-tag">紙袋</span>':'')+'</td>'
       +'<td>'+o.brand+'</td>'
