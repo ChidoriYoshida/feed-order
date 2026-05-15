@@ -545,7 +545,7 @@ function renderCalendar(){
   var remain = used===0 ? 0 : 7-used;
   for(var ri=0;ri<remain;ri++){
     var rdow = (startDow+last.getDate()+ri)%7;
-    html += '<div class="cal-cell other"><div class="day-num'+(rdow===6?' sat':'')+'">'"+(ri+1)+'</div></div>';
+    html += '<div class="cal-cell other"><div class="day-num'+(rdow===6?' sat':'')+'">'+(ri+1)+'</div></div>';
   }
   document.getElementById('cal-grid').innerHTML = html;
 }
