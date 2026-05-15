@@ -313,7 +313,7 @@ function renderOrdersTable(list){
       +'<td style="text-align:right;font-weight:600;">'+o.qty+'t</td>'
       +'<td style="text-align:center;"><span class="badge '+(o.additive==='yes'?'add-yes':'add-no')+'">'+(o.additive==='yes'?'有':'無')+'</span></td>'
       +'<td style="text-align:center;">'+(o.staff||'')+'</td>'
-      +'<td><button class="tbtn tbtn-blue" style="padding:4px 8px;font-size:11px;" onclick="editOrder(\''+o.id+'\')"">編集</button></td>'
+      +'<td><button class="tbtn tbtn-blue" style="padding:4px 8px;font-size:11px;" onclick="editOrder(\''+o.id+'\')">編集</button></td>'
       +'<td><button class="btn-del" onclick="deleteLocal(\''+o.id+'\')"">x</button></td>'
       +'</tr>';
   }).join('');
