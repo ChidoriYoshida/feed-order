@@ -520,8 +520,8 @@ function printAndArchive(){
   window.print();
   /* GASから削除 */
   const ids=dispOrders.map(o=>o.id);
-  gasCall('delete_printed',{ids:ids},function(res){
-    if(res&&res.result==='success') showToast(res.deleted+'件をスプレッドシートから削除しました');
+  gasCall('mark_confirmed',{ids:ids},function(res){
+    if(res&&res.result==='success') showToast(res.confirmed+'件を確定済みにしました');
   });
   /* アーカイブ保存：注文データとplanをJSONで保存 */
   const dates=[...new Set(dispOrders.map(o=>o.date))].sort();
