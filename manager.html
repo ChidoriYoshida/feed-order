@@ -276,7 +276,7 @@ function loadOrders(){
     if(btn){btn.textContent='🔄 注文を取得';btn.disabled=false;}
     if(!res||!res.orders){showToast('取得エラーが発生しました');return;}
     var raw=res.orders.map(function(o,i){
-      return{id:o['ID']||(idCnt+i),date:parseDate(o['配送日']),staff:o['担当者']||'',
+      return{id:String(o['ID']||(idCnt+i)),date:parseDate(o['配送日']),staff:o['担当者']||'',
         farm:o['農場']||'',tank:o['タンク']||'',brand:o['銘柄']||'',
         qty:parseFloat(o['数量(t)'])||0,additive:o['添加剤']==='有'?'yes':'no',
         isBag:o['紙袋']==='紙袋'};
@@ -614,10 +614,19 @@ function saveEdit(){
     allOrders[idx]=updated;
     var di=dispOrders.findIndex(function(x){return x.id===editingId;});
     if(di>=0)dispOrders[di]=updated;
-    gasCall('update',{order:updated},function(res){
-      if(res&&res.result==='success'){showToast('編集内容をスプレッドシートに保存しました');}
-      else{showToast('ローカルのみ更新しました');}
-    });
+    gasCall('update',{order:{
+  id:String(updated.id),
+  farm:updated.farm,
+  date:updated.date,
+  tank:updated.tank,
+  brand:updated.brand,
+  qty:updated.qty,
+  additive:updated.additive,
+  isBag:updated.isBag
+}},function(res){
+  if(res&&res.result==='success'){showToast('スプレッドシートを更新しました');}
+  else{showToast('ローカルのみ更新しました');}
+});
   }
   closeEdit();
   renderOrdersTable(dispOrders);
