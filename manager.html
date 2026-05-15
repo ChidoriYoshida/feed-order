@@ -598,11 +598,11 @@ function onEFarmChange(){
   document.getElementById('e-tank').innerHTML='<option value="-">-(紙袋製品)</option>'+(TANK_MASTER[farm]||[]).map(function(t){return '<option value="'+t.no+'">'+t.no+'('+t.house+')</option>';}).join('');
   document.getElementById('e-brand').innerHTML=(BRAND_MASTER[farm]||[]).map(function(b){return '<option value="'+b+'">'+b+'</option>';}).join('');
 }
-function saveEdit(){
-  function closeEdit(){
+function closeEdit(){
   editingId=null;
   document.getElementById('edit-modal').style.display='none';
 }
+function saveEdit(){
   if(!editingId)return;
   var farm=document.getElementById('e-farm').value;
   var date=document.getElementById('e-date').value;
