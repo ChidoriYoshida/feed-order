@@ -497,7 +497,7 @@ function loadCalendar(){
     document.getElementById('cal-grid').innerHTML =
       '<div style="grid-column:1/-1;text-align:center;padding:20px;color:#c00;font-size:12px;">取得エラー</div>';
   };
-  script.src = GAS_URL+'?action=get&callback='+cbName;
+  script.src = GAS_URL+'?action=get_confirmed&callback='+cbName;
   document.body.appendChild(script);
 }
 
