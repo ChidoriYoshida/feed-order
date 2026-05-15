@@ -313,8 +313,8 @@ function renderOrdersTable(list){
       +'<td style="text-align:right;font-weight:600;">'+o.qty+'t</td>'
       +'<td style="text-align:center;"><span class="badge '+(o.additive==='yes'?'add-yes':'add-no')+'">'+(o.additive==='yes'?'有':'無')+'</span></td>'
       +'<td style="text-align:center;">'+(o.staff||'')+'</td>'
-      +'<td><button class="tbtn tbtn-blue" style="padding:4px 8px;font-size:11px;" onclick="editOrder('+o.id+')">編集</button></td>'
-      +'<td><button class="btn-del" onclick="deleteLocal('+o.id+')">x</button></td>'
+      +'<td><button class="tbtn tbtn-blue" style="padding:4px 8px;font-size:11px;" onclick="editOrder(\''+o.id+'\')"">編集</button></td>'
+      +'<td><button class="btn-del" onclick="deleteLocal(\''+o.id+'\')"">x</button></td>'
       +'</tr>';
   }).join('');
   updateKPI();
@@ -579,9 +579,9 @@ function viewArchive(i){
 }
 var editingId=null;
 function editOrder(id){
-  var o=allOrders.find(function(x){return x.id===id;});
+  var o=allOrders.find(function(x){return String(x.id)===String(id);});
   if(!o)return;
-  editingId=id;
+  editingId=String(id);
   document.getElementById('e-farm').value=o.farm;
   document.getElementById('e-date').value=o.date;
   document.getElementById('e-qty').value=o.qty;
@@ -608,11 +608,10 @@ function saveEdit(){
   var add=document.getElementById('e-add').value;
   if(!date||!brand||isNaN(qty)||qty<=0){showToast('全項目を入力してください');return;}
   var isBag=BAG_BRANDS.includes(brand);
-  var idx=allOrders.findIndex(function(x){return x.id===editingId;});
-  if(idx>=0){
+  var idx=allOrders.findIndex(function(x){return String(x.id)===String(editingId);});
     var updated={id:editingId,farm:farm,date:date,tank:tank,brand:brand,qty:qty,additive:add,isBag:isBag,staff:allOrders[idx].staff||''};
     allOrders[idx]=updated;
-    var di=dispOrders.findIndex(function(x){return x.id===editingId;});
+    var di=dispOrders.findIndex(function(x){return String(x.id)===String(editingId);});
     if(di>=0)dispOrders[di]=updated;
     gasCall('update',{order:{
   id:String(updated.id),
