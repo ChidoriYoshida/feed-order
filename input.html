@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('delivery-date').addEventListener('change', updateDateBand);
 
   document.getElementById('farm-chips').addEventListener('click', function(e){
-    var b = e.target.closest('.farm-chip'); if(!b) return;
+    var b = e.target; while(b && !b.classList.contains('farm-chip')){ b=b.parentElement; } if(!b) return;
     farmKey = b.dataset.farm;
     document.querySelectorAll('.farm-chip').forEach(function(x){ x.className='farm-chip'; });
     b.classList.add(FARMS[farmKey].cls);
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   document.getElementById('tank-grid').addEventListener('click', function(e){
-    var b = e.target.closest('.tank-btn'); if(!b) return;
+    var b = e.target; while(b && !b.classList.contains('tank-btn')){ b=b.parentElement; } if(!b) return;
     selTank = selTank===b.dataset.no ? null : b.dataset.no;
     document.querySelectorAll('.tank-btn').forEach(function(x){ x.classList.remove('active'); });
     if(selTank){
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   document.getElementById('brand-list').addEventListener('click', function(e){
-    var b = e.target.closest('.brand-btn'); if(!b) return;
+    var b = e.target; while(b && !b.classList.contains('brand-btn')){ b=b.parentElement; } if(!b) return;
     selBrand = selBrand===b.dataset.key ? null : b.dataset.key;
     document.querySelectorAll('.brand-btn').forEach(function(x){ x.classList.remove('active'); });
     if(selBrand) b.classList.add('active');
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   document.getElementById('qty-chips').addEventListener('click', function(e){
-    var b = e.target.closest('.qty-chip'); if(!b) return;
+    var b = e.target; while(b && !b.classList.contains('qty-chip')){ b=b.parentElement; } if(!b) return;
     selQty = parseFloat(b.dataset.qty);
     document.querySelectorAll('.qty-chip').forEach(function(x){ x.classList.remove('active'); });
     b.classList.add('active');
@@ -424,7 +424,7 @@ function renderOrders(){
     '</div>';
   }).join('');
   list.onclick = function(e){
-    var b = e.target.closest('.oi-del'); if(!b) return;
+   var b = e.target; while(b && !b.classList.contains('oi-del')){ b=b.parentElement; } if(!b) return; 
     var id = parseInt(b.dataset.id);
     orders = orders.filter(function(o){ return o.id!==id; });
     saveDraft(); renderOrders();
