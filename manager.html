@@ -252,6 +252,13 @@ function loadOrders(){
 }
 
 function parseDate(v){
+  var s=String(v||'').trim();
+  if(!s) return '';
+  s=s.replace(/\//g,'-');
+  var m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return m[1]+'-'+m[2]+'-'+m[3];
+  return s.substring(0,10);
+}
   var s=String(v||'');
   if(s.match(/^\d{4}-\d{2}-\d{2}$/))return s;
   if(s.match(/^\d{4}\/\d{2}\/\d{2}$/))return s.replace(/\//g,'-').substring(0,10);
