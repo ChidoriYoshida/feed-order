@@ -599,6 +599,10 @@ function onEFarmChange(){
   document.getElementById('e-brand').innerHTML=(BRAND_MASTER[farm]||[]).map(function(b){return '<option value="'+b+'">'+b+'</option>';}).join('');
 }
 function saveEdit(){
+  function closeEdit(){
+  editingId=null;
+  document.getElementById('edit-modal').style.display='none';
+}
   if(!editingId)return;
   var farm=document.getElementById('e-farm').value;
   var date=document.getElementById('e-date').value;
