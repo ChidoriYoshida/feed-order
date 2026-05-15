@@ -610,17 +610,17 @@ function saveEdit(){
   var isBag=BAG_BRANDS.includes(brand);
   var idx=allOrders.findIndex(function(x){return x.id===editingId;});
   if(idx>=0){
-    allOrders[idx]={id:editingId,farm:farm,date:date,tank:tank,brand:brand,qty:qty,additive:add,isBag:isBag,staff:allOrders[idx].staff||''};
+    var updated={id:editingId,farm:farm,date:date,tank:tank,brand:brand,qty:qty,additive:add,isBag:isBag,staff:allOrders[idx].staff||''};
+    allOrders[idx]=updated;
     var di=dispOrders.findIndex(function(x){return x.id===editingId;});
-    if(di>=0)dispOrders[di]=allOrders[idx];
+    if(di>=0)dispOrders[di]=updated;
+    gasCall('update',{order:updated},function(res){
+      if(res&&res.result==='success'){showToast('編集内容をスプレッドシートに保存しました');}
+      else{showToast('ローカルのみ更新しました');}
+    });
   }
   closeEdit();
   renderOrdersTable(dispOrders);
-  showToast('編集しました');
-}
-function closeEdit(){
-  editingId=null;
-  document.getElementById('edit-modal').style.display='none';
 }
 function gasCall(action,data,cb){
   var cbName='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
