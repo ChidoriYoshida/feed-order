@@ -449,7 +449,7 @@ function renderPlan(){
     return'<div class="truck-card">'
       +'<div class="truck-head">'
         +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-size:14px;font-weight:700;">運搬車 '+t.id+'</span>'+farmBadges+(t.mixed?'<span class="mixed-tag">混載</span>':'')+'</div>'
-        +'<div class="truck-meta"><span>納品日:'+fmtDate(t.date)+'</span><span class="rec-size">'+t.recSize+'t荷台</span><span>'+t.usedQty.toFixed(1)+'t/'+t.recSize+'t('+Math.round(pct)+'%)'+（over?'超過':'')+'</span></div>'
+       +'<div class="truck-meta"><span>納品日:'+fmtDate(t.date)+'</span><span class="rec-size">'+t.recSize+'t荷台</span><span>'+t.usedQty.toFixed(1)+'t/'+t.recSize+'t('+Math.round(pct)+'%)'+(over?'超過':'')+'</span></div>'
       +'</div>'
       +'<div class="bar-outer"><div class="bar-inner '+barCls+'" style="width:'+pct.toFixed(1)+'%"></div></div>'
       +'<table class="titbl"><thead><tr><th>農場</th><th>タンク</th><th>銘柄</th><th>数量</th><th>添加剤</th><th>担当</th></tr></thead>'
