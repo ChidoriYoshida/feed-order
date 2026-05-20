@@ -279,10 +279,8 @@ function loadOrders(){
         isBag:o['紙袋']==='紙袋'
       };
     }).filter(function(o){return o.farm&&o.brand&&o.qty>0;});
-    var existIds=new Set(allOrders.map(function(o){return o.id;}));
-    var newOnes=raw.filter(function(o){return!existIds.has(o.id);});
-    allOrders=allOrders.concat(newOnes);
-    dispOrders=allOrders.slice();
+   allOrders=raw;
+dispOrders=raw.slice();
     renderOrdersTable(dispOrders);
     updateKPI();
     showToast(newOnes.length+'件の注文を取得しました');
