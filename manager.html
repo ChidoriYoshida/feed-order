@@ -347,9 +347,14 @@ function renderOrdersTable(list){
 }
 
 function deleteLocal(id){
-  allOrders=allOrders.filter(function(o){return o.id!==String(id);});
-  dispOrders=dispOrders.filter(function(o){return o.id!==String(id);});
+  var sid=String(id);
+  allOrders=allOrders.filter(function(o){return o.id!==sid;});
+  dispOrders=dispOrders.filter(function(o){return o.id!==sid;});
   renderOrdersTable(dispOrders);updateKPI();
+  gasCall('delete_printed',{ids:[sid]},function(res){
+    if(res&&res.result==='success')showToast('削除しました');
+    else showToast('ローカルのみ削除しました');
+  });
 }
 
 function clearAll(){
