@@ -504,7 +504,7 @@ function renderSheetHTML(trucks,orders){
     }).join('');
     var totCols=ALL_BRANDS.map(function(b){
       var tot=rows.filter(function(o){return!o.isBag;}).reduce(function(s,o){return s+(o.brand===b?Number(o.qty):0);},0);
-      return'<td class="'+(tot?'qval':'')+'">'+（tot||'')+'</td>';
+      return'<td class="'+(tot?'qval':'')+'">'+(tot||'')+'</td>';
     }).join('');
     var emptyRows='<tr><td></td><td></td><td></td>'+ALL_BRANDS.map(function(){return'<td></td>';}).join('')+'<td></td></tr>'.repeat(3);
     if(pi>0)html+='<div class="os-sep">次のページ('+fmtDate(date)+')</div>';
