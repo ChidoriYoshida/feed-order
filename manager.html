@@ -498,7 +498,7 @@ function renderSheetHTML(trucks,orders){
         +'<td style="text-align:center;font-weight:700;">'+o.truck+'</td>'
         +'<td style="white-space:nowrap;font-size:8px;"><span style="border:1.5px solid '+(o.farm==='古井農場'?'#4472C4':o.farm==='第2農場'?'#7B66D6':'#ED7D31')+';border-radius:50%;padding:0 2px;">'+(o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第2':'第3')+'</span></td>'
         +'<td style="text-align:center;font-weight:600;">'+o.tank+'</td>'
-        +cols.map(function(v){return'<td class="'+(v?'qval':'')+'">'+（v||'')+'</td>';}).join('')
+        +cols.map(function(v){return'<td class="'+(v?'qval':'')+'">'+(v||'')+'</td>';}).join('')
         +'<td style="text-align:center;font-size:8px;">'+(o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span> 無':'有 <span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>')+'</td>'
         +'</tr>';
     }).join('');
