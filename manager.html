@@ -578,9 +578,10 @@ function loadArchive(){
     }
     window._archives=res.archives.slice().sort(function(a,b){return b.date.localeCompare(a.date);});
     document.getElementById('archive-list').innerHTML=window._archives.map(function(a,i){
-      var dp=String(a.date).split('-');
-      var d=new Date(parseInt(dp[0]),parseInt(dp[1])-1,parseInt(dp[2]));
-      var wd=['日','月','火','水','木','金','土'][d.getDay()];
+      var dateStr=String(a.date||'').substring(0,10);
+　　　var dp=dateStr.split('-');
+　　　var d=dp.length===3?new Date(parseInt(dp[0]),parseInt(dp[1])-1,parseInt(dp[2])):new Date();
+　　　var wd=['日','月','火','水','木','金','土'][d.getDay()];
       var wdColor=['#c0392b','#555','#555','#555','#555','#555','#185FA5'][d.getDay()];
       var dateLabel=(d.getMonth()+1)+'月'+d.getDate()+'日';
       var wdLabel='('+wd+')';
