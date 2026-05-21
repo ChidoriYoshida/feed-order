@@ -596,11 +596,12 @@ function loadArchive(){
       }catch(e){}
       /* 保存日時を日本語形式に */
       var savedStr=String(a.saved||'');
-      var savedFmt=savedStr.substring(0,16).replace('-','年').replace('-','月').replace(' ','日 ')+'分';
+      var savedD=new Date(savedStr);
+var savedFmt=isNaN(savedD)?savedStr:(savedD.getFullYear()+'年'+(savedD.getMonth()+1)+'月'+savedD.getDate()+'日 '+pad(savedD.getHours())+':'+pad(savedD.getMinutes()));
       /* 期限を日本語形式に */
       var expStr=String(a.expire||'');
-      var em=expStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
-      var expFmt=em?(em[1]+'年'+parseInt(em[2])+'月'+parseInt(em[3])+'日'):expStr;
+      var expD=new Date(expStr);
+var expFmt=isNaN(expD)?expStr:(expD.getFullYear()+'年'+(expD.getMonth()+1)+'月'+expD.getDate()+'日');
       return '<div class="arch-item" style="align-items:stretch;">'
         +'<div style="background:var(--navy);border-radius:8px;padding:10px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:80px;">'
           +'<div style="font-size:11px;color:#9bc;margin-bottom:2px;">配達日</div>'
