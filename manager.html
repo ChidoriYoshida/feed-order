@@ -230,7 +230,19 @@ table.ostbl .ototal .qval{color:#fff;}
   </div>
 </div>
   <script>
-var TANK_MASTER={
+/* パスワード保護 */
+(function(){
+  var PASS='Koifeed';
+  var stored=sessionStorage.getItem('auth');
+  if(stored===PASS)return;
+  var entered=prompt('パスワードを入力してください');
+  if(entered===PASS){
+    sessionStorage.setItem('auth',PASS);
+  } else {
+    document.body.innerHTML='<div style="text-align:center;padding:40px;font-family:sans-serif;"><p style="color:#c00;font-size:16px;">パスワードが違います。ページを再読み込みしてください。</p></div>';
+  }
+})();
+    var TANK_MASTER={
   '古井農場':[{no:'11',house:'育成'},{no:'12',house:'育成'},{no:'21',house:'母豚'},{no:'22',house:'母豚'},{no:'23',house:'母豚'},{no:'24',house:'母豚'},{no:'25',house:'母豚'},{no:'26',house:'母豚'},{no:'27',house:'母豚'},{no:'28',house:'母豚'},{no:'29',house:'母豚'},{no:'30',house:'母豚'},{no:'31',house:'分娩'},{no:'32',house:'分娩'},{no:'33',house:'分娩'},{no:'34',house:'分娩'},{no:'35',house:'分娩'},{no:'36',house:'分娩'},{no:'37',house:'分娩'},{no:'38',house:'分娩'},{no:'41',house:'子豚'},{no:'42',house:'子豚'},{no:'43',house:'子豚'},{no:'44',house:'子豚'}],
   '第2農場':[{no:'50',house:'201'},{no:'51',house:'202-203'},{no:'52',house:'204'},{no:'53',house:'205-206'},{no:'54',house:'207-208'},{no:'55',house:'209'},{no:'56',house:'210-211'},{no:'57',house:'212-213'},{no:'58',house:'214-215'},{no:'59',house:'216-217'}],
   '第3農場':[{no:'A-1',house:'301'},{no:'A-2',house:'301'},{no:'A-3',house:'302'},{no:'A-4',house:'302'},{no:'B-1',house:'303'},{no:'B-2',house:'303'},{no:'B-3',house:'304'},{no:'B-4',house:'304'},{no:'C-1',house:'305'},{no:'C-2',house:'305'},{no:'C-3',house:'306'},{no:'C-4',house:'306'},{no:'D-1',house:'307'},{no:'D-2',house:'307'},{no:'D-3',house:'308'},{no:'D-4',house:'308'},{no:'E-1',house:'309'},{no:'E-2',house:'309'},{no:'E-3',house:'310'},{no:'E-4',house:'310'},{no:'F-1',house:'311'},{no:'F-2',house:'311'},{no:'F-3',house:'312'},{no:'F-4',house:'312'}]
