@@ -261,7 +261,18 @@ function showTab(name){
   document.getElementById('tab-cal-btn').classList.toggle('active',   name==='cal');
   if(name==='cal' && !calLoaded){ loadCalendar(); }
 }
-
+/* パスワード保護 */
+(function(){
+  var PASS='Koifeed';
+  var stored=sessionStorage.getItem('auth');
+  if(stored===PASS)return;
+  var entered=prompt('パスワードを入力してください');
+  if(entered===PASS){
+    sessionStorage.setItem('auth',PASS);
+  } else {
+    document.body.innerHTML='<div style="text-align:center;padding:40px;font-family:sans-serif;"><p style="color:#c00;font-size:16px;">パスワードが違います。ページを再読み込みしてください。</p></div>';
+  }
+})();
 document.addEventListener('DOMContentLoaded', function(){
   var t = new Date();
   calYear = t.getFullYear(); calMonth = t.getMonth();
