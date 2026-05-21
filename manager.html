@@ -578,17 +578,15 @@ function loadArchive(){
     }
     window._archives=res.archives.slice().sort(function(a,b){return b.date.localeCompare(a.date);});
     document.getElementById('archive-list').innerHTML=window._archives.map(function(a,i){
-　　var dateStr=String(a.date||'');
-　　var d;
-　　var m=dateStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
-　　if(m){d=new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));}
-　　else{d=new Date(dateStr);}
-　　var dp=[d.getFullYear(),pad(d.getMonth()+1),pad(d.getDate())];
-　　　var wd=['日','月','火','水','木','金','土'][d.getDay()];
+      var dateStr=String(a.date||'');
+      var d;
+      var m=dateStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+      if(m){d=new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));}
+      else{d=new Date(dateStr);}
+      var wd=['日','月','火','水','木','金','土'][d.getDay()];
       var wdColor=['#c0392b','#555','#555','#555','#555','#555','#185FA5'][d.getDay()];
       var dateLabel=(d.getMonth()+1)+'月'+d.getDate()+'日';
-      var wdLabel='('+wd+')';
-      /* 注文件数・合計を集計 */
+      /* 件数・合計 */
       var cnt=0,qty=0;
       try{
         var payload=JSON.parse(a.payload);
@@ -596,23 +594,29 @@ function loadArchive(){
         cnt=orders.length;
         qty=orders.reduce(function(s,o){return s+Number(o.qty);},0);
       }catch(e){}
+      /* 保存日時を日本語形式に */
+      var savedStr=String(a.saved||'');
+      var savedFmt=savedStr.substring(0,16).replace('-','年').replace('-','月').replace(' ','日 ')+'分';
+      /* 期限を日本語形式に */
+      var expStr=String(a.expire||'');
+      var em=expStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+      var expFmt=em?(em[1]+'年'+parseInt(em[2])+'月'+parseInt(em[3])+'日'):expStr;
       return '<div class="arch-item" style="align-items:stretch;">'
         +'<div style="background:var(--navy);border-radius:8px;padding:10px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:80px;">'
           +'<div style="font-size:11px;color:#9bc;margin-bottom:2px;">配達日</div>'
-          +'<div style="font-size:18px;font-weight:700;color:#fff;line-height:1.2;">'+dateLabel+'</div>'
-          +'<div style="font-size:14px;font-weight:700;color:'+wdColor+';background:#fff;border-radius:4px;padding:1px 8px;margin-top:4px;">'+wdLabel+'</div>'
+          +'<div style="font-size:20px;font-weight:700;color:#fff;line-height:1.2;">'+dateLabel+'</div>'
+          +'<div style="font-size:14px;font-weight:700;color:'+wdColor+';background:#fff;border-radius:4px;padding:1px 8px;margin-top:4px;">('+wd+')</div>'
         +'</div>'
-        +'<div style="flex:1;padding:0 4px;">'
-          +'<div style="font-size:12px;color:var(--muted);margin-bottom:4px;">注文 '+cnt+'件 / 合計 '+qty.toFixed(1)+'t</div>'
-          +'<div style="font-size:11px;color:var(--muted);">保存: '+String(a.saved).substring(0,16)+'</div>'
-          +'<div style="font-size:11px;color:var(--muted);">期限: '+a.expire+'</div>'
+        +'<div style="flex:1;padding:0 12px;">'
+          +'<div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;">注文 '+cnt+'件 / 合計 '+qty.toFixed(1)+'t</div>'
+          +'<div style="font-size:11px;color:var(--muted);">保存日時: '+savedFmt+'</div>'
+          +'<div style="font-size:11px;color:var(--muted);">保存期限: '+expFmt+'</div>'
         +'</div>'
-        +'<button class="arch-btn" onclick="viewArchive('+i+')" style="align-self:center;">表示・印刷</button>'
+        +'<button class="arch-btn" onclick="viewArchive('+i+')" style="align-self:center;white-space:nowrap;">表示・印刷</button>'
         +'</div>';
     }).join('');
   });
 }
-
 function viewArchive(i){
   var a=window._archives[i];if(!a)return;
   try{
