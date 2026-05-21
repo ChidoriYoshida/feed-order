@@ -578,9 +578,12 @@ function loadArchive(){
     }
     window._archives=res.archives.slice().sort(function(a,b){return b.date.localeCompare(a.date);});
     document.getElementById('archive-list').innerHTML=window._archives.map(function(a,i){
-      var dateStr=String(a.date||'').substring(0,10);
-　　　var dp=dateStr.split('-');
-　　　var d=dp.length===3?new Date(parseInt(dp[0]),parseInt(dp[1])-1,parseInt(dp[2])):new Date();
+　　var dateStr=String(a.date||'');
+　　var d;
+　　var m=dateStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+　　if(m){d=new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));}
+　　else{d=new Date(dateStr);}
+　　var dp=[d.getFullYear(),pad(d.getMonth()+1),pad(d.getDate())];
 　　　var wd=['日','月','火','水','木','金','土'][d.getDay()];
       var wdColor=['#c0392b','#555','#555','#555','#555','#555','#185FA5'][d.getDay()];
       var dateLabel=(d.getMonth()+1)+'月'+d.getDate()+'日';
