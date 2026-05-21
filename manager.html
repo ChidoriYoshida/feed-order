@@ -568,13 +568,42 @@ function printAndArchive(){
 function loadArchive(){
   document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">読み込み中...</div>';
   gasCall('get_archive',null,function(res){
-    if(!res||!res.archives){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">取得エラー</div>';return;}
-    if(!res.archives.length){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">保存された注文書はありません</div>';return;}
+    if(!res||!res.archives){
+      document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">取得エラー</div>';
+      return;
+    }
+    if(!res.archives.length){
+      document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">保存された注文書はありません</div>';
+      return;
+    }
     window._archives=res.archives.slice().sort(function(a,b){return b.date.localeCompare(a.date);});
     document.getElementById('archive-list').innerHTML=window._archives.map(function(a,i){
-      return'<div class="arch-item">'
-        +'<div><div class="arch-main">配達日:'+a.date+'</div><div class="arch-sub">保存:'+a.saved+' / 期限:'+a.expire+'</div></div>'
-        +'<button class="arch-btn" onclick="viewArchive('+i+')">表示</button>'
+      var dp=String(a.date).split('-');
+      var d=new Date(parseInt(dp[0]),parseInt(dp[1])-1,parseInt(dp[2]));
+      var wd=['日','月','火','水','木','金','土'][d.getDay()];
+      var wdColor=['#c0392b','#555','#555','#555','#555','#555','#185FA5'][d.getDay()];
+      var dateLabel=(d.getMonth()+1)+'月'+d.getDate()+'日';
+      var wdLabel='('+wd+')';
+      /* 注文件数・合計を集計 */
+      var cnt=0,qty=0;
+      try{
+        var payload=JSON.parse(a.payload);
+        var orders=payload.orders||[];
+        cnt=orders.length;
+        qty=orders.reduce(function(s,o){return s+Number(o.qty);},0);
+      }catch(e){}
+      return '<div class="arch-item" style="align-items:stretch;">'
+        +'<div style="background:var(--navy);border-radius:8px;padding:10px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:80px;">'
+          +'<div style="font-size:11px;color:#9bc;margin-bottom:2px;">配達日</div>'
+          +'<div style="font-size:18px;font-weight:700;color:#fff;line-height:1.2;">'+dateLabel+'</div>'
+          +'<div style="font-size:14px;font-weight:700;color:'+wdColor+';background:#fff;border-radius:4px;padding:1px 8px;margin-top:4px;">'+wdLabel+'</div>'
+        +'</div>'
+        +'<div style="flex:1;padding:0 4px;">'
+          +'<div style="font-size:12px;color:var(--muted);margin-bottom:4px;">注文 '+cnt+'件 / 合計 '+qty.toFixed(1)+'t</div>'
+          +'<div style="font-size:11px;color:var(--muted);">保存: '+String(a.saved).substring(0,16)+'</div>'
+          +'<div style="font-size:11px;color:var(--muted);">期限: '+a.expire+'</div>'
+        +'</div>'
+        +'<button class="arch-btn" onclick="viewArchive('+i+')" style="align-self:center;">表示・印刷</button>'
         +'</div>';
     }).join('');
   });
