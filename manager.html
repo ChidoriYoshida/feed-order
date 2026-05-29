@@ -118,7 +118,8 @@ table.os-bag-tbl thead th{background:#D6E8F7;font-weight:700;}
   .toolbar,.tab-bar,#tab-orders,#tab-plan,#tab-archive,.no-print{display:none!important;}
   body{background:#fff;}
   #tab-sheet{display:block!important;}
-  .os-page{margin:0;box-shadow:none;padding:8mm 10mm;width:100%;page-break-after:always;}
+  .os-page{margin:0;box-shadow:none;padding:8mm 10mm;width:100%;}
+.os-page:not(:last-child){page-break-after:always;}
   .os-sep{display:none!important;}
   @page{size:A4 landscape;margin:0;}
 }
@@ -564,7 +565,7 @@ function renderPlan(){
 function buildSheet(){
   if(!plan.length){showToast('先に配車計画を作成してください');return;}
   document.getElementById('sheet-wrap').innerHTML=renderSheetHTML(plan,dispOrders);
-  showToast([...new Set(plan.map(function(t){return t.date;}))].length+'日分の注文書を作成しました');
+  showToast([...new Set(plan.map(function(t){return t.date;}))].lengthshowToast('注文書を作成しました');
 }
 
 function renderSheetHTML(trucks,orders){
