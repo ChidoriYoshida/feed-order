@@ -494,13 +494,15 @@ if(parts.length===3){
         var f = String(o['\u8fb2\u5834']||'');
         if(s && f){
           calOrders.push({
-            date:s, farm:f,
-            tank:String(o['\u30bf\u30f3\u30af']||''),
-            brand:String(o['\u9285\u67c4']||''),
-            qty:parseFloat(o['\u6570\u91cf(t)'])||0,
-            additive:o['\u6dfb\u52a0\u5264']==='\u6709'?'yes':'no',
-            staff:String(o['\u62c5\u5f53\u8005']||'')
-          });
+  date:s,
+  farm:String(o['\u8fb2\u5834']||''),
+  tank:String(o['\u30bf\u30f3\u30af']||''),
+  brand:String(o['\u9285\u67c4']||''),
+  qty:parseFloat(o['\u6570\u91cf(t)'])||0,
+  additive:o['\u6dfb\u52a0\u5264']==='\u6709'?'yes':'no',
+  staff:String(o['\u62c5\u5f53\u8005']||''),
+  confirmed:String(o['\u78ba\u5b9a\u6e08\u307f']||'')==='\u78ba\u5b9a'
+});
         }
       }
     }
@@ -594,10 +596,13 @@ function showDetail(dateStr){
     var isDup = o.tank && tankCount[o.tank]>1;
     var fk = Object.keys(FARMS).find(function(k){ return FARMS[k].label===o.farm; }) || 'furukami';
     var bc = FARMS[fk].badge;
-    return '<div class="det-row">'+
+   var confirmedBadge=o.confirmed
+      ?'<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定済み</span>'
+      :'<span style="background:#E67E22;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">未確定</span>';
+    return '<div class="det-row" style="border-left:3px solid '+(o.confirmed?'#1D9E75':'#E67E22')+';padding-left:8px;">'+
       '<span class="badge '+bc+'">'+o.farm+'</span>'+
       '<div class="det-info">'+
-        '<div class="det-tank">タンク '+o.tank+(isDup?' <span style="color:#c00;font-size:10px;">重複</span>':'')+'</div>'+
+        '<div class="det-tank">タンク '+o.tank+(isDup?' <span style="color:#c00;font-size:10px;">重複</span>':'')+confirmedBadge+'</div>'+
         '<div class="det-brand">'+o.brand+' / '+o.staff+'</div>'+
       '</div>'+
       '<div>'+
