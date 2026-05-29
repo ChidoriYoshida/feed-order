@@ -313,6 +313,7 @@ function loadOrders(){
         qty:qty,
         unit:isBagItem?'袋':'t',
         additive:o['添加剤']==='有'?'yes':'no',
+        unit:isBagItem?'袋':'t',
         isBag:isBagItem
       };
     }).filter(function(o){return o.farm&&o.brand&&o.qty>0;});
