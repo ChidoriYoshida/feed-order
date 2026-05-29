@@ -576,7 +576,7 @@ function renderPlan(){
 function buildSheet(){
   if(!plan.length){showToast('先に配車計画を作成してください');return;}
   document.getElementById('sheet-wrap').innerHTML=renderSheetHTML(plan,dispOrders);
-  showToast([...new Set(plan.map(function(t){return t.date;}))].lengthshowToast('注文書を作成しました');
+  showToast('注文書を作成しました');
 }
 
 function renderSheetHTML(trucks,orders){
