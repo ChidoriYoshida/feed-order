@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0049)file:///C:/Users/hikoc/Downloads/input%20(2).html -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>飼料注文 入力</title>
 <style>
@@ -123,14 +123,14 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
   <div class="app-bar-sub">ひこちゃん牧場 古井農場</div>
 </div>
 <div class="tab-bar">
-  <div class="tab-item active" id="tab-input-btn" onclick="showTab('input')">注文入力</div>
-  <div class="tab-item" id="tab-cal-btn" onclick="showTab('cal')">カレンダー</div>
+  <div class="tab-item active" id="tab-input-btn" onclick="showTab(&#39;input&#39;)">注文入力</div>
+  <div class="tab-item" id="tab-cal-btn" onclick="showTab(&#39;cal&#39;)">カレンダー</div>
 </div>
 <div id="tab-input">
 <div class="card">
   <div class="card-lbl">配送希望日</div>
   <div class="field"><input type="date" id="delivery-date"></div>
-  <div class="date-band" id="date-band">日付を選択してください</div>
+  <div class="date-band" id="date-band">6月3日(水)の配送</div>
 </div>
 <div class="card">
   <div class="card-lbl">担当者名</div>
@@ -141,24 +141,24 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
   <div class="field">
     <label>農場</label>
     <div class="farm-chips" id="farm-chips">
-      <button class="farm-chip sel-furukami" data-farm="furukami">古井</button>
-      <button class="farm-chip" data-farm="dai2">第2</button>
+      <button class="farm-chip" data-farm="furukami">古井</button>
+      <button class="farm-chip sel-dai2" data-farm="dai2">第2</button>
       <button class="farm-chip" data-farm="dai3">第3</button>
     </div>
   </div>
   <div class="field" id="field-tank">
     <label>タンク番号</label>
-    <div class="tank-grid" id="tank-grid"></div>
+    <div class="tank-grid" id="tank-grid"><button class="tank-btn" data-no="50" data-house="201">50<br><span style="font-size:9px;opacity:.7">201</span></button><button class="tank-btn" data-no="51" data-house="202-3">51<br><span style="font-size:9px;opacity:.7">202-3</span></button><button class="tank-btn" data-no="52" data-house="204">52<br><span style="font-size:9px;opacity:.7">204</span></button><button class="tank-btn" data-no="53" data-house="205-6">53<br><span style="font-size:9px;opacity:.7">205-6</span></button><button class="tank-btn" data-no="54" data-house="207-8">54<br><span style="font-size:9px;opacity:.7">207-8</span></button><button class="tank-btn" data-no="55" data-house="209">55<br><span style="font-size:9px;opacity:.7">209</span></button><button class="tank-btn" data-no="56" data-house="210-1">56<br><span style="font-size:9px;opacity:.7">210-1</span></button><button class="tank-btn" data-no="57" data-house="212-3">57<br><span style="font-size:9px;opacity:.7">212-3</span></button><button class="tank-btn" data-no="58" data-house="214-5">58<br><span style="font-size:9px;opacity:.7">214-5</span></button><button class="tank-btn" data-no="59" data-house="216-7">59<br><span style="font-size:9px;opacity:.7">216-7</span></button></div>
     <div class="err-msg" id="err-tank">タンクを選択してください</div>
   </div>
   <div class="field">
     <label>飼料銘柄</label>
-    <div class="brand-list" id="brand-list"></div>
+    <div class="brand-list" id="brand-list"><button class="brand-btn" data-key="シンサウメイク" data-bag="0">シンサウメイク </button><button class="brand-btn" data-key="たから20PL" data-bag="0">たから20PL </button><button class="brand-btn" data-key="たから40PL" data-bag="0">たから40PL </button><button class="brand-btn" data-key="たから70PL" data-bag="0">たから70PL </button></div>
     <div class="err-msg" id="err-brand">銘柄を選択してください</div>
   </div>
   <div class="field" id="field-qty">
     <label id="qty-label">数量（t）</label>
-    <div class="qty-chips" id="qty-chips">
+    <div class="qty-chips" id="qty-chips" style="display: flex;">
       <button class="qty-chip" data-qty="1">1</button>
       <button class="qty-chip" data-qty="2">2</button>
       <button class="qty-chip" data-qty="3">3</button>
@@ -181,7 +181,7 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
 <div class="card">
   <div class="card-lbl">入力済み <span id="order-count"></span></div>
   <div id="order-list"><div class="empty-lbl">まだ注文がありません</div></div>
-  <div id="send-wrap" style="display:none;">
+  <div id="send-wrap" style="display: none;">
     <button class="btn-send" id="btn-send">注文担当者へ送信</button>
   </div>
 </div>
@@ -214,7 +214,7 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
   </div>
 </div>
 </div>
-<div id="toast"></div>
+<div id="toast" class="">1件を送信しました</div>
 <script>
 /* パスワード保護 */
 (function(){
@@ -424,6 +424,7 @@ function renderBrands(){
       if(btn)btn.classList.add('active');
     },10);
   }
+}
 
 function setAdd(v){
   selAdd=v;
@@ -702,7 +703,6 @@ function showDetail(dateStr){
     +'</div>'
     +limitHTML+warnHTML+bulkRows+bagRows+memoHTML;
 }
-}
 
 function renderPrevNext(){
   var today=new Date();
@@ -735,5 +735,6 @@ function toast(msg){
   toastTimer=setTimeout(function(){el.classList.remove('show');},2400);
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
