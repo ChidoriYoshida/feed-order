@@ -424,11 +424,6 @@ function renderBrands(){
       if(btn)btn.classList.add('active');
     },10);
   }
-}
-    return '<button class="brand-btn'+(selBrand===b.key?' active':'')+'" data-key="'+b.key+'" data-bag="'+(b.bag?1:0)+'">'+
-      b.key+(b.bag?'<span class="bag-tag">紙袋</span>':'')+' </button>';
-  }).join('');
-}
 
 function setAdd(v){
   selAdd=v;
