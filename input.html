@@ -228,7 +228,33 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
     document.body.innerHTML='<div style="text-align:center;padding:40px;font-family:sans-serif;"><p style="color:#c00;font-size:16px;">パスワードが違います。ページを再読み込みしてください。</p></div>';
   }
 })();
-
+var TANK_BRAND_LIMIT={
+  '11':['シンサウメイク'],
+  '12':['シンサウメイク'],
+  '21':['たから母豚'],
+  '22':['たから母豚'],
+  '23':['たから母豚'],
+  '24':['たから母豚'],
+  '25':['たから母豚'],
+  '26':['たから母豚'],
+  '27':['たから母豚'],
+  '28':['たから母豚'],
+  '29':['たから母豚'],
+  '30':['たから母豚'],
+  '31':['たから授乳'],
+  '32':['たから授乳'],
+  '33':['たから授乳'],
+  '34':['たから授乳'],
+  '35':['たから授乳'],
+  '36':['たから授乳'],
+  '37':['たから授乳'],
+  '38':['たから授乳'],
+  '41':['たから12','たから20PL'],
+  '42':['たから12','たから20PL'],
+  '43':['たから12','たから20PL'],
+  '44':['たから12','たから20PL'],
+  '50':['シンサウメイク']
+};
 var FARMS={
   furukami:{label:'古井農場',badge:'bf0',dot:'d0',cls:'sel-furukami',
     tanks:[{no:'11',house:'育成'},{no:'12',house:'育成'},{no:'21',house:'母豚'},{no:'22',house:'母豚'},{no:'23',house:'母豚'},{no:'24',house:'母豚'},{no:'25',house:'母豚'},{no:'26',house:'母豚'},{no:'27',house:'母豚'},{no:'28',house:'母豚'},{no:'29',house:'母豚'},{no:'30',house:'母豚'},{no:'31',house:'分娩'},{no:'32',house:'分娩'},{no:'33',house:'分娩'},{no:'34',house:'分娩'},{no:'35',house:'分娩'},{no:'36',house:'分娩'},{no:'37',house:'分娩'},{no:'38',house:'分娩'},{no:'41',house:'子豚'},{no:'42',house:'子豚'},{no:'43',house:'子豚'},{no:'44',house:'子豚'}],
@@ -385,7 +411,20 @@ function renderTanks(){
 
 function renderBrands(){
   var brands=FARMS[farmKey].brands;
-  document.getElementById('brand-list').innerHTML=brands.map(function(b){
+  var limit=selTank?TANK_BRAND_LIMIT[selTank]:null;
+  var filtered=limit?brands.filter(function(b){return limit.indexOf(b.key)>=0;}):brands;
+  document.getElementById('brand-list').innerHTML=filtered.map(function(b){
+    return '<button class="brand-btn'+(selBrand===b.key?' active':'')+'" data-key="'+b.key+'" data-bag="'+(b.bag?1:0)+'">'+
+      b.key+(b.bag?'<span class="bag-tag">紙袋</span>':'')+' </button>';
+  }).join('');
+  if(limit&&filtered.length===1&&!selBrand){
+    selBrand=filtered[0].key;
+    setTimeout(function(){
+      var btn=document.querySelector('.brand-btn');
+      if(btn)btn.classList.add('active');
+    },10);
+  }
+}
     return '<button class="brand-btn'+(selBrand===b.key?' active':'')+'" data-key="'+b.key+'" data-bag="'+(b.bag?1:0)+'">'+
       b.key+(b.bag?'<span class="bag-tag">紙袋</span>':'')+' </button>';
   }).join('');
