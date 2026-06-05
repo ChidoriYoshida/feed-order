@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///C:/Users/hikoc/Downloads/manager%20(23).html -->
+<!-- saved from url=(0052)file:///C:/Users/hikoc/Downloads/manager%20(28).html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -185,10 +185,8 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:9px;}
   <h1>🚛 飼料注文 管理システム</h1>
   <button class="tbtn tbtn-green" id="btn-load" onclick="loadOrders()">🔄 注文を取得</button>
   <button class="tbtn tbtn-blue" id="btn-plan" onclick="runOptimize()">⚡ 配車計画</button>
-  <button class="tbtn tbtn-gray" id="btn-farmmode" onclick="toggleFarmMode()" title="農場優先モード：同じ農場をできるだけ同じトラックにまとめます">🏠 農場優先: OFF</button>
   <button class="tbtn tbtn-blue" id="btn-sheet" onclick="buildSheet();switchTab(&#39;sheet&#39;)" disabled="">📄 注文書作成</button>
   <button class="tbtn tbtn-orange" onclick="printAndArchive()">🖨 印刷・完了</button>
-  <button class="tbtn" id="btn-sinsa-sheet" onclick="buildSinsaSheet();switchTab(&#39;sheet&#39;)" disabled="" style="background:#7B3FA0;color:#fff;">🟣 中部飼料注文書</button>
   <button class="tbtn tbtn-gray" onclick="switchTab(&#39;archive&#39;);loadArchive()">📁 過去の注文書</button>
 </div>
 <div class="tab-bar no-print">
@@ -564,19 +562,7 @@ function manualAdd(){
   renderOrdersTable(dispOrders);updateKPI();showToast('追加しました');
 }
 
-var farmModeOn=false;
-function toggleFarmMode(){
-  farmModeOn=!farmModeOn;
-  var btn=document.getElementById('btn-farmmode');
-  if(farmModeOn){
-    btn.textContent='🏠 農場優先: ON';
-    btn.style.background='#1D9E75';btn.style.color='#fff';
-  }else{
-    btn.textContent='🏠 農場優先: OFF';
-    btn.style.background='';btn.style.color='';
-    btn.className='tbtn tbtn-gray';
-  }
-}
+var farmModeOn=true;
 
 function runOptimize(){
   if(!dispOrders.length){showToast('表示中の注文がありません');return;}
@@ -682,7 +668,6 @@ function runOptimize(){
   plan=trucks;
   renderPlan();
   document.getElementById('btn-sheet').disabled=false;
-  document.getElementById('btn-sinsa-sheet').disabled=false;
   switchTab('plan');
 }
 
@@ -905,42 +890,13 @@ function printAndArchive(){
 
   if(sinsaSnap.length>0){
     var sinsaHtml=renderSinsaSheetHTML(sinsaSnap);
-    var sinsaCSS='*{box-sizing:border-box;font-family:"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;}'
-      +'body{background:#fff;margin:0;padding:0;}'
-      +'.sinsa-page{width:100%;margin:0;padding:0;}'
-      +'.sinsa-header{display:grid;grid-template-columns:30mm 1fr 38mm;align-items:start;margin-bottom:2mm;gap:2mm;}'
-      +'.sinsa-no{font-size:11px;font-weight:700;}.sinsa-no-val{border-bottom:1.5px solid #000;padding:0 6px;font-size:12px;}'
-      +'.sinsa-titles{text-align:center;}.sinsa-company{font-size:13px;font-weight:700;}.sinsa-doctitle{font-size:11px;font-weight:700;}'
-      +'.sinsa-right{text-align:right;}.sinsa-issue-date{font-size:12px;font-weight:700;}'
-      +'.sinsa-fax{font-size:8px;color:#444;margin-bottom:2mm;}.sinsa-delivery{display:flex;align-items:center;gap:3mm;margin-bottom:2mm;}'
-      +'.sinsa-dlabel{font-size:11px;font-weight:700;border:1.5px solid #000;padding:1px 3px;}.sinsa-ddate{font-size:13px;font-weight:700;}'
-      +'.sinsa-unit{margin-left:auto;font-size:9px;font-weight:600;}'
-      +'table.sinsa-tbl{width:100%;border-collapse:collapse;font-size:9px;}'
-      +'table.sinsa-tbl th,table.sinsa-tbl td{border:1px solid #666;text-align:center;padding:2px 3px;vertical-align:middle;}'
-      +'table.sinsa-tbl thead th{background:#555;color:#fff;font-size:8px;line-height:1.3;}'
-      +'.sinsa-farm-col{width:14mm;}.sinsa-tank-col{width:16mm;}.sinsa-col{width:18mm;}.sinsa-add-col{width:14mm;}'
-      +'td.sinsa-farm{font-size:8px;font-weight:600;}td.sinsa-tank{font-size:9px;font-weight:700;}'
-      +'td.sinsa-qty{font-size:11px;font-weight:700;}td.sinsa-add{font-size:8px;}'
-      +'.sinsa-circle{border:1.5px solid #000;border-radius:50%;padding:0 2px;display:inline-block;}'
-      +'tr.sinsa-total td{background:#555;color:#fff;font-weight:700;font-size:9px;}'
-      +'.sinsa-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:3mm;}'
-      +'.sinsa-contact{font-size:9px;}.sinsa-signs{display:grid;grid-template-columns:repeat(3,24mm);}'
-      +'.sinsa-sign-box .sinsa-sh{background:#555;color:#fff;text-align:center;padding:1px;font-size:7px;font-weight:700;}'
-      +'.sinsa-sign-box .sinsa-sb{height:10mm;border:1px solid #999;}'
-      +'.sinsa-sign-box .sinsa-sf{background:#f0f0f0;text-align:center;font-size:7px;color:#bbb;border:1px solid #bbb;border-top:none;}'
-      +'@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}'
-      +'.sinsa-page{margin:0;padding:0;width:100%;}.sinsa-page:not(:last-child){page-break-after:always;}'
-      +'table.sinsa-tbl thead th{background:#000!important;color:#fff!important;}'
-      +'tr.sinsa-total td{background:#000!important;color:#fff!important;}'
-      +'.sinsa-sign-box .sinsa-sh{background:#000!important;color:#fff!important;}'
-      +'@page{size:A4 landscape;margin:15mm 10mm 10mm 20mm;}}';
-    /* 中部飼料HTMLをdata URIで埋め込む */
-    var sinsaPage='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>中部飼料注文書</title>'
-      +'<style>'+sinsaCSS+'</style>'
+    var sinsaEncoded=encodeURIComponent(
+      '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>中部飼料注文書</title>'
+      +'<style>'+getSinsaCSS()+'</style>'
       +'</head><body onload="window.print()">'
       +sinsaHtml
-      +'</body></html>';
-    var sinsaEncoded=encodeURIComponent(sinsaPage);
+      +'</body></html>'
+    );
     /* 南九州ウィンドウに「中部飼料を印刷」ボタンを設置 */
     w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書</title>'+style
       +'<style>.os-page{margin:12px auto;}.no-print{display:none;}'
@@ -971,23 +927,15 @@ function printAndArchive(){
   renderOrdersTable([]);updateKPI();
   document.getElementById('sheet-wrap').innerHTML='';
   document.getElementById('btn-sheet').disabled=true;
-  document.getElementById('btn-sinsa-sheet').disabled=true;
   switchTab('orders');
   showToast('完了！'+(sinsaSnap.length>0?'中部飼料注文書も別ウィンドウで開きました。':'')+'過去の注文書はアーカイブで確認できます。');
 }
 
-function printSinsaArchive(){
-  var sinsaOrders=dispOrders.filter(function(o){return o.brand==='シンサウメイク'&&!o.isBag;});
-  if(!sinsaOrders.length){showToast('シンサウメイクの注文がありません');return;}
-  var html=renderSinsaSheetHTML(sinsaOrders);
-  var w=window.open('','_blank');
-  w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'
-    +'<title>中部飼料注文書</title>'
-    +'<style>'
-    +'*{box-sizing:border-box;font-family:"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;}'
+function getSinsaCSS(){
+  return '*{box-sizing:border-box;font-family:"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;}'
     +'body{background:#fff;margin:0;padding:8px;}'
     +'.no-print{display:none;}'
-    +'.sinsa-page{width:100%;margin:0;background:#fff;padding:0;}'
+    +'.sinsa-page{width:257mm;margin:12px auto;background:#fff;padding:6mm 8mm;}'
     +'.sinsa-header{display:grid;grid-template-columns:30mm 1fr 38mm;align-items:start;margin-bottom:2mm;gap:2mm;}'
     +'.sinsa-no{font-size:11px;font-weight:700;}'
     +'.sinsa-no-val{border-bottom:1.5px solid #000;padding:0 6px;font-size:12px;}'
@@ -1003,31 +951,41 @@ function printSinsaArchive(){
     +'.sinsa-unit{margin-left:auto;font-size:9px;font-weight:600;}'
     +'table.sinsa-tbl{width:100%;border-collapse:collapse;font-size:9px;}'
     +'table.sinsa-tbl th,table.sinsa-tbl td{border:1px solid #666;text-align:center;padding:2px 3px;vertical-align:middle;}'
-    +'table.sinsa-tbl thead th{background:#555;color:#fff;font-size:8px;line-height:1.3;}'
+    +'table.sinsa-tbl thead th{background:#7B3FA0;color:#fff;font-size:8px;line-height:1.3;}'
     +'.sinsa-farm-col{width:14mm;}.sinsa-tank-col{width:16mm;}.sinsa-col{width:18mm;}.sinsa-add-col{width:14mm;}'
     +'td.sinsa-farm{font-size:8px;font-weight:600;}'
     +'td.sinsa-tank{font-size:9px;font-weight:700;}'
-    +'td.sinsa-qty{font-size:11px;font-weight:700;}'
+    +'td.sinsa-qty{font-size:11px;font-weight:700;color:#4A007A;}'
     +'td.sinsa-add{font-size:8px;}'
     +'.sinsa-circle{border:1.5px solid #000;border-radius:50%;padding:0 2px;display:inline-block;}'
-    +'tr.sinsa-total td{background:#555;color:#fff;font-weight:700;font-size:9px;}'
+    +'tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:9px;}'
     +'.sinsa-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:3mm;}'
     +'.sinsa-contact{font-size:9px;}'
     +'.sinsa-signs{display:grid;grid-template-columns:repeat(3,24mm);gap:0;}'
-    +'.sinsa-sign-box .sinsa-sh{background:#555;color:#fff;text-align:center;padding:1px;font-size:7px;font-weight:700;}'
+    +'.sinsa-sign-box .sinsa-sh{background:#7B3FA0;color:#fff;text-align:center;padding:1px;font-size:7px;font-weight:700;}'
     +'.sinsa-sign-box .sinsa-sb{height:10mm;border:1px solid #999;}'
     +'.sinsa-sign-box .sinsa-sf{background:#f0f0f0;text-align:center;font-size:7px;color:#bbb;border:1px solid #bbb;border-top:none;}'
     +'@media print{'
     +'*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}'
     +'.no-print{display:none!important;}'
-    +'.sinsa-page{margin:0;padding:0;width:100%;box-shadow:none;}'
+    +'.sinsa-page{margin:0;padding:6mm 8mm;width:100%;box-shadow:none;}'
     +'.sinsa-page:not(:last-child){page-break-after:always;}'
     +'table.sinsa-tbl thead th{background:#000!important;color:#fff!important;}'
     +'tr.sinsa-total td{background:#000!important;color:#fff!important;}'
+    +'td.sinsa-qty{color:#000!important;}'
     +'.sinsa-sign-box .sinsa-sh{background:#000!important;color:#fff!important;}'
     +'@page{size:A4 landscape;margin:15mm 10mm 10mm 20mm;}'
-    +'}'
-    +'</style>'
+    +'}';
+}
+
+function printSinsaArchive(){
+  var sinsaOrders=dispOrders.filter(function(o){return o.brand==='シンサウメイク'&&!o.isBag;});
+  if(!sinsaOrders.length){showToast('シンサウメイクの注文がありません');return;}
+  var html=renderSinsaSheetHTML(sinsaOrders);
+  var w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'
+    +'<title>中部飼料注文書</title>'
+    +'<style>'+getSinsaCSS()+'</style>'
     +'</head><body onload="window.print()">'
     +html
     +'</body></html>');
@@ -1095,39 +1053,10 @@ function viewArchive(i){
     if(isSinsa){
       /* 中部飼料注文書として表示 */
       var sinsaHtml=renderSinsaSheetHTML(orders);
-      var sinsaCSS='*{box-sizing:border-box;font-family:"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;}'
-        +'body{background:#fff;margin:0;padding:0;}'
-        +'.sinsa-page{width:100%;margin:0;padding:0;}'
-        +'.sinsa-header{display:grid;grid-template-columns:30mm 1fr 38mm;align-items:start;margin-bottom:2mm;gap:2mm;}'
-        +'.sinsa-no{font-size:11px;font-weight:700;}.sinsa-no-val{border-bottom:1.5px solid #000;padding:0 6px;font-size:12px;}'
-        +'.sinsa-titles{text-align:center;}.sinsa-company{font-size:13px;font-weight:700;}.sinsa-doctitle{font-size:11px;font-weight:700;}'
-        +'.sinsa-right{text-align:right;}.sinsa-issue-date{font-size:12px;font-weight:700;}'
-        +'.sinsa-fax{font-size:8px;color:#444;margin-bottom:2mm;}.sinsa-delivery{display:flex;align-items:center;gap:3mm;margin-bottom:2mm;}'
-        +'.sinsa-dlabel{font-size:11px;font-weight:700;border:1.5px solid #000;padding:1px 3px;}.sinsa-ddate{font-size:13px;font-weight:700;}'
-        +'.sinsa-unit{margin-left:auto;font-size:9px;font-weight:600;}'
-        +'table.sinsa-tbl{width:100%;border-collapse:collapse;font-size:9px;}'
-        +'table.sinsa-tbl th,table.sinsa-tbl td{border:1px solid #666;text-align:center;padding:2px 3px;vertical-align:middle;}'
-        +'table.sinsa-tbl thead th{background:#555;color:#fff;font-size:8px;line-height:1.3;}'
-        +'.sinsa-farm-col{width:14mm;}.sinsa-tank-col{width:16mm;}.sinsa-col{width:18mm;}.sinsa-add-col{width:14mm;}'
-        +'td.sinsa-farm{font-size:8px;font-weight:600;}td.sinsa-tank{font-size:9px;font-weight:700;}'
-        +'td.sinsa-qty{font-size:11px;font-weight:700;}td.sinsa-add{font-size:8px;}'
-        +'.sinsa-circle{border:1.5px solid #000;border-radius:50%;padding:0 2px;display:inline-block;}'
-        +'tr.sinsa-total td{background:#555;color:#fff;font-weight:700;font-size:9px;}'
-        +'.sinsa-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:3mm;}'
-        +'.sinsa-contact{font-size:9px;}.sinsa-signs{display:grid;grid-template-columns:repeat(3,24mm);}'
-        +'.sinsa-sign-box .sinsa-sh{background:#555;color:#fff;text-align:center;padding:1px;font-size:7px;font-weight:700;}'
-        +'.sinsa-sign-box .sinsa-sb{height:10mm;border:1px solid #999;}'
-        +'.sinsa-sign-box .sinsa-sf{background:#f0f0f0;text-align:center;font-size:7px;color:#bbb;border:1px solid #bbb;border-top:none;}'
-        +'@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}'
-        +'.sinsa-page{margin:0;padding:0;width:100%;}.sinsa-page:not(:last-child){page-break-after:always;}'
-        +'table.sinsa-tbl thead th{background:#000!important;color:#fff!important;}'
-        +'tr.sinsa-total td{background:#000!important;color:#fff!important;}'
-        +'.sinsa-sign-box .sinsa-sh{background:#000!important;color:#fff!important;}'
-        +'@page{size:A4 landscape;margin:15mm 10mm 10mm 20mm;}}';
       w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>中部飼料注文書</title>'
-        +'<style>'+sinsaCSS+'</style>'
+        +'<style>'+getSinsaCSS()+'</style>'
         +'</head><body>'
-        +'<div style="padding:8px;background:#7B3FA0;color:#fff;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">'
+        +'<div class="no-print" style="padding:8px;background:#7B3FA0;color:#fff;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">'
         +'<span>中部飼料㈱ 注文書</span>'
         +'<button onclick="window.print()" style="background:#fff;color:#7B3FA0;border:none;border-radius:6px;padding:6px 16px;cursor:pointer;font-weight:700;">印刷</button>'
         +'</div>'
@@ -1135,9 +1064,19 @@ function viewArchive(i){
     }else{
       /* 南九州注文書として表示 */
       var html=renderSheetHTML(trucks,orders);
-      w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書 '+a.date+'</title>'+style
+      var dateBase2=String(a.date||'').replace('-sinsa','');
+      var dp2=dateBase2.split('-');
+      var dateLabel2=dateBase2;
+      if(dp2.length>=3){
+        var d2=new Date(parseInt(dp2[0]),parseInt(dp2[1])-1,parseInt(dp2[2]));
+        if(!isNaN(d2.getTime())){
+          var wd2=['日','月','火','水','木','金','土'][d2.getDay()];
+          dateLabel2=(d2.getMonth()+1)+'月'+d2.getDate()+'日('+wd2+')';
+        }
+      }
+      w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書 '+dateLabel2+'</title>'+style
         +'<style>.os-page{margin:12px auto;}.no-print{display:none;}@media print{.os-page{margin:0;page-break-after:always;}@page{size:A4 landscape;margin:15mm 10mm 10mm 20mm;}}</style></head>'
-        +'<body><div style="padding:8px;background:#1A3A5C;color:#fff;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;"><span>注文書 '+a.date+'</span>'
+        +'<body><div class="no-print" style="padding:8px;background:#1A3A5C;color:#fff;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;"><span>注文書 '+dateLabel2+'</span>'
         +'<button onclick="window.print()" style="background:#1D9E75;color:#fff;border:none;border-radius:6px;padding:6px 16px;cursor:pointer;font-weight:700;">印刷</button></div>'+html+'</body></html>');
     }
     w.document.close();
