@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///C:/Users/hikoc/Downloads/manager%20(28).html -->
+<!-- saved from url=(0052)file:///C:/Users/hikoc/Downloads/manager%20(35).html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -158,6 +158,9 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:9px;}
   .os-page{margin:0;box-shadow:none;padding:8mm 10mm;width:100%;}
   .os-page:not(:last-child){page-break-after:always;}
   .os-sep{display:none!important;}
+  /* 変更メモ：印刷時は入力欄を非表示・印刷用欄を表示 */
+  .os-memo-wrap{display:none!important;}
+  .os-memo-print{display:block!important;}
   table.ostbl th,table.ostbl td{border:1px solid #000!important;color:#000!important;}
   table.ostbl thead th{background:#000!important;color:#fff!important;}
   table.ostbl .of0 td,table.ostbl .of1 td,table.ostbl .of2 td{background:#fff!important;}
@@ -783,19 +786,18 @@ function renderSheetHTML(trucks,orders){
     if(bagRows.length){
       var bagTableRows=bagRows.map(function(o){
         return'<tr class="obag">'
-          +'<td>'+(FARM_LABELS[o.farm]||o.farm)+'</td>'
+          +'<td>古井</td>'
           +'<td>'+o.brand+'</td>'
           +'<td style="text-align:center;font-weight:700;">'+o.qty+'袋</td>'
           +'<td style="text-align:center;">'+(o.qty*20/1000).toFixed(2)+'t</td>'
-          +'<td style="text-align:center;font-size:8px;">'+(o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span> 無':'有 <span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>')+'</td>'
           +'</tr>';
       }).join('');
       var bagTotal=bagRows.reduce(function(s,o){return s+Number(o.qty);},0);
       bagSection='<div class="os-bag-section">'
         +'<div class="os-bag-header">📦 紙袋製品（別トラック・1袋20kg）</div>'
-        +'<table class="os-bag-tbl"><thead><tr><th>農場</th><th>銘柄</th><th>数量</th><th>重量換算</th><th>添加剤</th></tr></thead>'
+        +'<table class="os-bag-tbl"><thead><tr><th>農場</th><th>銘柄</th><th>数量</th><th>重量換算</th></tr></thead>'
         +'<tbody>'+bagTableRows
-          +'<tr style="background:#D6E8F7;font-weight:700;"><td colspan="2" style="text-align:right;">合計</td><td>'+bagTotal+'袋</td><td>'+(bagTotal*20/1000).toFixed(2)+'t</td><td></td></tr>'
+          +'<tr style="background:#D6E8F7;font-weight:700;"><td colspan="2" style="text-align:right;">合計</td><td>'+bagTotal+'袋</td><td>'+(bagTotal*20/1000).toFixed(2)+'t</td></tr>'
         +'</tbody></table></div>';
     }
     if(pi>0)html+='<div class="os-sep">次のページ('+fmtDate(date)+')</div>';
@@ -816,6 +818,14 @@ function renderSheetHTML(trucks,orders){
         +'<tr class="ototal"><td colspan="3" style="text-align:right;font-size:9px;">合計(t)</td>'+totCols+'<td></td></tr>'
       +'</tbody></table>'
       +bagSection
+      +'<div class="os-memo-wrap no-print" style="margin-top:4mm;border:1.5px solid #1A3A5C;border-radius:4px;padding:4px 8px;">'
+        +'<div style="font-size:9px;font-weight:700;color:#1A3A5C;margin-bottom:3px;">📝 変更メモ（印刷に反映されます）</div>'
+        +'<textarea id="os-memo-input-'+pi+'" placeholder="例：タンク31を4tから6tに変更、タンク32キャンセル など" style="width:100%;border:none;outline:none;font-size:10px;font-family:inherit;resize:vertical;min-height:28px;background:transparent;" oninput="updateMemoPreview('+pi+')"></textarea>'
+      +'</div>'
+      +'<div class="os-memo-print" id="os-memo-print-'+pi+'" style="display:none;margin-top:4mm;border:1.5px solid #000;padding:3px 8px;min-height:10mm;">'
+        +'<div style="font-size:8px;font-weight:700;margin-bottom:2px;">変更メモ</div>'
+        +'<div class="os-memo-text" style="font-size:10px;white-space:pre-wrap;"></div>'
+      +'</div>'
       +'<div class="os-footer">'
         +'<div class="os-contact">古井農場 場長 山本 090-3666-3807</div>'
         +'<div class="os-sign">'
@@ -846,6 +856,16 @@ function printAndArchive(){
   var dates=[];snapOrders.forEach(function(o){if(dates.indexOf(o.date)<0)dates.push(o.date);});
   var dispIds=new Set(ids);
 
+  /* メモ内容を先に収集 */
+  var memoByDate={};
+  var memoInputs=document.querySelectorAll('[id^="os-memo-input-"]');
+  memoInputs.forEach(function(ta){
+    var pi=parseInt(ta.id.replace('os-memo-input-',''));
+    var txt=ta.value.trim();
+    var dateForMemo=dates[pi]||dates[0];
+    if(txt&&dateForMemo)memoByDate[dateForMemo]=txt;
+  });
+
   /* アーカイブ保存 */
   gasCall('mark_confirmed',{ids:ids},function(res){
     if(res&&res.result==='success')showToast(res.confirmed+'件を確定済みにしました');
@@ -859,7 +879,7 @@ function printAndArchive(){
         items:t.items.map(function(o){return{id:o.id};})};
     });
     var nankuOrders=snapOrders.filter(function(o){return o.brand!=='シンサウメイク';});
-    var archData={date:date,payload:{trucks:minNankuTrucks,orders:nankuOrders}};
+    var archData={date:date,payload:{trucks:minNankuTrucks,orders:nankuOrders,memo:memoByDate[date]||''}};
     console.log('save_archive(南九州)送信:', date, 'URL長:', JSON.stringify(archData).length);
     gasCall('save_archive',archData,function(res){
       console.log('save_archive(南九州)応答:', JSON.stringify(res));
@@ -883,8 +903,25 @@ function printAndArchive(){
     }
   });
 
-  /* 南九州注文書を別ウィンドウで印刷、中部飼料がある場合はボタンを表示 */
+  /* 南九州注文書を別ウィンドウで印刷、変更メモを反映 */
   var html=renderSheetHTML(snapPlan,snapOrders);
+  html=html.replace(/id="os-memo-print-(\d+)" style="display:none;/g,'id="os-memo-print-$1" style="display:block;');
+  memoInputs.forEach(function(ta){
+    var txt=ta.value.trim();
+    if(txt){
+      var escaped=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      html=html.replace(
+        /<div class="os-memo-text"[^>]*><\/div>/,
+        '<div class="os-memo-text" style="font-size:10px;white-space:pre-wrap;">'+escaped+'</div>'
+      );
+    }
+  });
+  /* メモをGASに保存（input.htmlのカレンダーにも反映される） */
+  Object.keys(memoByDate).forEach(function(date){
+    gasCall('save_memo',{date:date,memo:memoByDate[date]},function(){});
+    /* アーカイブのpayload.memoも更新 */
+    gasCall('update_archive_memo',{date:date,memo:memoByDate[date]},function(){});
+  });
   var style=document.querySelector('style').outerHTML;
   var w=window.open('','_blank');
 
@@ -997,7 +1034,15 @@ function loadArchive(){
   gasCall('get_archive',null,function(res){
     if(!res||!res.archives){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">取得エラー</div>';return;}
     if(!res.archives.length){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">保存された注文書はありません</div>';return;}
-    window._archives=res.archives.slice().sort(function(a,b){return b.date.localeCompare(a.date);});
+    window._archives=res.archives.slice().sort(function(a,b){
+      var da=String(a.date||'').replace('-sinsa','');
+      var db=String(b.date||'').replace('-sinsa','');
+      if(da!==db)return db.localeCompare(da); /* 配達日の新しい順 */
+      /* 同日：南九州（sinsa無し）が上、中部飼料（sinsa付き）が下 */
+      var as=String(a.date||'').indexOf('-sinsa')>=0?1:0;
+      var bs=String(b.date||'').indexOf('-sinsa')>=0?1:0;
+      return as-bs;
+    });
     document.getElementById('archive-list').innerHTML=window._archives.map(function(a,i){
       var dateStr=String(a.date||'');
       var isSinsa=dateStr.indexOf('-sinsa')>=0;
@@ -1064,6 +1109,16 @@ function viewArchive(i){
     }else{
       /* 南九州注文書として表示 */
       var html=renderSheetHTML(trucks,orders);
+      /* アーカイブ内のメモを反映 */
+      var archivedMemo=payload.memo||'';
+      if(archivedMemo){
+        html=html.replace(/id="os-memo-print-(\d+)" style="display:none;/g,'id="os-memo-print-$1" style="display:block;');
+        var escapedMemo=archivedMemo.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+        html=html.replace(
+          /<div class="os-memo-text"[^>]*><\/div>/,
+          '<div class="os-memo-text" style="font-size:10px;white-space:pre-wrap;">'+escapedMemo+'</div>'
+        );
+      }
       var dateBase2=String(a.date||'').replace('-sinsa','');
       var dp2=dateBase2.split('-');
       var dateLabel2=dateBase2;
@@ -1074,10 +1129,72 @@ function viewArchive(i){
           dateLabel2=(d2.getMonth()+1)+'月'+d2.getDate()+'日('+wd2+')';
         }
       }
+      var GAS_URL_FOR_WINDOW=GAS_URL;
       w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書 '+dateLabel2+'</title>'+style
-        +'<style>.os-page{margin:12px auto;}.no-print{display:none;}@media print{.os-page{margin:0;page-break-after:always;}@page{size:A4 landscape;margin:15mm 10mm 10mm 20mm;}}</style></head>'
-        +'<body><div class="no-print" style="padding:8px;background:#1A3A5C;color:#fff;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;"><span>注文書 '+dateLabel2+'</span>'
-        +'<button onclick="window.print()" style="background:#1D9E75;color:#fff;border:none;border-radius:6px;padding:6px 16px;cursor:pointer;font-weight:700;">印刷</button></div>'+html+'</body></html>');
+        +'<style>'
+        +'.os-page{margin:12px auto;}.no-print{display:none;}'
+        +'@media print{.os-page{margin:0;page-break-after:always;}.os-memo-wrap{display:none!important;}.os-memo-print{display:block!important;}@page{size:A4 landscape;margin:15mm 10mm 10mm 20mm;}}'
+        +'</style>'
+        +'</head>'
+        +'<body>'
+        +'<div class="no-print" style="padding:8px;background:#1A3A5C;color:#fff;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">'
+          +'<span style="flex:1;">注文書 '+dateLabel2+'</span>'
+          +'<button onclick="saveMemoAndPrint()" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-weight:700;font-size:12px;">💾 メモ保存して印刷</button>'
+          +'<button onclick="window.print()" style="background:#1D9E75;color:#fff;border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-weight:700;font-size:12px;">🖨 印刷のみ</button>'
+        +'</div>'
+        +html
+        +'<script>'
+        +'var GAS_URL="'+GAS_URL_FOR_WINDOW+'";'
+        +'var archiveDate="'+dateBase2+'";'
+        /* メモ入力欄を表示可能にする */
+        +'document.querySelectorAll(".os-memo-wrap").forEach(function(el){el.style.display="";});'
+        /* 既存メモを読み込む */
+        +'(function(){'
+          +'var cb="cb_"+Date.now();'
+          +'window[cb]=function(res){'
+            +'if(res&&res.memo){'
+              +'var ta=document.querySelector("[id^=os-memo-input-]");'
+              +'if(ta){ta.value=res.memo;}'
+              +'var pr=document.querySelector(".os-memo-print .os-memo-text");'
+              +'if(pr)pr.textContent=res.memo;'
+            +'}'
+          +'};'
+          +'var s=document.createElement("script");'
+          +'s.src=GAS_URL+"?action=get_memo&data="+encodeURIComponent(JSON.stringify({date:archiveDate}))+"&callback="+cb;'
+          +'document.body.appendChild(s);'
+        +'})();'
+        /* メモ保存して印刷 */
+        +'function saveMemoAndPrint(){'
+          +'var ta=document.querySelector("[id^=os-memo-input-]");'
+          +'var txt=ta?ta.value.trim():"";'
+          +'var pr=document.querySelector(".os-memo-print .os-memo-text");'
+          +'if(pr)pr.textContent=txt;'
+          +'document.querySelectorAll(".os-memo-print").forEach(function(el){el.style.display=txt?"block":"none";});'
+          +'if(txt){'
+            +'var saved=0;'
+            +'var onDone=function(){saved++;if(saved>=2)window.print();};'
+            +'var cb1="cb_"+Date.now()+"a";'
+            +'window[cb1]=onDone;'
+            +'var s1=document.createElement("script");'
+            +'s1.src=GAS_URL+"?action=save_memo&data="+encodeURIComponent(JSON.stringify({date:archiveDate,memo:txt}))+"&callback="+cb1;'
+            +'document.body.appendChild(s1);'
+            +'var cb2="cb_"+Date.now()+"b";'
+            +'window[cb2]=onDone;'
+            +'var s2=document.createElement("script");'
+            +'s2.src=GAS_URL+"?action=update_archive_memo&data="+encodeURIComponent(JSON.stringify({date:archiveDate,memo:txt}))+"&callback="+cb2;'
+            +'document.body.appendChild(s2);'
+          +'}else{'
+            +'window.print();'
+          +'}'
+        +'}'
+        +'function updateMemoPreview(pi){'
+          +'var ta=document.getElementById("os-memo-input-"+pi);'
+          +'var pr=document.getElementById("os-memo-print-"+pi);'
+          +'if(!ta||!pr)return;'
+          +'pr.querySelector(".os-memo-text").textContent=ta.value.trim();'
+        +'}'
+        +'<\/script>'
+        +'</body></html>');
     }
     w.document.close();
   }catch(e){showToast('表示エラー:'+e.message);}
@@ -1162,6 +1279,14 @@ function gasCall(action,data,cb){
 }
 
 var toastTimer;
+function updateMemoPreview(pi){
+  var ta=document.getElementById('os-memo-input-'+pi);
+  var pr=document.getElementById('os-memo-print-'+pi);
+  if(!ta||!pr)return;
+  var txt=ta.value.trim();
+  pr.querySelector('.os-memo-text').textContent=txt;
+}
+
 function showToast(msg){
   var t=document.getElementById('_toast');
   if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(40px);background:#1A3A5C;color:#fff;padding:9px 20px;border-radius:20px;font-size:12px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;';document.body.appendChild(t);}
