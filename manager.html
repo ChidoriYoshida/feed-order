@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///C:/Users/hikoc/Downloads/manager%20(35).html -->
+<!-- saved from url=(0052)file:///C:/Users/hikoc/Downloads/manager%20(38).html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -268,16 +268,6 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:9px;}
   </div>
 </div>
 
-<!-- 変更メモ入力エリア -->
-<div class="memo-section no-print" id="memo-section" style="display:none;">
-  <label>📝 変更メモ（この配達日の変更内容を入力）</label>
-  <textarea id="memo-input" placeholder="例：タンク31を4tから6tに変更、タンク32をキャンセル など"></textarea>
-  <div style="display:flex;gap:8px;margin-top:8px;">
-    <button class="tbtn tbtn-blue" onclick="saveMemo()" style="flex:1;">メモを保存・共有</button>
-    <button class="tbtn tbtn-gray" onclick="clearMemo()" style="flex:1;">クリア</button>
-  </div>
-  <div id="memo-status" style="font-size:11px;color:var(--muted);margin-top:4px;"></div>
-</div>
 
 <!-- 編集モーダル -->
 <div class="modal-overlay" id="edit-modal">
@@ -357,7 +347,7 @@ function switchTab(name){
     document.getElementById('tab-'+n).style.display=n===name?'':'none';
     document.getElementById('t-'+n).classList.toggle('active',n===name);
   });
-  document.getElementById('memo-section').style.display=name==='orders'?'':'none';
+  document.getElementById('memo-section') && (document.getElementById('memo-section').style.display='none');
   if(name==='sheet'){
     var isSinsa=currentPrintMode==='portrait';
     var archBtn=document.getElementById('sheet-print-archive');
@@ -433,44 +423,11 @@ function filterOrders(){
   var d=document.getElementById('filter-date').value;
   dispOrders=d?allOrders.filter(function(o){return o.date===d;}):allOrders.slice();
   renderOrdersTable(dispOrders);updateKPI();
-  if(d){showMemoSection(d);}else{document.getElementById('memo-section').style.display='none';}
 }
 function clearFilter(){
   document.getElementById('filter-date').value='';
   dispOrders=allOrders.slice();
   renderOrdersTable(dispOrders);updateKPI();
-  document.getElementById('memo-section').style.display='none';
-}
-
-function showMemoSection(date){
-  currentMemoDate=date;
-  document.getElementById('memo-section').style.display='';
-  document.getElementById('memo-input').value='';
-  document.getElementById('memo-status').textContent='';
-  /* 既存メモを取得 */
-  gasCall('get_memo',{date:date},function(res){
-    if(res&&res.memo){
-      document.getElementById('memo-input').value=res.memo;
-    }
-  });
-}
-
-function saveMemo(){
-  if(!currentMemoDate){showToast('配送日を選択してください');return;}
-  var memo=document.getElementById('memo-input').value.trim();
-  gasCall('save_memo',{date:currentMemoDate,memo:memo},function(res){
-    if(res&&res.result==='success'){
-      document.getElementById('memo-status').textContent='保存しました（担当者のカレンダーに反映されます）';
-      showToast('メモを保存しました');
-    }else{
-      showToast('保存エラー');
-    }
-  });
-}
-
-function clearMemo(){
-  document.getElementById('memo-input').value='';
-  document.getElementById('memo-status').textContent='';
 }
 
 function renderOrdersTable(list){
@@ -1037,7 +994,9 @@ function loadArchive(){
     window._archives=res.archives.slice().sort(function(a,b){
       var da=String(a.date||'').replace('-sinsa','');
       var db=String(b.date||'').replace('-sinsa','');
-      if(da!==db)return db.localeCompare(da); /* 配達日の新しい順 */
+      /* 配達日の新しい順（文字列比較でYYYY-MM-DDは正しく比較できる） */
+      if(da>db)return -1;
+      if(da<db)return 1;
       /* 同日：南九州（sinsa無し）が上、中部飼料（sinsa付き）が下 */
       var as=String(a.date||'').indexOf('-sinsa')>=0?1:0;
       var bs=String(b.date||'').indexOf('-sinsa')>=0?1:0;
