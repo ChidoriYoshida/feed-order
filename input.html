@@ -671,7 +671,7 @@ function showDetail(dateStr){
       +'<span class="badge '+bc+'">'+o.farm+'</span>'
       +'<div class="det-info">'
         +'<div class="det-tank">タンク '+o.tank+(isDup?' <span style="color:#c00;font-size:10px;">重複</span>':'')+confirmedBadge+'</div>'
-        +'<div class="det-brand">'+o.brand+' / '+o.staff+'</div>'
+        +'<div class="det-brand">'+o.brand+'</div>'
       +'</div>'
       +'<div><div class="det-qty">'+o.qty+'t</div>'+(o.additive==='yes'?'<div class="det-add">添加剤有</div>':'')+'</div>'
       +'</div>';
@@ -689,7 +689,6 @@ function showDetail(dateStr){
         +'<span class="badge '+bc+'">'+o.farm+'</span>'
         +'<div class="det-info">'
           +'<div class="det-tank">'+o.brand+confirmedBadge+'</div>'
-          +'<div class="det-brand">'+o.staff+'</div>'
         +'</div>'
         +'<div><div class="det-qty">'+o.qty+'袋</div></div>'
         +'</div>';
