@@ -1114,10 +1114,12 @@ function restoreOrders(i){
     /* GASで確定フラグを解除 */
     gasCall('restore_orders',{orders:orders},function(res){
       if(res&&res.result==='success'){
+        /* アーカイブから削除 */
+        var dateStr=String(a.date||'');
+        gasCall('delete_archive',{date:dateStr},function(){});
         /* ローカルのallOrdersに追加 */
         orders.forEach(function(o){
           o.id=String(o.id);
-          /* 既に存在する場合はスキップ */
           if(!allOrders.some(function(existing){return String(existing.id)===o.id;})){
             allOrders.push(o);
           }
@@ -1125,6 +1127,9 @@ function restoreOrders(i){
         dispOrders=allOrders.slice();
         renderOrdersTable(dispOrders);
         updateKPI();
+        /* アーカイブ一覧から該当レコードを削除 */
+        window._archives.splice(i,1);
+        loadArchive();
         switchTab('orders');
         showToast(res.restored+'件の注文を受信注文に呼び戻しました');
       }else{
