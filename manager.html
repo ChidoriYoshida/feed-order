@@ -1044,8 +1044,11 @@ function viewArchive(i){
     var style=document.querySelector('style').outerHTML;
     var w=window.open('','_blank');
     if(isSinsa){
-      /* 中部飼料注文書として表示 */
-      var sinsaHtml=renderSinsaSheetHTML(orders);
+      /* 中部飼料注文書として表示：ordersのdate正規化 */
+      var normalizedOrders=orders.map(function(o){
+        return Object.assign({},o,{date:String(o.date||'').replace('-sinsa','')});
+      });
+      var sinsaHtml=renderSinsaSheetHTML(normalizedOrders);
       w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>中部飼料注文書</title>'
         +'<style>'+getSinsaCSS()+'</style>'
         +'</head><body>'
