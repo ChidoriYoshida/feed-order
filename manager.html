@@ -822,23 +822,37 @@ function printAndArchive(){
     if(txt&&dateForMemo)memoByDate[dateForMemo]=txt;
   });
 
-  /* アーカイブ保存 */
+  /* アーカイブ保存（既存データとマージ） */
   gasCall('mark_confirmed',{ids:ids},function(res){
     if(res&&res.result==='success')showToast(res.confirmed+'件を確定済みにしました');
   });
   dates.forEach(function(date){
-    /* 南九州分（シンサ以外）のトラック */
     var nankuTrucks=snapPlan.filter(function(t){return!t.isSinsa;});
-    var minNankuTrucks=nankuTrucks.map(function(t){
-      return{date:t.date,id:t.id,isSinsa:false,
-        usedQty:t.usedQty,recSize:t.recSize,farms:t.farms,
-        items:t.items.map(function(o){return{id:o.id};})};
-    });
     var nankuOrders=snapOrders.filter(function(o){return o.brand!=='シンサウメイク';});
-    var archData={date:date,payload:{trucks:minNankuTrucks,orders:nankuOrders,memo:memoByDate[date]||''}};
-    console.log('save_archive(南九州)送信:', date, 'URL長:', JSON.stringify(archData).length);
-    gasCall('save_archive',archData,function(res){
-      console.log('save_archive(南九州)応答:', JSON.stringify(res));
+
+    /* 既存アーカイブを取得してマージ */
+    gasCall('get_archive_by_date',{date:date},function(res){
+      var mergedOrders=nankuOrders.slice();
+      var mergedTrucks=nankuTrucks.map(function(t){
+        return{date:t.date,id:t.id,isSinsa:false,
+          usedQty:t.usedQty,recSize:t.recSize,farms:t.farms,
+          items:t.items.map(function(o){return{id:o.id};})};
+      });
+      if(res&&res.result==='success'&&res.payload){
+        try{
+          var existing=JSON.parse(res.payload);
+          var existOrders=existing.orders||[];
+          /* 既存注文のうち今回の新規IDと重複しないものをマージ */
+          var newIds=new Set(nankuOrders.map(function(o){return String(o.id);}));
+          existOrders.forEach(function(o){
+            if(!newIds.has(String(o.id)))mergedOrders.push(o);
+          });
+        }catch(e){}
+      }
+      var archData={date:date,payload:{trucks:mergedTrucks,orders:mergedOrders,memo:memoByDate[date]||''}};
+      gasCall('save_archive',archData,function(res){
+        console.log('save_archive(南九州)応答:', JSON.stringify(res));
+      });
     });
 
     /* 中部飼料分（シンサウメイク）のトラック */
@@ -850,28 +864,64 @@ function printAndArchive(){
           items:t.items.map(function(o){return{id:o.id};})};
       });
       var sinsaOrdersForArch=snapOrders.filter(function(o){return o.brand==='シンサウメイク';});
-      /* 日付キーに"-sinsa"を付けて別レコードで保存 */
-      var sinsaArchData={date:date+'-sinsa',payload:{trucks:minSinsaTrucks,orders:sinsaOrdersForArch}};
-      console.log('save_archive(中部飼料)送信:', date, 'URL長:', JSON.stringify(sinsaArchData).length);
-      gasCall('save_archive',sinsaArchData,function(res){
-        console.log('save_archive(中部飼料)応答:', JSON.stringify(res));
+      gasCall('get_archive_by_date',{date:date+'-sinsa'},function(res){
+        var mergedSinsaOrders=sinsaOrdersForArch.slice();
+        if(res&&res.result==='success'&&res.payload){
+          try{
+            var existingSinsa=JSON.parse(res.payload);
+            var existSinsaOrders=existingSinsa.orders||[];
+            var newSinsaIds=new Set(sinsaOrdersForArch.map(function(o){return String(o.id);}));
+            existSinsaOrders.forEach(function(o){
+              if(!newSinsaIds.has(String(o.id)))mergedSinsaOrders.push(o);
+            });
+          }catch(e){}
+        }
+        var sinsaArchData={date:date+'-sinsa',payload:{trucks:minSinsaTrucks,orders:mergedSinsaOrders}};
+        gasCall('save_archive',sinsaArchData,function(){});
       });
     }
   });
 
-  /* 南九州注文書を別ウィンドウで印刷、変更メモを反映 */
-  var html=renderSheetHTML(snapPlan,snapOrders);
-  html=html.replace(/id="os-memo-print-(\d+)" style="display:none;/g,'id="os-memo-print-$1" style="display:block;');
-  memoInputs.forEach(function(ta){
-    var txt=ta.value.trim();
-    if(txt){
-      var escaped=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-      html=html.replace(
-        /<div class="os-memo-text"[^>]*><\/div>/,
-        '<div class="os-memo-text" style="font-size:10px;white-space:pre-wrap;">'+escaped+'</div>'
-      );
-    }
+  /* 南九州注文書：既存アーカイブとマージして印刷 */
+  var nankuOrdersForPrint=snapOrders.filter(function(o){return o.brand!=='シンサウメイク';});
+  var printDates=[];nankuOrdersForPrint.forEach(function(o){if(printDates.indexOf(o.date)<0)printDates.push(o.date);});
+
+  /* 既存アーカイブを取得してマージ後に印刷 */
+  var pendingMerge=printDates.length;
+  var mergedOrdersAll=nankuOrdersForPrint.slice();
+
+  if(pendingMerge===0){doMergedPrint();}
+  printDates.forEach(function(date){
+    gasCall('get_archive_by_date',{date:date},function(res){
+      if(res&&res.result==='success'&&res.payload){
+        try{
+          var existing=JSON.parse(res.payload);
+          var existOrders=existing.orders||[];
+          var newIds=new Set(nankuOrdersForPrint.map(function(o){return String(o.id);}));
+          existOrders.forEach(function(o){
+            if(!newIds.has(String(o.id)))mergedOrdersAll.push(o);
+          });
+        }catch(e){}
+      }
+      pendingMerge--;
+      if(pendingMerge===0)doMergedPrint();
+    });
   });
+
+  function doMergedPrint(){
+    var mergedSnapOrders=snapOrders.filter(function(o){return o.brand==='シンサウメイク';}).concat(mergedOrdersAll);
+    var html=renderSheetHTML(snapPlan,mergedSnapOrders);
+    html=html.replace(/id="os-memo-print-(\d+)" style="display:none;/g,'id="os-memo-print-$1" style="display:block;');
+    memoInputs.forEach(function(ta){
+      var txt=ta.value.trim();
+      if(txt){
+        var escaped=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+        html=html.replace(
+          /<div class="os-memo-text"[^>]*><\/div>/,
+          '<div class="os-memo-text" style="font-size:10px;white-space:pre-wrap;">'+escaped+'</div>'
+        );
+      }
+    });
   /* メモをGASに保存（input.htmlのカレンダーにも反映される） */
   Object.keys(memoByDate).forEach(function(date){
     gasCall('save_memo',{date:date,memo:memoByDate[date]},function(){});
@@ -920,6 +970,7 @@ function printAndArchive(){
       +'</body></html>');
   }
   w.document.close();
+  } /* end doMergedPrint */
 
   /* 画面リセット */
   allOrders=allOrders.filter(function(o){return!dispIds.has(o.id);});
