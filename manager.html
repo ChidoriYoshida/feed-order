@@ -735,7 +735,8 @@ function renderSheetHTML(trucks,orders){
     }).join('');
     /* 空白行で12行に固定 */
     var emptyNeeded=Math.max(0,12-bulkRows.length);
-    var emptyRows='<tr style="height:7mm;"><td></td><td></td><td></td>'+NANKU_BRANDS.map(function(){return'<td></td>';}).join('')+'<td></td></tr>'.repeat(emptyNeeded);
+    var nankyuEmptyCells='<td style="height:8mm;"></td><td></td><td></td>'+NANKU_BRANDS.map(function(){return'<td></td>';}).join('')+'<td></td>';
+    var emptyRows='<tr>'+nankyuEmptyCells+'</tr>'.repeat(emptyNeeded);
     /* 紙袋テーブル */
     var bagSection='';
     if(bagRows.length){
@@ -773,13 +774,13 @@ function renderSheetHTML(trucks,orders){
         +'<tr class="ototal"><td colspan="3" style="text-align:right;font-size:9px;">合計(t)</td>'+totCols+'<td></td></tr>'
       +'</tbody></table>'
       +bagSection
-      +'<div class="os-memo-wrap no-print" style="margin-top:4mm;border:1.5px solid #1A3A5C;border-radius:4px;padding:4px 8px;">'
-        +'<div style="font-size:9px;font-weight:700;color:#1A3A5C;margin-bottom:3px;">📝 変更メモ（印刷に反映されます）</div>'
-        +'<textarea id="os-memo-input-'+pi+'" placeholder="例：タンク31を4tから6tに変更、タンク32キャンセル など" style="width:100%;border:none;outline:none;font-size:10px;font-family:inherit;resize:vertical;min-height:28px;background:transparent;" oninput="updateMemoPreview('+pi+')"></textarea>'
+      +'<div class="os-memo-wrap no-print" style="margin-top:4mm;border:1.5px solid #1A3A5C;border-radius:4px;padding:6px 10px;">'
+        +'<div style="font-size:12px;font-weight:700;color:#1A3A5C;margin-bottom:4px;">📝 変更メモ（印刷に反映されます）</div>'
+        +'<textarea id="os-memo-input-'+pi+'" placeholder="例：タンク31を4tから6tに変更、タンク32キャンセル など" style="width:100%;border:none;outline:none;font-size:13px;font-family:inherit;resize:vertical;min-height:40px;background:transparent;" oninput="updateMemoPreview('+pi+')"></textarea>'
       +'</div>'
-      +'<div class="os-memo-print" id="os-memo-print-'+pi+'" style="display:none;margin-top:4mm;border:1.5px solid #000;padding:3px 8px;min-height:10mm;">'
-        +'<div style="font-size:8px;font-weight:700;margin-bottom:2px;">変更メモ</div>'
-        +'<div class="os-memo-text" style="font-size:10px;white-space:pre-wrap;"></div>'
+      +'<div class="os-memo-print" id="os-memo-print-'+pi+'" style="display:none;margin-top:4mm;border:1.5px solid #000;padding:4px 10px;min-height:12mm;">'
+        +'<div style="font-size:11px;font-weight:700;margin-bottom:2px;">変更メモ</div>'
+        +'<div class="os-memo-text" style="font-size:13px;white-space:pre-wrap;"></div>'
       +'</div>'
       +'<div class="os-footer">'
         +'<div class="os-contact">古井農場 場長 山本 090-3666-3807</div>'
@@ -1284,7 +1285,8 @@ function renderSinsaSheetHTML(orders){
 
     /* 空白行で5行に固定 */
     var emptyNeeded=Math.max(0,5-rows.length);
-    var emptyRowsHtml='<tr style="height:8mm;"><td></td><td></td>'+brands.map(function(){return'<td></td>';}).join('')+'<td></td></tr>'.repeat(emptyNeeded);
+    var emptyCells='<td style="height:10mm;"></td><td></td>'+brands.map(function(){return'<td></td>';}).join('')+'<td></td>';
+    var emptyRowsHtml='<tr>'+emptyCells+'</tr>'.repeat(emptyNeeded);
 
     var dataRowsHtml=rows.map(function(o){
       var farmShort=o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第２':o.farm==='第3農場'?'第３':o.farm;
