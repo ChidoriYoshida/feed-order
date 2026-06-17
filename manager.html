@@ -513,20 +513,26 @@ function manualAdd(){
   var add=document.getElementById('m-add').value;
   if(!brand||isNaN(qty)||qty<=0){showToast('銘柄と数量を入力してください');return;}
   var isBagItem=isBag(brand);
-  var o={id:String(idCnt++),farm:farm,date:date,tank:tank,brand:brand,qty:qty,unit:isBagItem?'袋':'t',additive:add,isBag:isBagItem,staff:'手動'};
-  /* GASに保存してカレンダーに反映 */
+  var tempId='manual_'+Date.now();
+  var o={id:tempId,farm:farm,date:date,tank:tank,brand:brand,qty:qty,unit:isBagItem?'袋':'t',additive:add,isBag:isBagItem,staff:'手動'};
+  allOrders.push(o);dispOrders.push(o);
+  renderOrdersTable(dispOrders);updateKPI();
+  /* GASに保存してカレンダーに反映・IDを更新 */
   gasCall('post',{orders:[{
     farm:farm,date:date,tank:tank,brand:brand,qty:qty,
     unit:isBagItem?'袋':'t',additive:add,isBag:isBagItem,staff:'手動'
   }]},function(res){
-    if(res&&res.result==='success'){
+    if(res&&res.result==='success'&&res.ids&&res.ids.length){
+      /* GASが付与した実際のIDに更新 */
+      var gasId=String(res.ids[0]);
+      o.id=gasId;
+      allOrders.forEach(function(x){if(x.id===tempId)x.id=gasId;});
+      dispOrders.forEach(function(x){if(x.id===tempId)x.id=gasId;});
       showToast('追加しました（カレンダーにも反映）');
     }else{
-      showToast('追加しました（カレンダー反映に失敗）');
+      showToast('追加しました');
     }
   });
-  allOrders.push(o);dispOrders.push(o);
-  renderOrdersTable(dispOrders);updateKPI();
 }
 
 var farmModeOn=true;
