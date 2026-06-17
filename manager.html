@@ -736,7 +736,7 @@ function renderSheetHTML(trucks,orders){
     /* 空白行で12行に固定 */
     var emptyNeeded=Math.max(0,12-bulkRows.length);
     var nankyuEmptyCells='<td style="height:8mm;"></td><td></td><td></td>'+NANKU_BRANDS.map(function(){return'<td></td>';}).join('')+'<td></td>';
-    var emptyRows='<tr>'+nankyuEmptyCells+'</tr>'.repeat(emptyNeeded);
+    var emptyRows=('<tr>'+nankyuEmptyCells+'</tr>').repeat(emptyNeeded);
     /* 紙袋テーブル */
     var bagSection='';
     if(bagRows.length){
@@ -1097,6 +1097,7 @@ function viewArchive(i){
         +'<script>'
         +'var GAS_URL="'+GAS_URL_FOR_WINDOW+'";'
         +'var archiveDate="'+dateBase2+'";'
+        +'window.addEventListener("load",function(){'
         /* メモ入力欄を表示可能にする */
         +'document.querySelectorAll(".os-memo-wrap").forEach(function(el){el.style.display="";});'
         /* 既存メモを読み込む */
@@ -1114,6 +1115,7 @@ function viewArchive(i){
           +'s.src=GAS_URL+"?action=get_memo&data="+encodeURIComponent(JSON.stringify({date:archiveDate}))+"&callback="+cb;'
           +'document.body.appendChild(s);'
         +'})();'
+        +'});'
         /* メモ保存して印刷 */
         +'function saveMemoAndPrint(){'
           +'var ta=document.querySelector("[id^=os-memo-input-]");'
@@ -1289,7 +1291,7 @@ function renderSinsaSheetHTML(orders){
     /* 空白行で5行に固定 */
     var emptyNeeded=Math.max(0,5-rows.length);
     var emptyCells='<td style="height:10mm;"></td><td></td>'+brands.map(function(){return'<td></td>';}).join('')+'<td></td>';
-    var emptyRowsHtml='<tr>'+emptyCells+'</tr>'.repeat(emptyNeeded);
+    var emptyRowsHtml=('<tr>'+emptyCells+'</tr>').repeat(emptyNeeded);
 
     var dataRowsHtml=rows.map(function(o){
       var farmShort=o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第２':o.farm==='第3農場'?'第３':o.farm;
