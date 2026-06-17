@@ -718,24 +718,29 @@ function renderSheetHTML(trucks,orders){
     /* 注文書の表示順：農場順→タンク番号昇順（便番号に依存しない） */
     bulkRows.sort(cmpFarmTank);
     var bagRows=pi===0?orders.filter(function(o){return o.isBag;}):[];
+    /* 行数に応じてフォント・行高さを動的調整（必ず1枚に収める） */
+    var totalRows=bulkRows.length;
+    var emptyNeeded=Math.max(0,12-totalRows);
+    var rowFontSize=totalRows<=8?'12px':totalRows<=10?'11px':'10px';
+    var rowHeight=totalRows<=8?'8mm':totalRows<=10?'7mm':'6mm';
+    var farmFontSize=totalRows<=8?'9px':totalRows<=10?'8px':'8px';
+    var addFontSize=totalRows<=8?'10px':totalRows<=10?'9px':'8px';
     /* バラ飼料テーブル */
     var dataRows=bulkRows.map(function(o){
       var cols=NANKU_BRANDS.map(function(b){return b===o.brand?Number(o.qty):'';});
-      return'<tr class="'+(farmCls[o.farm]||'')+'">'
+      return'<tr class="'+(farmCls[o.farm]||'')+'" style="height:'+rowHeight+';">'
         +'<td></td>'
-        +'<td style="white-space:nowrap;font-size:9px;font-weight:700;text-align:center;">'+(o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第２':'第３')+'</td>'
-        +'<td style="text-align:center;font-weight:600;">'+o.tank+'</td>'
+        +'<td style="white-space:nowrap;font-size:'+farmFontSize+';font-weight:700;text-align:center;">'+(o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第２':'第３')+'</td>'
+        +'<td style="text-align:center;font-weight:600;font-size:'+rowFontSize+';">'+o.tank+'</td>'
         +cols.map(function(v){return'<td class="'+(v?'qval':'')+'">'+( v||'')+'</td>';}).join('')
-        +'<td style="text-align:center;font-size:8px;">'+(o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span> 無':'有 <span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>')+'</td>'
+        +'<td style="text-align:center;font-size:'+addFontSize+';">'+(o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span> 無':'有 <span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>')+'</td>'
         +'</tr>';
     }).join('');
     var totCols=NANKU_BRANDS.map(function(b){
       var tot=bulkRows.reduce(function(s,o){return s+(o.brand===b?Number(o.qty):0);},0);
       return'<td class="'+(tot?'qval':'')+'">'+( tot||'')+'</td>';
     }).join('');
-    /* 空白行で12行に固定 */
-    var emptyNeeded=Math.max(0,12-bulkRows.length);
-    var nankyuEmptyCells='<td style="height:8mm;"></td><td></td><td></td>'+NANKU_BRANDS.map(function(){return'<td></td>';}).join('')+'<td></td>';
+    var nankyuEmptyCells='<td style="height:'+rowHeight+';"></td><td></td><td></td>'+NANKU_BRANDS.map(function(){return'<td></td>';}).join('')+'<td></td>';
     var emptyRows=('<tr>'+nankyuEmptyCells+'</tr>').repeat(emptyNeeded);
     /* 紙袋テーブル */
     var bagSection='';
@@ -765,7 +770,7 @@ function renderSheetHTML(trucks,orders){
       +'</div>'
       +'<div class="os-fax">Fax: 志布志飼料&#40;株&#41;(0994-73-1334) 坂元運送&#40;株&#41;(099-262-0638)</div>'
       +'<div class="os-delivery"><span class="dlabel">配達日</span><span class="ddate">'+(d.getMonth()+1)+'月'+d.getDate()+'日('+wd+')</span><span class="os-unit">単位:t</span></div>'
-      +'<table class="ostbl"><thead><tr>'
+      +'<table class="ostbl" style="font-size:'+rowFontSize+';"><thead><tr>'
         +'<th style="width:8mm;">便</th><th style="width:11mm;">農場</th><th style="width:11mm;">タンク</th>'
         +NANKU_BRANDS.map(function(b){return'<th style="width:10mm;">'+b.replace('たから','たから<br>')+'</th>';}).join('')
         +'<th style="width:12mm;">添加剤</th>'
@@ -1083,7 +1088,7 @@ function viewArchive(i){
       var GAS_URL_FOR_WINDOW=GAS_URL;
       w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書 '+dateLabel2+'</title>'+style
         +'<style>'
-        +'.os-page{margin:12px auto;}.no-print{display:none;}'
+        +'.os-page{margin:12px auto;}.no-print{display:none;}.os-memo-wrap{display:block!important;}'
         +'@media print{.os-page{margin:0;page-break-after:always;}.os-memo-wrap{display:none!important;}.os-memo-print{display:block!important;}@page{size:A4 landscape;margin:15mm 10mm 10mm 20mm;}}'
         +'</style>'
         +'</head>'
@@ -1098,8 +1103,9 @@ function viewArchive(i){
         +'var GAS_URL="'+GAS_URL_FOR_WINDOW+'";'
         +'var archiveDate="'+dateBase2+'";'
         +'window.addEventListener("load",function(){'
-        /* メモ入力欄を表示可能にする */
-        +'document.querySelectorAll(".os-memo-wrap").forEach(function(el){el.style.display="";});'
+        +'document.querySelectorAll(".os-memo-wrap").forEach(function(el){'
+          +'el.style.display="block";el.style.visibility="visible";'
+        +'});'
         /* 既存メモを読み込む */
         +'(function(){'
           +'var cb="cb_"+Date.now();'
