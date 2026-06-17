@@ -822,40 +822,36 @@ function printAndArchive(){
     if(txt&&dateForMemo)memoByDate[dateForMemo]=txt;
   });
 
-  /* アーカイブ保存（既存データとマージ） */
+  /* アーカイブ保存（既存データとマージ・get完了後にsave） */
   gasCall('mark_confirmed',{ids:ids},function(res){
     if(res&&res.result==='success')showToast(res.confirmed+'件を確定済みにしました');
   });
   dates.forEach(function(date){
     var nankuTrucks=snapPlan.filter(function(t){return!t.isSinsa;});
     var nankuOrders=snapOrders.filter(function(o){return o.brand!=='シンサウメイク';});
+    var minNankuTrucks=nankuTrucks.map(function(t){
+      return{date:t.date,id:t.id,isSinsa:false,
+        usedQty:t.usedQty,recSize:t.recSize,farms:t.farms,
+        items:t.items.map(function(o){return{id:o.id};})};
+    });
 
-    /* 既存アーカイブを取得してマージ */
+    /* 既存アーカイブを取得してマージしてからsave */
     gasCall('get_archive_by_date',{date:date},function(res){
       var mergedOrders=nankuOrders.slice();
-      var mergedTrucks=nankuTrucks.map(function(t){
-        return{date:t.date,id:t.id,isSinsa:false,
-          usedQty:t.usedQty,recSize:t.recSize,farms:t.farms,
-          items:t.items.map(function(o){return{id:o.id};})};
-      });
       if(res&&res.result==='success'&&res.payload){
         try{
           var existing=JSON.parse(res.payload);
           var existOrders=existing.orders||[];
-          /* 既存注文のうち今回の新規IDと重複しないものをマージ */
           var newIds=new Set(nankuOrders.map(function(o){return String(o.id);}));
           existOrders.forEach(function(o){
             if(!newIds.has(String(o.id)))mergedOrders.push(o);
           });
         }catch(e){}
       }
-      var archData={date:date,payload:{trucks:mergedTrucks,orders:mergedOrders,memo:memoByDate[date]||''}};
-      gasCall('save_archive',archData,function(res){
-        console.log('save_archive(南九州)応答:', JSON.stringify(res));
-      });
+      gasCall('save_archive',{date:date,payload:{trucks:minNankuTrucks,orders:mergedOrders,memo:memoByDate[date]||''}},function(){});
     });
 
-    /* 中部飼料分（シンサウメイク）のトラック */
+    /* 中部飼料分 */
     var sinsaTrucks=snapPlan.filter(function(t){return t.isSinsa;});
     if(sinsaTrucks.length){
       var minSinsaTrucks=sinsaTrucks.map(function(t){
@@ -876,8 +872,7 @@ function printAndArchive(){
             });
           }catch(e){}
         }
-        var sinsaArchData={date:date+'-sinsa',payload:{trucks:minSinsaTrucks,orders:mergedSinsaOrders}};
-        gasCall('save_archive',sinsaArchData,function(){});
+        gasCall('save_archive',{date:date+'-sinsa',payload:{trucks:minSinsaTrucks,orders:mergedSinsaOrders}},function(){});
       });
     }
   });
@@ -890,7 +885,13 @@ function printAndArchive(){
   var pendingMerge=printDates.length;
   var mergedOrdersAll=nankuOrdersForPrint.slice();
 
-  if(pendingMerge===0){doMergedPrint();}
+  /* 南九州注文書：既存アーカイブとマージして印刷 */
+  var nankuOrdersForPrint=snapOrders.filter(function(o){return o.brand!=='シンサウメイク';});
+  var printDates=[];nankuOrdersForPrint.forEach(function(o){if(printDates.indexOf(o.date)<0)printDates.push(o.date);});
+  var pendingMerge=printDates.length||1;
+  var mergedOrdersAll=nankuOrdersForPrint.slice();
+
+  if(printDates.length===0){doMergedPrint();}
   printDates.forEach(function(date){
     gasCall('get_archive_by_date',{date:date},function(res){
       if(res&&res.result==='success'&&res.payload){
@@ -904,7 +905,7 @@ function printAndArchive(){
         }catch(e){}
       }
       pendingMerge--;
-      if(pendingMerge===0)doMergedPrint();
+      if(pendingMerge<=0)doMergedPrint();
     });
   });
 
