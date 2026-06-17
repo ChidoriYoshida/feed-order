@@ -1084,10 +1084,43 @@ function loadArchive(){
           +'<div style="font-size:11px;color:var(--muted);">保存日時: '+savedFmt+'</div>'
           +'<div style="font-size:11px;color:var(--muted);">保存期限: '+expFmt+'</div>'
         +'</div>'
+        +'<div style="display:flex;flex-direction:column;gap:6px;align-self:center;">'
         +'<button class="arch-btn" onclick="viewArchive('+i+')">表示・印刷</button>'
+        +(isSinsa?'':'<button class="arch-btn" style="background:#E67E22;" onclick="restoreOrders('+i+')">↩ 呼び戻し</button>')
+        +'</div>'
         +'</div>';
     }).join('');
   });
+}
+
+function restoreOrders(i){
+  var a=window._archives[i];if(!a)return;
+  if(!confirm('この注文書の注文データを受信注文に呼び戻します。\n配車計画・注文書は再度作成が必要です。\nよろしいですか？'))return;
+  try{
+    var payload=JSON.parse(a.payload);
+    var orders=payload.orders||[];
+    if(!orders.length){showToast('注文データがありません');return;}
+    /* GASで確定フラグを解除 */
+    gasCall('restore_orders',{orders:orders},function(res){
+      if(res&&res.result==='success'){
+        /* ローカルのallOrdersに追加 */
+        orders.forEach(function(o){
+          o.id=String(o.id);
+          /* 既に存在する場合はスキップ */
+          if(!allOrders.some(function(existing){return String(existing.id)===o.id;})){
+            allOrders.push(o);
+          }
+        });
+        dispOrders=allOrders.slice();
+        renderOrdersTable(dispOrders);
+        updateKPI();
+        switchTab('orders');
+        showToast(res.restored+'件の注文を受信注文に呼び戻しました');
+      }else{
+        showToast('呼び戻しに失敗しました');
+      }
+    });
+  }catch(e){showToast('エラー:'+e.message);}
 }
 
 function viewArchive(i){
