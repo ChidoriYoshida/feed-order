@@ -787,7 +787,7 @@ function renderSheetHTML(trucks,orders){
         +'<div style="font-size:'+(totalRows>=11?'8px':'10px')+';font-weight:700;margin-bottom:1px;">変更メモ</div>'
         +'<div class="os-memo-text" style="font-size:'+(totalRows>=11?'9px':'11px')+';white-space:pre-wrap;"></div>'
       +'</div>'
-      +'<div class="os-footer">'
+      +'<div class="os-footer" style="margin-top:'+(totalRows>=11?'1mm':'3mm')+';">'
         +'<div class="os-contact">古井農場 場長 山本 090-3666-3807</div>'
       +'</div>'
     +'</div>';
@@ -890,10 +890,14 @@ function printAndArchive(){
       +sinsaHtml
       +'</body></html>'
     );
+    /* 行数に応じて印刷マージンを調整 */
+    var maxRows=0;
+    snapOrders.forEach(function(o){if(!o.isBag&&o.brand!=='シンサウメイク')maxRows++;});
+    var printMargin=maxRows>=11?'8mm 8mm 5mm 15mm':'15mm 10mm 10mm 20mm';
     /* 南九州ウィンドウに「中部飼料を印刷」ボタンを設置 */
     w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書</title>'+style
       +'<style>.os-page{margin:12px auto;}.no-print{display:none;}'
-      +'@media print{.os-page{margin:0;page-break-after:always;}@page{size:A4 landscape;margin:15mm 10mm 10mm 20mm;}}'
+      +'@media print{.os-page{margin:0;page-break-after:always;}@page{size:A4 landscape;margin:'+printMargin+';}}'
       +'</style></head>'
       +'<body>'
       +'<div class="no-print" style="padding:8px;background:#1A3A5C;color:#fff;display:flex;gap:8px;align-items:center;">'
@@ -904,9 +908,12 @@ function printAndArchive(){
       +html
       +'</body></html>');
   }else{
+    var maxRows2=0;
+    snapOrders.forEach(function(o){if(!o.isBag&&o.brand!=='シンサウメイク')maxRows2++;});
+    var printMargin2=maxRows2>=11?'8mm 8mm 5mm 15mm':'15mm 10mm 10mm 20mm';
     w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書</title>'+style
       +'<style>.os-page{margin:12px auto;}.no-print{display:none;}'
-      +'@media print{.os-page{margin:0;page-break-after:always;}@page{size:A4 landscape;margin:15mm 10mm 10mm 20mm;}}'
+      +'@media print{.os-page{margin:0;page-break-after:always;}@page{size:A4 landscape;margin:'+printMargin2+';}}'
       +'</style></head>'
       +'<body onload="window.print()">'
       +html
