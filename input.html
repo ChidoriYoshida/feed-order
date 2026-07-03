@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0109)file:///C:/Users/hikoc/AppData/Local/Temp/6c233087-9989-4669-8a1d-2478b0d7a817_files%20(4).zip.817/input.html -->
+<!-- saved from url=(0049)file:///C:/Users/hikoc/Downloads/input%20(7).html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -117,20 +117,20 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
-<body>
+<body><div style="background: rgb(46, 109, 164); color: rgb(255, 255, 255); text-align: center; padding: 8px; font-size: 13px; font-weight: 700;">👁 閲覧モード（注文の入力はできません）</div>
 <div class="app-bar">
   <div class="app-bar-title">飼料注文</div>
   <div class="app-bar-sub">ひこちゃん牧場 古井農場</div>
 </div>
 <div class="tab-bar">
-  <div class="tab-item active" id="tab-input-btn" onclick="showTab(&#39;input&#39;)">注文入力</div>
-  <div class="tab-item" id="tab-cal-btn" onclick="showTab(&#39;cal&#39;)">カレンダー</div>
+  <div class="tab-item" id="tab-input-btn" onclick="showTab(&#39;input&#39;)" style="display: none;">注文入力</div>
+  <div class="tab-item active" id="tab-cal-btn" onclick="showTab(&#39;cal&#39;)">カレンダー</div>
 </div>
-<div id="tab-input">
+<div id="tab-input" style="display: none;">
 <div class="card">
   <div class="card-lbl">配送希望日</div>
   <div class="field"><input type="date" id="delivery-date"></div>
-  <div class="date-band" id="date-band">6月29日(月)の配送</div>
+  <div class="date-band" id="date-band">7月3日(金)の配送</div>
 </div>
 <div class="card">
   <div class="card-lbl">担当者名</div>
@@ -187,11 +187,11 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
 </div>
 </div>
 
-<div id="tab-cal" style="display:none;">
+<div id="tab-cal" style="">
 <div class="card">
   <div class="month-nav">
     <button class="month-btn" id="prev-month">&lt;</button>
-    <span class="month-label" id="month-label">読み込み中...</span>
+    <span class="month-label" id="month-label">2026年7月</span>
     <button class="month-btn" id="next-month">&gt;</button>
   </div>
   <div class="legend-row">
@@ -201,17 +201,14 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
     <div class="legend-item"><div style="width:14px;height:4px;background:var(--green);border-radius:2px;"></div>積載量</div>
     <div class="legend-item"><div style="width:14px;height:4px;background:#E67E22;border-radius:2px;"></div>上限超過</div>
   </div>
-  <div id="cal-grid" class="cal-grid"></div>
+  <div id="cal-grid" class="cal-grid"><div class="cal-head sun">日</div><div class="cal-head">月</div><div class="cal-head">火</div><div class="cal-head">水</div><div class="cal-head">木</div><div class="cal-head">金</div><div class="cal-head sat">土</div><div class="cal-cell other"><div class="day-num sun">28</div></div><div class="cal-cell other"><div class="day-num">29</div></div><div class="cal-cell other"><div class="day-num">30</div></div><div class="cal-cell has-order over-limit selected" data-date="2026-07-01" onclick="selectDate(&#39;2026-07-01&#39;)"><div class="day-num">1</div><div class="dot-row"><div class="dot d0"></div><div class="dot d2"></div><div class="dot d1"></div></div><div class="cnt-lbl">20件</div><div class="qty-bar"><div class="qty-bar-inner" style="width:100%;background:#c0392b;"></div></div></div><div class="cal-cell" data-date="2026-07-02" onclick="selectDate(&#39;2026-07-02&#39;)"><div class="day-num">2</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-03" onclick="selectDate(&#39;2026-07-03&#39;)"><div class="day-num"><span class="today-num">3</span></div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-04" onclick="selectDate(&#39;2026-07-04&#39;)"><div class="day-num sat">4</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-05" onclick="selectDate(&#39;2026-07-05&#39;)"><div class="day-num sun">5</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-06" onclick="selectDate(&#39;2026-07-06&#39;)"><div class="day-num">6</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-07" onclick="selectDate(&#39;2026-07-07&#39;)"><div class="day-num">7</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-08" onclick="selectDate(&#39;2026-07-08&#39;)"><div class="day-num">8</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-09" onclick="selectDate(&#39;2026-07-09&#39;)"><div class="day-num">9</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-10" onclick="selectDate(&#39;2026-07-10&#39;)"><div class="day-num">10</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-11" onclick="selectDate(&#39;2026-07-11&#39;)"><div class="day-num sat">11</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-12" onclick="selectDate(&#39;2026-07-12&#39;)"><div class="day-num sun">12</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-13" onclick="selectDate(&#39;2026-07-13&#39;)"><div class="day-num">13</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-14" onclick="selectDate(&#39;2026-07-14&#39;)"><div class="day-num">14</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-15" onclick="selectDate(&#39;2026-07-15&#39;)"><div class="day-num">15</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-16" onclick="selectDate(&#39;2026-07-16&#39;)"><div class="day-num">16</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-17" onclick="selectDate(&#39;2026-07-17&#39;)"><div class="day-num">17</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-18" onclick="selectDate(&#39;2026-07-18&#39;)"><div class="day-num sat">18</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-19" onclick="selectDate(&#39;2026-07-19&#39;)"><div class="day-num sun">19</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-20" onclick="selectDate(&#39;2026-07-20&#39;)"><div class="day-num">20</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-21" onclick="selectDate(&#39;2026-07-21&#39;)"><div class="day-num">21</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-22" onclick="selectDate(&#39;2026-07-22&#39;)"><div class="day-num">22</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-23" onclick="selectDate(&#39;2026-07-23&#39;)"><div class="day-num">23</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-24" onclick="selectDate(&#39;2026-07-24&#39;)"><div class="day-num">24</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-25" onclick="selectDate(&#39;2026-07-25&#39;)"><div class="day-num sat">25</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-26" onclick="selectDate(&#39;2026-07-26&#39;)"><div class="day-num sun">26</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-27" onclick="selectDate(&#39;2026-07-27&#39;)"><div class="day-num">27</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-28" onclick="selectDate(&#39;2026-07-28&#39;)"><div class="day-num">28</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-29" onclick="selectDate(&#39;2026-07-29&#39;)"><div class="day-num">29</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-30" onclick="selectDate(&#39;2026-07-30&#39;)"><div class="day-num">30</div><div class="dot-row"></div></div><div class="cal-cell" data-date="2026-07-31" onclick="selectDate(&#39;2026-07-31&#39;)"><div class="day-num">31</div><div class="dot-row"></div></div><div class="cal-cell other"><div class="day-num sat">1</div></div></div>
 </div>
-<div class="card" id="detail-card" style="display:none;">
-  <div id="detail-panel"></div>
+<div class="card" id="detail-card" style="">
+  <div id="detail-panel"><div class="detail-date-lbl">7月1日(水)<span class="detail-badge">バラ 20件 / 71.0t / 紙袋2件</span></div><div class="limit-bar"><div class="limit-bar-label"><span>バラ飼料合計: 71.0t</span><span>⚠ 上限超過!</span></div><div class="limit-bar-outer"><div class="limit-bar-inner" style="width:100%;background:#c0392b;"></div></div><div style="font-size:10px;color:var(--muted);margin-top:3px;">上限50t（10t×5便）まで-21.0t空き</div><div style="font-size:10px;margin-top:4px;color:var(--muted);">紙袋: 150袋（上限150袋/台）</div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf0">古井農場</span><div class="det-info"><div class="det-tank">タンク 43<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから12</div></div><div><div class="det-qty">2t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf0">古井農場</span><div class="det-info"><div class="det-tank">タンク 12<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">シンサウメイク</div></div><div><div class="det-qty">2t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf0">古井農場</span><div class="det-info"><div class="det-tank">タンク 33<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから授乳</div></div><div><div class="det-qty">4t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf2">第3農場</span><div class="det-info"><div class="det-tank">タンク D-4<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから70PL</div></div><div><div class="det-qty">4t</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf2">第3農場</span><div class="det-info"><div class="det-tank">タンク D-1<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから70PL</div></div><div><div class="det-qty">4t</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf2">第3農場</span><div class="det-info"><div class="det-tank">タンク C-3<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから70PL</div></div><div><div class="det-qty">4t</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf2">第3農場</span><div class="det-info"><div class="det-tank">タンク B-4<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから70PL</div></div><div><div class="det-qty">4t</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf2">第3農場</span><div class="det-info"><div class="det-tank">タンク B-2<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから70PL</div></div><div><div class="det-qty">4t</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf1">第2農場</span><div class="det-info"><div class="det-tank">タンク 59<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから70PL</div></div><div><div class="det-qty">1t</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf1">第2農場</span><div class="det-info"><div class="det-tank">タンク 58<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから70PL</div></div><div><div class="det-qty">1t</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf2">第3農場</span><div class="det-info"><div class="det-tank">タンク F-3<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから40PL</div></div><div><div class="det-qty">4t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf2">第3農場</span><div class="det-info"><div class="det-tank">タンク F-1<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから40PL</div></div><div><div class="det-qty">4t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf2">第3農場</span><div class="det-info"><div class="det-tank">タンク E-3<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから40PL</div></div><div><div class="det-qty">4t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf1">第2農場</span><div class="det-info"><div class="det-tank">タンク 53<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから20PL</div></div><div><div class="det-qty">4t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #1D9E75;padding-left:8px;"><span class="badge bf1">第2農場</span><div class="det-info"><div class="det-tank">タンク 51<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div><div class="det-brand">たから20PL</div></div><div><div class="det-qty">4t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #E67E22;padding-left:8px;"><span class="badge bf0">古井農場</span><div class="det-info"><div class="det-tank">タンク 41<span style="background:#E67E22;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">未確定</span></div><div class="det-brand">たから12</div></div><div><div class="det-qty">3t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #E67E22;padding-left:8px;"><span class="badge bf0">古井農場</span><div class="det-info"><div class="det-tank">タンク 42<span style="background:#E67E22;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">未確定</span></div><div class="det-brand">たから20PL</div></div><div><div class="det-qty">4t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #E67E22;padding-left:8px;"><span class="badge bf0">古井農場</span><div class="det-info"><div class="det-tank">タンク 44<span style="background:#E67E22;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">未確定</span></div><div class="det-brand">たから20PL</div></div><div><div class="det-qty">4t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #E67E22;padding-left:8px;"><span class="badge bf0">古井農場</span><div class="det-info"><div class="det-tank">タンク 21<span style="background:#E67E22;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">未確定</span></div><div class="det-brand">たから母豚</div></div><div><div class="det-qty">4t</div><div class="det-add">添加剤有</div></div></div><div class="det-row" style="border-left:3px solid #E67E22;padding-left:8px;"><span class="badge bf0">古井農場</span><div class="det-info"><div class="det-tank">タンク 24<span style="background:#E67E22;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">未確定</span></div><div class="det-brand">たから母豚</div></div><div><div class="det-qty">6t</div><div class="det-add">添加剤有</div></div></div><div style="margin-top:8px;padding-top:8px;border-top:1.5px dashed var(--border);"><div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:4px;">📦 紙袋製品（別トラック）</div><div class="det-row" style="border-left:3px solid var(--blue);padding-left:8px;"><span class="badge bf0">古井農場</span><div class="det-info"><div class="det-tank">ミュー前期<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div></div><div><div class="det-qty">100袋</div></div></div><div class="det-row" style="border-left:3px solid var(--blue);padding-left:8px;"><span class="badge bf0">古井農場</span><div class="det-info"><div class="det-tank">やまとX<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span></div></div><div><div class="det-qty">50袋</div></div></div></div></div>
 </div>
 <div class="card">
   <div class="card-lbl">前回・次回の配達</div>
-  <div class="pn-grid" id="pn-grid">
-    <div class="pn-card"><div class="pn-lbl">前回</div><div class="pn-date" style="color:var(--muted);">読み込み中</div></div>
-    <div class="pn-card"><div class="pn-lbl">次回</div><div class="pn-date" style="color:var(--muted);">読み込み中</div></div>
-  </div>
+  <div class="pn-grid" id="pn-grid"><div class="pn-card"><div class="pn-lbl">◀ 前回</div><div class="pn-date">7月1日(水)</div><div class="pn-cnt">20件 / 71.0t</div></div><div class="pn-card"><div class="pn-lbl">▶ 次回</div><div class="pn-date" style="color:var(--muted);">なし</div></div></div>
 </div>
 </div>
 <div id="toast" class="">1件を送信しました</div>
@@ -219,15 +216,19 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
 /* パスワード保護 */
 (function(){
   var PASS='Koifeed';
+  var VIEW_PASS='Feed';
   var stored=localStorage.getItem('auth');
-  if(stored===PASS)return;
+  if(stored===PASS||stored===VIEW_PASS)return;
   var entered=prompt('パスワードを入力してください');
   if(entered===PASS){
     localStorage.setItem('auth',PASS);
+  } else if(entered===VIEW_PASS){
+    localStorage.setItem('auth',VIEW_PASS);
   } else {
     document.body.innerHTML='<div style="text-align:center;padding:40px;font-family:sans-serif;"><p style="color:#c00;font-size:16px;">パスワードが違います。ページを再読み込みしてください。</p></div>';
   }
 })();
+var VIEW_MODE=localStorage.getItem('auth')==='Feed';
 var TANK_BRAND_LIMIT={
   '11':['シンサウメイク'],
   '12':['シンサウメイク'],
@@ -302,6 +303,20 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('delivery-date').value=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate());
   updateDateBand();
   document.getElementById('delivery-date').addEventListener('change',updateDateBand);
+
+  /* 閲覧モードの場合は入力タブを非表示にする */
+  if(VIEW_MODE){
+    /* 注文入力タブを非表示 */
+    document.getElementById('tab-input').style.display='none';
+    document.getElementById('tab-input-btn').style.display='none';
+    /* カレンダータブを表示・アクティブに */
+    showTab('cal');
+    /* 閲覧モード表示バナーを追加 */
+    var banner=document.createElement('div');
+    banner.style.cssText='background:#2E6DA4;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:700;';
+    banner.textContent='👁 閲覧モード（注文の入力はできません）';
+    document.body.insertBefore(banner,document.body.firstChild);
+  }
 
   document.getElementById('farm-chips').addEventListener('click',function(e){
     var b=e.target;
@@ -738,6 +753,7 @@ function toast(msg){
   toastTimer=setTimeout(function(){el.classList.remove('show');},2400);
 }
 </script>
+
 
 
 
