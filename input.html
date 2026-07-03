@@ -749,21 +749,4 @@ function renderPrevNext(){
     calOrders.filter(function(o){return!o.isBag;}).forEach(function(o){if(o.date===dateStr){cnt++;qty+=o.qty;}});
     return'<div class="pn-card"><div class="pn-lbl">'+arrow+' '+label+'</div>'
       +'<div class="pn-date">'+(d.getMonth()+1)+'月'+d.getDate()+'日('+wd+')</div>'
-      +'<div class="pn-cnt">'+cnt+'件 / '+qty.toFixed(1)+'t</div></div>';
-  }
-  document.getElementById('pn-grid').innerHTML=makeCard('前回','◀',prev)+makeCard('次回','▶',next);
-}
-
-function toast(msg){
-  var el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(function(){el.classList.remove('show');},2400);
-}
-</script>
-
-
-
-
-
-</body></html>
+      +'<div class="pn-cnt">'+cnt+'件 / '+qty.toFi
