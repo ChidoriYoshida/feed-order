@@ -218,7 +218,12 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
   var PASS='Koifeed';
   var VIEW_PASS='Feed';
   var stored=localStorage.getItem('auth');
-  if(stored===PASS||stored===VIEW_PASS)return;
+  if(stored===PASS)return; /* 通常モードはそのまま */
+  /* 閲覧モードの場合も再入力できるようにする */
+  if(stored===VIEW_PASS){
+    /* 閲覧モードのままスキップ */
+    return;
+  }
   var entered=prompt('パスワードを入力してください');
   if(entered===PASS){
     localStorage.setItem('auth',PASS);
@@ -313,8 +318,9 @@ document.addEventListener('DOMContentLoaded',function(){
     showTab('cal');
     /* 閲覧モード表示バナーを追加 */
     var banner=document.createElement('div');
-    banner.style.cssText='background:#2E6DA4;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:700;';
-    banner.textContent='👁 閲覧モード（注文の入力はできません）';
+    banner.style.cssText='background:#2E6DA4;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:700;display:flex;justify-content:center;align-items:center;gap:12px;';
+    banner.innerHTML='👁 閲覧モード（注文の入力はできません）'
+      +'<button onclick="var p=prompt(\'通常モードのパスワードを入力\');if(p===\'Koifeed\'){localStorage.setItem(\'auth\',\'Koifeed\');location.reload();}" style="background:#fff;color:#2E6DA4;border:none;border-radius:4px;padding:3px 10px;cursor:pointer;font-size:11px;font-weight:700;">🔓 切替</button>';
     document.body.insertBefore(banner,document.body.firstChild);
   }
 
