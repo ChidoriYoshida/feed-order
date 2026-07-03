@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0049)file:///C:/Users/hikoc/Downloads/input%20(7).html -->
+<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(16).html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -117,7 +117,7 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
-<body><div style="background: rgb(46, 109, 164); color: rgb(255, 255, 255); text-align: center; padding: 8px; font-size: 13px; font-weight: 700;">👁 閲覧モード（注文の入力はできません）</div>
+<body>
 <div class="app-bar">
   <div class="app-bar-title">飼料注文</div>
   <div class="app-bar-sub">ひこちゃん牧場 古井農場</div>
@@ -217,13 +217,15 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
 (function(){
   var PASS='Koifeed';
   var VIEW_PASS='Feed';
-  var stored=localStorage.getItem('auth');
-  if(stored===PASS)return; /* 通常モードはそのまま */
-  /* 閲覧モードの場合も再入力できるようにする */
-  if(stored===VIEW_PASS){
-    /* 閲覧モードのままスキップ */
+  /* ?reset=1 でlocalStorageをクリア */
+  if(location.search.indexOf('reset=1')>=0){
+    localStorage.removeItem('auth');
+    location.href=location.pathname;
     return;
   }
+  var stored=localStorage.getItem('auth');
+  if(stored===PASS)return;
+  if(stored===VIEW_PASS)return;
   var entered=prompt('パスワードを入力してください');
   if(entered===PASS){
     localStorage.setItem('auth',PASS);
@@ -759,6 +761,7 @@ function toast(msg){
   toastTimer=setTimeout(function(){el.classList.remove('show');},2400);
 }
 </script>
+
 
 
 
