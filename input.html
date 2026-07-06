@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(22).html -->
+<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(23).html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -290,7 +290,7 @@ var GAS_URL='https://script.google.com/macros/s/AKfycbyTBTPjewF9RDfODEXEmReu06Wx
 var farmKey='furukami';
 var selTank=null,selBrand=null,selQty=null,selAdd='no';
 var orders=[],idCnt=1,toastTimer;
-var calYear=0,calMonth=0,calOrders=[],calMemos={},calLoaded=false,selDate=null;
+var calYear=0,calMonth=0,calOrders=[],calMemos={},calLoaded=false,selDate=null,currentDetailDate=null;
 
 function pad(n){return String(n).padStart(2,'0');}
 
@@ -562,8 +562,12 @@ function deleteOrder(id){
     delete window[cbName];
     if(script.parentNode)document.body.removeChild(script);
     if(res&&res.result==='success'){
+      /* calOrdersから該当IDを削除してカレンダーを再描画 */
+      calOrders=calOrders.filter(function(o){return String(o.id)!==String(id);});
       calLoaded=false;
       loadCalendar();
+      /* 詳細パネルも更新 */
+      if(currentDetailDate)showDetail(currentDetailDate);
       toast('注文を削除しました');
     }else{
       toast('削除に失敗しました');
@@ -679,6 +683,7 @@ function selectDate(dateStr){
 }
 
 function showDetail(dateStr){
+  currentDetailDate=dateStr;
   var card=document.getElementById('detail-card');
   var dayOrders=calOrders.filter(function(o){return o.date===dateStr;});
   if(!dayOrders.length){card.style.display='none';return;}
