@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(20).html -->
+<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(21).html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -556,16 +556,22 @@ function loadDraft(){try{var r=localStorage.getItem('draft_orders');if(r)orders=
 
 function deleteOrder(id){
   if(!confirm('この注文を削除しますか？'))return;
-  gasCall('delete_printed',{ids:[id]},function(res){
+  var cbName='del_'+Date.now();
+  var script=document.createElement('script');
+  window[cbName]=function(res){
+    delete window[cbName];
+    if(script.parentNode)document.body.removeChild(script);
     if(res&&res.result==='success'){
-      /* カレンダーを再読み込み */
       calLoaded=false;
       loadCalendar();
       toast('注文を削除しました');
     }else{
       toast('削除に失敗しました');
     }
-  });
+  };
+  script.onerror=function(){delete window[cbName];if(script.parentNode)document.body.removeChild(script);toast('削除エラー');};
+  script.src=GAS_URL+'?action=delete_printed&data='+encodeURIComponent(JSON.stringify({ids:[id]}))+'&callback='+cbName;
+  document.body.appendChild(script);
 }
 
 function loadCalendar(){
