@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(23).html -->
+<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(25).html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -598,6 +598,7 @@ function loadCalendar(){
           var isBag=o['\u7d19\u888b']==='紙袋';
           var qtyVal=parseFloat(o['\u6570\u91cf(t)'])||0;
           calOrders.push({
+            id:String(o['ID']||''),
             date:s,farm:f,
             tank:String(o['\u30bf\u30f3\u30af']||''),
             brand:String(o['銘柄']||''),
