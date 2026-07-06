@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(17).html -->
+<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(18).html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -130,7 +130,7 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
 <div class="card">
   <div class="card-lbl">配送希望日</div>
   <div class="field"><input type="date" id="delivery-date"></div>
-  <div class="date-band" id="date-band">7月3日(金)の配送</div>
+  <div class="date-band" id="date-band">7月6日(月)の配送</div>
 </div>
 <div class="card">
   <div class="card-lbl">担当者名</div>
@@ -554,6 +554,20 @@ function submitOrders(){
 function saveDraft(){try{localStorage.setItem('draft_orders',JSON.stringify(orders));}catch(e){}}
 function loadDraft(){try{var r=localStorage.getItem('draft_orders');if(r)orders=JSON.parse(r);if(orders.length)renderOrders();}catch(e){orders=[];}}
 
+function deleteOrder(id){
+  if(!confirm('この注文を削除しますか？'))return;
+  gasCall('delete_printed',{ids:[id]},function(res){
+    if(res&&res.result==='success'){
+      /* カレンダーを再読み込み */
+      calLoaded=false;
+      loadCalendar();
+      toast('注文を削除しました');
+    }else{
+      toast('削除に失敗しました');
+    }
+  });
+}
+
 function loadCalendar(){
   document.getElementById('month-label').textContent=calYear+'年'+(calMonth+1)+'月';
   document.getElementById('cal-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--muted);font-size:12px;">読み込み中...</div>';
@@ -694,6 +708,9 @@ function showDetail(dateStr){
     var confirmedBadge=o.confirmed
       ?'<span style="background:#1D9E75;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">確定</span>'
       :'<span style="background:#E67E22;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px;">未確定</span>';
+    var deleteBtn=!o.confirmed&&!VIEW_MODE
+      ?'<button onclick="deleteOrder(\''+o.id+'\')" style="background:#c0392b;color:#fff;border:none;border-radius:4px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">削除</button>'
+      :'';
     return '<div class="det-row" style="border-left:3px solid '+(o.confirmed?'#1D9E75':'#E67E22')+';padding-left:8px;">'
       +'<span class="badge '+bc+'">'+o.farm+'</span>'
       +'<div class="det-info">'
@@ -701,6 +718,7 @@ function showDetail(dateStr){
         +'<div class="det-brand">'+o.brand+'</div>'
       +'</div>'
       +'<div><div class="det-qty">'+o.qty+'t</div>'+(o.additive==='yes'?'<div class="det-add">添加剤有</div>':'')+'</div>'
+      +deleteBtn
       +'</div>';
   }).join('');
   /* 紙袋行 */
@@ -718,6 +736,7 @@ function showDetail(dateStr){
           +'<div class="det-tank">'+o.brand+confirmedBadge+'</div>'
         +'</div>'
         +'<div><div class="det-qty">'+o.qty+'袋</div></div>'
+        +(!o.confirmed&&!VIEW_MODE?'<button onclick="deleteOrder(\''+o.id+'\')" style="background:#c0392b;color:#fff;border:none;border-radius:4px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">削除</button>':'')
         +'</div>';
     }).join('')+'</div>':'';
   /* メモ */
@@ -751,20 +770,4 @@ function renderPrevNext(){
       +'<div class="pn-date">'+(d.getMonth()+1)+'月'+d.getDate()+'日('+wd+')</div>'
       +'<div class="pn-cnt">'+cnt+'件 / '+qty.toFixed(1)+'t</div></div>';
   }
-  document.getElementById('pn-grid').innerHTML=makeCard('前回','◀',prev)+makeCard('次回','▶',next);
-}
-
-function toast(msg){
-  var el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(function(){el.classList.remove('show');},2400);
-}
-</script>
-
-
-
-
-
-<div id="UMS_TOOLTIP" style="position: absolute; cursor: pointer; z-index: 2147483647; background: transparent; top: -100000px; left: -100000px;"></div><div id="trend_notification_app" class="trend_notification_app_outer"><div id="trend_notification"><div id="trend_notification_con"></div></div></div><umsdataelement id="UMSDataElement" style="display: none;"></umsdataelement><div id="tmtoolbar_manual_rating_injected" style="display: none;">init</div><div id="UMSSendDataEventElement" style="display: none;">init</div>
-</body></html>
+  document.getElementById('pn
