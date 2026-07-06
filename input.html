@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(18).html -->
+<!-- saved from url=(0050)file:///C:/Users/hikoc/Downloads/input%20(20).html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -770,4 +770,20 @@ function renderPrevNext(){
       +'<div class="pn-date">'+(d.getMonth()+1)+'月'+d.getDate()+'日('+wd+')</div>'
       +'<div class="pn-cnt">'+cnt+'件 / '+qty.toFixed(1)+'t</div></div>';
   }
-  document.getElementById('pn
+  document.getElementById('pn-grid').innerHTML=makeCard('前回','◀',prev)+makeCard('次回','▶',next);
+}
+
+function toast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){el.classList.remove('show');},2400);
+}
+</script>
+
+
+
+
+
+<div id="UMS_TOOLTIP" style="position: absolute; cursor: pointer; z-index: 2147483647; background: transparent; top: -100000px; left: -100000px;"></div><div id="trend_notification_app" class="trend_notification_app_outer"><div id="trend_notification"><div id="trend_notification_con"></div></div></div><umsdataelement id="UMSDataElement" style="display: none;"></umsdataelement><div id="tmtoolbar_manual_rating_injected" style="display: none;">init</div><div id="UMSSendDataEventElement" style="display: none;">init</div>
+</body></html>
