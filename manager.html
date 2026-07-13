@@ -229,7 +229,7 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:13px;}
         </select>
       </div>
       <div class="modal-field"><label>配送日</label><input type="date" id="m-date"></div>
-      <div class="modal-field"><label>タンク</label><select id="m-tank"><option value="-">-(紙袋製品)</option><option value="11">11(育成)</option><option value="12">12(育成)</option><option value="21">21(母豚)</option><option value="22">22(母豚)</option><option value="23">23(母豚)</option><option value="24">24(母豚)</option><option value="25">25(母豚)</option><option value="26">26(母豚)</option><option value="27">27(母豚)</option><option value="28">28(母豚)</option><option value="29">29(母豚)</option><option value="30">30(母豚)</option><option value="31">31(分娩)</option><option value="32">32(分娩)</option><option value="33">33(分娩)</option><option value="34">34(分娩)</option><option value="35">35(分娩)</option><option value="36">36(分娩)</option><option value="37">37(分娩)</option><option value="38">38(分娩)</option><option value="41">41(子豚)</option><option value="42">42(子豚)</option><option value="43">43(子豚)</option><option value="44">44(子豚)</option></select></div>
+      <div class="modal-field"><label>タンク</label><select id="m-tank" onchange="onMTankChange()"><option value="-">-(紙袋製品)</option><option value="11">11(育成)</option><option value="12">12(育成)</option><option value="21">21(母豚)</option><option value="22">22(母豚)</option><option value="23">23(母豚)</option><option value="24">24(母豚)</option><option value="25">25(母豚)</option><option value="26">26(母豚)</option><option value="27">27(母豚)</option><option value="28">28(母豚)</option><option value="29">29(母豚)</option><option value="30">30(母豚)</option><option value="31">31(分娩)</option><option value="32">32(分娩)</option><option value="33">33(分娩)</option><option value="34">34(分娩)</option><option value="35">35(分娩)</option><option value="36">36(分娩)</option><option value="37">37(分娩)</option><option value="38">38(分娩)</option><option value="41">41(子豚)</option><option value="42">42(子豚)</option><option value="43">43(子豚)</option><option value="44">44(子豚)</option></select></div>
       <div class="modal-field"><label>銘柄</label><select id="m-brand" onchange="onMBrandChange()"><option value="シンサウメイク">シンサウメイク</option><option value="たから母豚">たから母豚</option><option value="たから授乳">たから授乳</option><option value="たから12">たから12</option><option value="たから20PL">たから20PL</option><option value="たから40PL">たから40PL</option><option value="たから70PL">たから70PL</option><option value="ママコロ餌付">ママコロ餌付</option><option value="ママコロ前期">ママコロ前期</option><option value="ミュー前期">ミュー前期</option><option value="やまとX">やまとX</option></select></div>
       <div class="modal-field"><label id="m-qty-label">数量(t)</label><input type="number" id="m-qty" min="0.5" step="0.5" placeholder="例:4"></div>
       <div class="modal-field"><label>添加剤</label>
@@ -308,6 +308,33 @@ var TANK_MASTER={
   '古井農場':[{no:'11',house:'育成'},{no:'12',house:'育成'},{no:'21',house:'母豚'},{no:'22',house:'母豚'},{no:'23',house:'母豚'},{no:'24',house:'母豚'},{no:'25',house:'母豚'},{no:'26',house:'母豚'},{no:'27',house:'母豚'},{no:'28',house:'母豚'},{no:'29',house:'母豚'},{no:'30',house:'母豚'},{no:'31',house:'分娩'},{no:'32',house:'分娩'},{no:'33',house:'分娩'},{no:'34',house:'分娩'},{no:'35',house:'分娩'},{no:'36',house:'分娩'},{no:'37',house:'分娩'},{no:'38',house:'分娩'},{no:'41',house:'子豚'},{no:'42',house:'子豚'},{no:'43',house:'子豚'},{no:'44',house:'子豚'}],
   '第2農場':[{no:'50',house:'201'},{no:'51',house:'202-203'},{no:'52',house:'204'},{no:'53',house:'205-206'},{no:'54',house:'207-208'},{no:'55',house:'209'},{no:'56',house:'210-211'},{no:'57',house:'212-213'},{no:'58',house:'214-215'},{no:'59',house:'216-217'}],
   '第3農場':[{no:'A-1',house:'301'},{no:'A-2',house:'301'},{no:'A-3',house:'302'},{no:'A-4',house:'302'},{no:'B-1',house:'303'},{no:'B-2',house:'303'},{no:'B-3',house:'304'},{no:'B-4',house:'304'},{no:'C-1',house:'305'},{no:'C-2',house:'305'},{no:'C-3',house:'306'},{no:'C-4',house:'306'},{no:'D-1',house:'307'},{no:'D-2',house:'307'},{no:'D-3',house:'308'},{no:'D-4',house:'308'},{no:'E-1',house:'309'},{no:'E-2',house:'309'},{no:'E-3',house:'310'},{no:'E-4',house:'310'},{no:'F-1',house:'311'},{no:'F-2',house:'311'},{no:'F-3',house:'312'},{no:'F-4',house:'312'}]
+};
+var TANK_BRAND_LIMIT={
+  '11':['シンサウメイク'],
+  '12':['シンサウメイク'],
+  '21':['たから母豚'],
+  '22':['たから母豚'],
+  '23':['たから母豚'],
+  '24':['たから母豚'],
+  '25':['たから母豚'],
+  '26':['たから母豚'],
+  '27':['たから母豚'],
+  '28':['たから母豚'],
+  '29':['たから母豚'],
+  '30':['たから母豚'],
+  '31':['たから授乳'],
+  '32':['たから授乳'],
+  '33':['たから授乳'],
+  '34':['たから授乳'],
+  '35':['たから授乳'],
+  '36':['たから授乳'],
+  '37':['たから授乳'],
+  '38':['たから授乳'],
+  '41':['たから12','たから20PL'],
+  '42':['たから12','たから20PL'],
+  '43':['たから12','たから20PL'],
+  '44':['たから12','たから20PL'],
+  '50':['シンサウメイク']
 };
 var BAG_BRANDS=['ママコロ餌付','ママコロ前期','ミュー前期','やまとX'];
 var BRAND_MASTER={
@@ -484,7 +511,14 @@ function updateKPI(){
 function onMFarmChange(){
   var farm=document.getElementById('m-farm').value;
   document.getElementById('m-tank').innerHTML='<option value="-">-(紙袋製品)</option>'+(TANK_MASTER[farm]||[]).map(function(t){return'<option value="'+t.no+'">'+t.no+'('+t.house+')</option>';}).join('');
-  document.getElementById('m-brand').innerHTML=(BRAND_MASTER[farm]||[]).map(function(b){return'<option value="'+b+'">'+b+'</option>';}).join('');
+  onMTankChange();
+}
+
+function onMTankChange(){
+  var farm=document.getElementById('m-farm').value;
+  var tank=document.getElementById('m-tank').value;
+  var brands=(tank!=='-'&&TANK_BRAND_LIMIT[tank])?TANK_BRAND_LIMIT[tank]:(BRAND_MASTER[farm]||[]);
+  document.getElementById('m-brand').innerHTML=brands.map(function(b){return'<option value="'+b+'">'+b+'</option>';}).join('');
   onMBrandChange();
 }
 
