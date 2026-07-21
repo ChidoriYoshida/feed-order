@@ -82,13 +82,13 @@ table.otbl tr:hover td{background:#f0f5fb;}
 .os-unit{margin-left:auto;font-size:12px;font-weight:600;}
 table.ostbl{width:100%;border-collapse:collapse;font-size:12px;}
 table.ostbl th,table.ostbl td{border:1px solid #666;text-align:center;padding:4px 2px;vertical-align:middle;}
-table.ostbl thead th{background:#ddd;font-weight:700;font-size:11px;line-height:1.3;}
+table.ostbl thead th{background:#ddd;font-weight:700;font-size:12px;line-height:1.3;}
 table.ostbl .of0 td{background:#D6E8F7;}
 table.ostbl .of1 td{background:#E8E6FB;}
 table.ostbl .of2 td{background:#FDE9C8;}
 table.ostbl .obag td{background:#EBF3FA;}
 table.ostbl .ototal td{background:#1A3A5C;color:#fff;font-weight:700;}
-table.ostbl .qval{font-size:14px;font-weight:700;color:#1A3A5C;}
+table.ostbl .qval{font-size:17px;font-weight:700;color:#1A3A5C;}
 table.ostbl .ototal .qval{color:#fff;}
 .os-bag-section{margin-top:3mm;border:1px solid #7DB8E0;border-radius:4px;overflow:hidden;}
 .os-bag-header{background:#2E6DA4;color:#fff;padding:2mm 3mm;font-size:11px;font-weight:700;}
@@ -747,13 +747,13 @@ function renderSheetHTML(trucks,orders){
     /* 注文書の表示順：農場順→タンク番号昇順（便番号に依存しない） */
     bulkRows.sort(cmpFarmTank);
     var bagRows=pi===0?orders.filter(function(o){return o.isBag;}):[];
-    /* 行数に応じてフォント・行高さを動的調整（必ず1枚に収める） */
+    /* 行数は常に10行固定（内容の見やすさを優先し、フォントサイズは固定） */
     var totalRows=bulkRows.length;
-    var emptyNeeded=Math.max(0,12-totalRows);
-    var rowFontSize=totalRows<=8?'12px':totalRows<=10?'11px':'10px';
-    var rowHeight=totalRows<=8?'8mm':totalRows<=10?'7mm':'6mm';
-    var farmFontSize=totalRows<=8?'9px':totalRows<=10?'8px':'8px';
-    var addFontSize=totalRows<=8?'10px':totalRows<=10?'9px':'8px';
+    var emptyNeeded=Math.max(0,10-totalRows);
+    var rowFontSize=totalRows<=10?'14px':'11px';
+    var rowHeight=totalRows<=10?'9mm':'7mm';
+    var farmFontSize=totalRows<=10?'11px':'9px';
+    var addFontSize=totalRows<=10?'12px':'10px';
     /* バラ飼料テーブル */
     var dataRows=bulkRows.map(function(o){
       var cols=NANKU_BRANDS.map(function(b){return b===o.brand?Number(o.qty):'';});
@@ -805,7 +805,7 @@ function renderSheetHTML(trucks,orders){
         +'<th style="width:12mm;">添加剤</th>'
       +'</tr></thead>'
       +'<tbody>'+dataRows
-        +'<tr class="ototal"><td colspan="3" style="text-align:right;font-size:9px;">合計(t)</td>'+totCols+'<td></td></tr>'
+        +'<tr class="ototal"><td colspan="3" style="text-align:right;font-size:12px;">合計(t)</td>'+totCols+'<td></td></tr>'
       +'</tbody></table>'
       +bagSection
       +'<div class="os-memo-wrap no-print" style="margin-top:2mm;border:1.5px solid #1A3A5C;border-radius:4px;padding:4px 8px;">'
