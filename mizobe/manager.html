@@ -158,16 +158,16 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:13px;}
   .os-memo-wrap{display:none!important;}
   .os-memo-print{display:block!important;}
   table.ostbl th,table.ostbl td{border:1px solid #000!important;color:#000!important;}
-  table.ostbl thead th{background:#000!important;color:#fff!important;}
+  table.ostbl thead th{background:#fff!important;color:#000!important;font-weight:700!important;}
   table.ostbl .of0 td,table.ostbl .of1 td,table.ostbl .of2 td{background:#fff!important;}
-  table.ostbl .obag td{background:#ddd!important;}
-  table.ostbl .ototal td{background:#000!important;color:#fff!important;}
+  table.ostbl .obag td{background:#fff!important;}
+  table.ostbl .ototal td{background:#fff!important;color:#000!important;font-weight:700!important;}
   table.ostbl .qval{color:#000!important;font-weight:700!important;}
   table.os-bag-tbl th,table.os-bag-tbl td{border:1px solid #000!important;color:#000!important;}
-  table.os-bag-tbl thead th{background:#888!important;color:#fff!important;}
-  .os-bag-header{background:#000!important;color:#fff!important;}
+  table.os-bag-tbl thead th{background:#fff!important;color:#000!important;font-weight:700!important;}
+  .os-bag-header{background:#fff!important;color:#000!important;border:1px solid #000!important;}
   .os-company,.os-title,.os-date,.dlabel,.ddate{color:#000!important;}
-  .sign-box .sh{background:#000!important;color:#fff!important;}
+  .sign-box .sh{background:#fff!important;color:#000!important;border:1px solid #000!important;}
   /* シンサウメイク注文書印刷 */
   .sinsa-page{margin:0;box-shadow:none;padding:6mm 8mm;width:148mm;}
   .sinsa-page:not(:last-child){page-break-after:always;}
@@ -804,7 +804,7 @@ function renderSheetHTML(trucks,orders){
         +NANKU_BRANDS.map(function(b){return'<th style="width:10mm;">'+b.replace('たから','たから<br>')+'</th>';}).join('')
         +'<th style="width:12mm;">添加剤</th>'
       +'</tr></thead>'
-      +'<tbody>'+dataRows
+      +'<tbody>'+dataRows+emptyRows
         +'<tr class="ototal"><td colspan="3" style="text-align:right;font-size:12px;">合計(t)</td>'+totCols+'<td></td></tr>'
       +'</tbody></table>'
       +bagSection
