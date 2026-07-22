@@ -152,7 +152,7 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:13px;}
   .toolbar,.tab-bar,#tab-orders,#tab-plan,#tab-archive,.no-print{display:none!important;}
   body{background:#fff;}
   #tab-sheet{display:block!important;}
-  .os-page{margin:0;box-shadow:none;padding:8mm 10mm;width:100%;}
+  .os-page{margin:0;box-shadow:none;padding:14mm 8mm 8mm 18mm;width:100%;}
   .os-page:not(:last-child){page-break-after:always;}
   .os-sep{display:none!important;}
   /* 変更メモ：印刷時は入力欄を非表示・印刷用欄を表示 */
@@ -726,7 +726,7 @@ function setPrintPageSize(orient){
   if(orient==='portrait'){
     el.textContent='@media print{@page{size:A4 portrait!important;margin:8mm!important;}.os-page{display:none!important;}.os-sep{display:none!important;}}';
   }else{
-    el.textContent='@media print{@page{size:A4 landscape!important;margin:14mm 8mm 8mm 22mm!important;}.sinsa-page{display:none!important;}}';
+    el.textContent='@media print{@page{size:A4 landscape!important;margin:8mm 6mm 6mm 8mm!important;}.sinsa-page{display:none!important;}}';
   }
 }
 
@@ -802,9 +802,9 @@ function renderSheetHTML(trucks,orders){
       +'<div class="os-fax">Fax: 志布志飼料&#40;株&#41;(0994-73-1334) 坂元運送&#40;株&#41;(099-262-0638)</div>'
       +'<div class="os-delivery"><span class="dlabel">配達日</span><span class="ddate">'+(d.getMonth()+1)+'月'+d.getDate()+'日('+wd+')</span><span class="os-unit">単位:t</span></div>'
       +'<table class="ostbl" style="font-size:'+rowFontSize+';"><thead><tr>'
-        +'<th style="width:8mm;">便</th><th style="width:16mm;">タンク</th>'
-        +NANKU_BRANDS.map(function(b){return'<th style="width:10mm;">'+b.replace('たから','たから<br>')+'</th>';}).join('')
-        +'<th style="width:12mm;">添加剤</th><th style="width:14mm;">翌日<br>配達</th>'
+        +'<th style="width:7mm;">便</th><th style="width:12mm;">タンク</th>'
+        +NANKU_BRANDS.map(function(b){return'<th style="width:11mm;">'+b.replace('たから','たから<br>')+'</th>';}).join('')
+        +'<th style="width:13mm;">添加剤</th><th style="width:11mm;">翌日<br>配達</th>'
       +'</tr></thead>'
       +'<tbody>'+dataRows+emptyRows
         +'<tr class="ototal"><td colspan="2" style="text-align:right;font-size:12px;">合計(t)</td>'+totCols+'<td></td><td></td></tr>'
@@ -975,7 +975,7 @@ function printAndArchive(){
     /* 行数に応じて印刷マージンを調整 */
     var maxRows=0;
     snapOrders.forEach(function(o){if(!o.isBag&&o.brand!=='シンサウメイク')maxRows++;});
-    var printMargin=maxRows>=11?'10mm 6mm 5mm 16mm':'14mm 8mm 8mm 22mm';
+    var printMargin=maxRows>=11?'6mm 5mm 5mm 6mm':'8mm 6mm 6mm 8mm';
     /* 南九州ウィンドウに「中部飼料を印刷」ボタンを設置 */
     w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書</title>'+style
       +'<style>.os-page{margin:12px auto;}.no-print{display:none;}'
@@ -992,7 +992,7 @@ function printAndArchive(){
   }else{
     var maxRows2=0;
     snapOrders.forEach(function(o){if(!o.isBag&&o.brand!=='シンサウメイク')maxRows2++;});
-    var printMargin2=maxRows2>=11?'10mm 6mm 5mm 16mm':'14mm 8mm 8mm 22mm';
+    var printMargin2=maxRows2>=11?'6mm 5mm 5mm 6mm':'8mm 6mm 6mm 8mm';
     w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書</title>'+style
       +'<style>.os-page{margin:12px auto;}.no-print{display:none;}'
       +'@media print{.os-page{margin:0;page-break-after:always;}@page{size:A4 landscape;margin:'+printMargin2+';}}'
@@ -1052,7 +1052,7 @@ function getSinsaCSS(){
     +'table.sinsa-tbl thead th{background:#000!important;color:#fff!important;}'
     +'tr.sinsa-total td{background:#000!important;color:#fff!important;}'
     +'td.sinsa-qty{color:#000!important;}'
-    +'@page{size:A4 landscape;margin:14mm 8mm 8mm 22mm;}'
+    +'@page{size:A4 landscape;margin:8mm 6mm 6mm 8mm;}'
     +'}';
 }
 
@@ -1217,7 +1217,7 @@ function viewArchive(i){
       w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書 '+dateLabel2+'</title>'+style
         +'<style>'
         +'.os-page{margin:12px auto;}.no-print{display:none;}.os-memo-wrap{display:block!important;}'
-        +'@media print{.os-page{margin:0;page-break-after:always;}.os-memo-wrap{display:none!important;}.os-memo-print{display:block!important;}@page{size:A4 landscape;margin:14mm 8mm 8mm 22mm;}}'
+        +'@media print{.os-page{margin:0;page-break-after:always;}.os-memo-wrap{display:none!important;}.os-memo-print{display:block!important;}@page{size:A4 landscape;margin:8mm 6mm 6mm 8mm;}}'
         +'</style>'
         +'</head>'
         +'<body>'
