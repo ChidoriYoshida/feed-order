@@ -117,33 +117,33 @@ table.os-bag-tbl .obagtotal td{background:#D6E8F7;}
 .memo-section textarea{width:100%;border:1px solid #F9A825;border-radius:6px;padding:8px;font-size:12px;font-family:inherit;resize:vertical;min-height:60px;background:#FFFDE7;}
 
 /* ── シンサウメイク専用注文書スタイル ── */
-.sinsa-page{width:148mm;margin:12px auto 0;background:#fff;padding:6mm 8mm;box-shadow:var(--shadow);}
+.sinsa-page{width:257mm;margin:12px auto 0;background:#fff;padding:6mm 8mm;box-shadow:var(--shadow);}
 .sinsa-header{display:grid;grid-template-columns:30mm 1fr 38mm;align-items:start;margin-bottom:2mm;gap:2mm;}
-.sinsa-no{font-size:11px;font-weight:700;}
-.sinsa-no-val{border-bottom:1.5px solid #000;padding:0 6px;font-size:12px;}
+.sinsa-no{font-size:12px;font-weight:700;}
+.sinsa-no-val{border-bottom:1.5px solid #000;padding:0 6px;font-size:14px;}
 .sinsa-titles{text-align:center;}
-.sinsa-company{font-size:13px;font-weight:700;letter-spacing:.04em;}
-.sinsa-doctitle{font-size:11px;font-weight:700;letter-spacing:.1em;}
+.sinsa-company{font-size:16px;font-weight:700;letter-spacing:.04em;}
+.sinsa-doctitle{font-size:14px;font-weight:700;letter-spacing:.1em;}
 .sinsa-right{text-align:right;}
-.sinsa-issue-date{font-size:12px;font-weight:700;}
-.sinsa-fax{font-size:8px;color:#444;margin-bottom:2mm;line-height:1.7;}
+.sinsa-issue-date{font-size:14px;font-weight:700;}
+.sinsa-fax{font-size:10px;color:#444;margin-bottom:2mm;line-height:1.7;}
 .sinsa-delivery{display:flex;align-items:center;gap:3mm;margin-bottom:2mm;}
-.sinsa-dlabel{font-size:11px;font-weight:700;border:1.5px solid #000;padding:1px 3px;}
-.sinsa-ddate{font-size:13px;font-weight:700;}
-.sinsa-unit{margin-left:auto;font-size:9px;font-weight:600;}
-table.sinsa-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.sinsa-dlabel{font-size:14px;font-weight:700;border:1.5px solid #000;padding:1px 3px;}
+.sinsa-ddate{font-size:18px;font-weight:700;}
+.sinsa-unit{margin-left:auto;font-size:12px;font-weight:600;}
+table.sinsa-tbl{width:100%;border-collapse:collapse;font-size:15px;}
 table.sinsa-tbl th,table.sinsa-tbl td{border:1px solid #666;text-align:center;padding:5px 3px;vertical-align:middle;}
-table.sinsa-tbl thead th{background:#7B3FA0;color:#fff;font-size:12px;line-height:1.3;}
+table.sinsa-tbl thead th{background:#7B3FA0;color:#fff;font-size:13px;line-height:1.3;}
 .sinsa-farm-col{width:20mm;}
 .sinsa-tank-col{width:22mm;}
 .sinsa-col{width:22mm;}
 .sinsa-add-col{width:18mm;}
-td.sinsa-farm{font-size:12px;font-weight:600;}
-td.sinsa-tank{font-size:13px;font-weight:700;}
-td.sinsa-qty{font-size:15px;font-weight:700;color:#4A007A;}
-td.sinsa-add{font-size:11px;}
+td.sinsa-farm{font-size:13px;font-weight:600;}
+td.sinsa-tank{font-size:15px;font-weight:700;}
+td.sinsa-qty{font-size:17px;font-weight:700;color:#4A007A;}
+td.sinsa-add{font-size:12px;}
 .sinsa-circle{border:1.5px solid #000;border-radius:50%;padding:0 2px;display:inline-block;}
-tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:13px;}
+tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:14px;}
 .sinsa-footer{display:flex;justify-content:flex-start;align-items:flex-end;margin-top:3mm;}
 .sinsa-contact{font-size:11px;}
 
@@ -171,9 +171,10 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:13px;}
   .os-company,.os-title,.os-date,.dlabel,.ddate{color:#000!important;}
   .sign-box .sh{background:#fff!important;color:#000!important;border:1px solid #000!important;}
   /* シンサウメイク注文書印刷 */
-  .sinsa-page{margin:0;box-shadow:none;padding:6mm 8mm;width:148mm;}
+  .sinsa-page{margin:0;box-shadow:none;padding:14mm 8mm 8mm 18mm;width:257mm;}
   .sinsa-page:not(:last-child){page-break-after:always;}
-  table.sinsa-tbl thead th{background:#000!important;color:#fff!important;}
+  table.sinsa-tbl thead th{background:#fff!important;color:#000!important;font-weight:700!important;}
+  tr.sinsa-total td{background:#fff!important;color:#000!important;font-weight:700!important;}
   tr.sinsa-total td{background:#000!important;color:#fff!important;}
   td.sinsa-qty{color:#000!important;}
   .sinsa-sign-box .sinsa-sh{background:#000!important;color:#fff!important;}
@@ -1049,25 +1050,25 @@ function getSinsaCSS(){
     +'.sinsa-dlabel{font-size:14px;font-weight:700;border:1.5px solid #000;padding:1px 3px;}'
     +'.sinsa-ddate{font-size:18px;font-weight:700;}'
     +'.sinsa-unit{margin-left:auto;font-size:12px;font-weight:600;}'
-    +'table.sinsa-tbl{width:100%;border-collapse:collapse;font-size:13px;}'
+    +'table.sinsa-tbl{width:100%;border-collapse:collapse;font-size:15px;}'
     +'table.sinsa-tbl th,table.sinsa-tbl td{border:1px solid #666;text-align:center;padding:5px 3px;vertical-align:middle;}'
-    +'table.sinsa-tbl thead th{background:#7B3FA0;color:#fff;font-size:12px;line-height:1.3;}'
+    +'table.sinsa-tbl thead th{background:#7B3FA0;color:#fff;font-size:13px;line-height:1.3;}'
     +'.sinsa-farm-col{width:20mm;}.sinsa-tank-col{width:22mm;}.sinsa-col{width:22mm;}.sinsa-add-col{width:18mm;}'
-    +'td.sinsa-farm{font-size:12px;font-weight:600;}'
-    +'td.sinsa-tank{font-size:13px;font-weight:700;}'
-    +'td.sinsa-qty{font-size:15px;font-weight:700;color:#4A007A;}'
-    +'td.sinsa-add{font-size:11px;}'
+    +'td.sinsa-farm{font-size:13px;font-weight:600;}'
+    +'td.sinsa-tank{font-size:15px;font-weight:700;}'
+    +'td.sinsa-qty{font-size:17px;font-weight:700;color:#4A007A;}'
+    +'td.sinsa-add{font-size:12px;}'
     +'.sinsa-circle{border:1.5px solid #000;border-radius:50%;padding:0 2px;display:inline-block;}'
-    +'tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:13px;}'
+    +'tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:14px;}'
     +'.sinsa-footer{display:flex;justify-content:flex-start;align-items:flex-end;margin-top:3mm;}'
     +'.sinsa-contact{font-size:11px;}'
     +'@media print{'
     +'*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}'
     +'.no-print{display:none!important;}'
-    +'.sinsa-page{margin:0;padding:6mm 8mm;width:100%;box-shadow:none;}'
+    +'.sinsa-page{margin:0;padding:14mm 8mm 8mm 18mm;width:100%;box-shadow:none;}'
     +'.sinsa-page:not(:last-child){page-break-after:always;}'
-    +'table.sinsa-tbl thead th{background:#000!important;color:#fff!important;}'
-    +'tr.sinsa-total td{background:#000!important;color:#fff!important;}'
+    +'table.sinsa-tbl thead th{background:#fff!important;color:#000!important;font-weight:700!important;}'
+    +'tr.sinsa-total td{background:#fff!important;color:#000!important;font-weight:700!important;}'
     +'td.sinsa-qty{color:#000!important;}'
     +'@page{size:A4 landscape;margin:8mm 6mm 6mm 8mm;}'
     +'}';
@@ -1480,7 +1481,9 @@ function renderSinsaSheetHTML(orders){
         +'</div>'
         +'<div class="sinsa-right">'
           +'<div class="sinsa-issue-date">'+(today.getFullYear()-2018)+'年'+(today.getMonth()+1)+'月'+today.getDate()+'日</div>'
-          +'<div style="font-size:9px;">㈲ひこちゃん牧場<br>古井農場</div>'
+          +'<div style="font-size:12px;font-weight:700;">㈲ひこちゃん牧場</div>'
+          +'<div style="font-size:14px;font-weight:700;">古井農場</div>'
+          +'<div style="font-size:10px;">場長 山本 090-366-3807</div>'
         +'</div>'
       +'</div>'
       /* FAX先 */
@@ -1505,10 +1508,6 @@ function renderSinsaSheetHTML(orders){
           +totalHtml
         +'</tbody>'
       +'</table>'
-      /* フッター（署名欄なし） */
-      +'<div class="sinsa-footer">'
-        +'<div class="sinsa-contact">古井農場 場長 山本 090-366-3807</div>'
-      +'</div>'
     +'</div>';
   });
   return html;
