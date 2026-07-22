@@ -797,7 +797,7 @@ function renderSheetHTML(trucks,orders){
       +'<div class="os-header">'
         +'<div style="font-size:12px;font-weight:700;">No.<span style="border-bottom:1.5px solid #000;padding:0 6px;font-size:13px;">'+(pi+1)+'</span></div>'
         +'<div><div class="os-company">南九州フィードワン販売&#40;株&#41;</div><div class="os-title">飼料注文書</div></div>'
-        +'<div class="os-right"><span class="os-date">'+(today.getFullYear()-2018)+'年'+(today.getMonth()+1)+'月'+today.getDate()+'日</span><br><span style="font-size:14px;font-weight:700;">有限会社ひこちゃん牧場</span><br><span style="font-size:16px;font-weight:700;">溝辺農場</span></div>'
+        +'<div class="os-right"><span class="os-date">'+(today.getFullYear()-2018)+'年'+(today.getMonth()+1)+'月'+today.getDate()+'日</span><br><span style="font-size:14px;font-weight:700;">有限会社ひこちゃん牧場</span><br><span style="font-size:16px;font-weight:700;">溝辺農場</span><br><span style="font-size:10px;">吉田 090-5732-6157</span></div>'
       +'</div>'
       +'<div class="os-fax">Fax: 志布志飼料&#40;株&#41;(0994-73-1334) 坂元運送&#40;株&#41;(099-262-0638)</div>'
       +'<div class="os-delivery"><span class="dlabel">配達日</span><span class="ddate">'+(d.getMonth()+1)+'月'+d.getDate()+'日('+wd+')</span><span class="os-unit">単位:t</span></div>'
@@ -817,9 +817,6 @@ function renderSheetHTML(trucks,orders){
       +'<div class="os-memo-print" id="os-memo-print-'+pi+'" style="display:none;margin-top:2mm;border:1.5px solid #000;padding:3px 8px;min-height:'+(totalRows>=11?'8mm':'10mm')+';">'
         +'<div style="font-size:'+(totalRows>=11?'8px':'10px')+';font-weight:700;margin-bottom:1px;">変更メモ</div>'
         +'<div class="os-memo-text" style="font-size:'+(totalRows>=11?'9px':'11px')+';white-space:pre-wrap;"></div>'
-      +'</div>'
-      +'<div class="os-footer" style="margin-top:'+(totalRows>=11?'1mm':'3mm')+';">'
-        +'<div class="os-contact">溝辺農場 吉田 090-5732-6157</div>'
       +'</div>'
     +'</div>';
   });
