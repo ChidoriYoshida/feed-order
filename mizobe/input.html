@@ -161,6 +161,13 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
       <button class="add-btn no active" id="add-no">無</button>
     </div>
   </div>
+  <div class="field">
+    <label>翌日配達</label>
+    <div class="add-row">
+      <button class="add-btn yes" id="nextday-yes">可</button>
+      <button class="add-btn no active" id="nextday-no">不可</button>
+    </div>
+  </div>
   <button class="btn-add" id="btn-add">注文を追加</button>
 </div>
 <div class="card">
@@ -248,7 +255,7 @@ var WARN_THRESHOLD=16;
 var GAS_URL='https://script.google.com/macros/s/AKfycbxzym0Va-wxjho6AuCpDaVHmPGBdUIzZ13jnjHyZgPKL5lUpX5E8xfDgh3L-uKh9qW2/exec';
 
 var farmKey='mizobe';
-var selTank=null,selBrand=null,selQty=null,selAdd='no';
+var selTank=null,selBrand=null,selQty=null,selAdd='no',selNextDay='no';
 var orders=[],idCnt=1,toastTimer;
 var calYear=0,calMonth=0,calOrders=[],calMemos={},calLoaded=false,selDate=null,currentDetailDate=null;
 
@@ -318,6 +325,8 @@ document.addEventListener('DOMContentLoaded',function(){
 
   document.getElementById('add-yes').addEventListener('click',function(){setAdd('yes');});
   document.getElementById('add-no').addEventListener('click',function(){setAdd('no');});
+  document.getElementById('nextday-yes').addEventListener('click',function(){setNextDay('yes');});
+  document.getElementById('nextday-no').addEventListener('click',function(){setNextDay('no');});
   document.getElementById('btn-add').addEventListener('click',addOrder);
   document.getElementById('btn-send').addEventListener('click',submitOrders);
 
@@ -392,6 +401,12 @@ function setAdd(v){
   document.getElementById('add-no').classList.toggle('active',v==='no');
 }
 
+function setNextDay(v){
+  selNextDay=v;
+  document.getElementById('nextday-yes').classList.toggle('active',v==='yes');
+  document.getElementById('nextday-no').classList.toggle('active',v==='no');
+}
+
 function addOrder(){
   var fm=FARMS[farmKey];
   var bObj=null;
@@ -411,16 +426,18 @@ function addOrder(){
     id:idCnt++,date:date,staff:staff,
     farm:fm.label,tank:isBag?'-':selTank,
     brand:selBrand,qty:selQty,unit:unit,
-    additive:selAdd,isBag:isBag
+    additive:selAdd,isBag:isBag,nextDay:selNextDay
   });
   saveDraft();renderOrders();resetForm();toast('注文を追加しました');
 }
 
 function resetForm(){
-  selTank=null;selBrand=null;selQty=null;selAdd='no';
+  selTank=null;selBrand=null;selQty=null;selAdd='no';selNextDay='no';
   renderTanks();renderBrands();updateQtyUI();
   document.getElementById('add-yes').classList.remove('active');
   document.getElementById('add-no').classList.add('active');
+  document.getElementById('nextday-yes').classList.remove('active');
+  document.getElementById('nextday-no').classList.add('active');
   ['err-tank','err-brand','err-qty','err-qty-max'].forEach(function(id){
     document.getElementById(id).classList.remove('show');
   });
@@ -443,11 +460,12 @@ function renderOrders(){
     var qtyDisp=o.qty+(o.isBag?'袋':'t');
     var addCls=o.additive==='yes'?'add-yes':'add-no';
     var addLbl=o.additive==='yes'?'添加剤有':'添加剤無';
+    var nextDayLbl=o.nextDay==='yes'?' <span class="badge add-yes">翌日配達可</span>':'';
     var itemCls=o.isBag?'order-item bag-item':'order-item';
     return '<div class="'+itemCls+'">'+
       '<div class="oi-body">'+
         '<div class="oi-main"><span class="badge '+bc+'">'+fl+'</span> '+(o.isBag?'紙袋':'タンク '+o.tank)+' '+qtyDisp+'</div>'+
-        '<div class="oi-sub">'+o.brand+' <span class="badge '+addCls+'">'+addLbl+'</span> 担当:'+o.staff+'</div>'+
+        '<div class="oi-sub">'+o.brand+' <span class="badge '+addCls+'">'+addLbl+'</span>'+nextDayLbl+' 担当:'+o.staff+'</div>'+
       '</div>'+
       '<button class="oi-del" data-id="'+o.id+'">x</button>'+
     '</div>';
@@ -543,6 +561,7 @@ function loadCalendar(){
             unit:isBag?'袋':'t',
             isBag:isBag,
             additive:o['\u6dfb\u52a0\u5264']==='\u6709'?'yes':'no',
+            nextDay:o['\u7fcc\u65e5\u914d\u9054']==='\u53ef'?'yes':'no',
             staff:String(o['\u62c5\u5f53\u8005']||''),
             confirmed:String(o['\u78ba\u5b9a\u6e08\u307f']||'')==='\u78ba\u5b9a'
           });
@@ -666,7 +685,7 @@ function showDetail(dateStr){
         +'<div class="det-tank">タンク '+o.tank+(isDup?' <span style="color:#c00;font-size:10px;">重複</span>':'')+confirmedBadge+'</div>'
         +'<div class="det-brand">'+o.brand+'</div>'
       +'</div>'
-      +'<div><div class="det-qty">'+o.qty+'t</div>'+(o.additive==='yes'?'<div class="det-add">添加剤有</div>':'')+'</div>'
+      +'<div><div class="det-qty">'+o.qty+'t</div>'+(o.additive==='yes'?'<div class="det-add">添加剤有</div>':'')+(o.nextDay==='yes'?'<div class="det-add" style="background:#FCEEDA;color:#E67E22;">翌日配達可</div>':'')+'</div>'
       +deleteBtn
       +'</div>';
   }).join('');
