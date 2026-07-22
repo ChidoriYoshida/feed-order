@@ -743,7 +743,7 @@ function renderSheetHTML(trucks,orders){
     dayTrucks.forEach(function(t){
       t.items.forEach(function(o){
         if(o.brand==='シンサウメイク')return; /* 念のため二重除外 */
-        bulkRows.push({truck:t.id,farm:o.farm,tank:o.tank,brand:o.brand,qty:o.qty,additive:o.additive,isBag:false});
+        bulkRows.push({truck:t.id,farm:o.farm,tank:o.tank,brand:o.brand,qty:o.qty,additive:o.additive,nextDay:o.nextDay,isBag:false});
       });
     });
     /* 注文書の表示順：農場順→タンク番号昇順（便番号に依存しない） */
