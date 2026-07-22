@@ -391,7 +391,7 @@ function loadOrders(){
         qty:qty,
         unit:isBagItem?'袋':'t',
         additive:o['添加剤']==='有'?'yes':'no',
-        unit:isBagItem?'袋':'t',
+        nextDay:o['翌日配達']==='可'?'yes':'no',
         isBag:isBagItem
       };
     }).filter(function(o){return o.farm&&o.brand&&o.qty>0;});
@@ -764,13 +764,14 @@ function renderSheetHTML(trucks,orders){
         +'<td style="text-align:center;font-weight:600;font-size:'+rowFontSize+';">'+o.tank+'</td>'
         +cols.map(function(v){return'<td class="'+(v?'qval':'')+'">'+( v||'')+'</td>';}).join('')
         +'<td style="text-align:center;font-size:'+addFontSize+';">'+(o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span> 無':'有 <span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>')+'</td>'
+        +'<td style="text-align:center;font-size:'+rowFontSize+';font-weight:700;">'+(o.nextDay==='yes'?'〇':'')+'</td>'
         +'</tr>';
     }).join('');
     var totCols=NANKU_BRANDS.map(function(b){
       var tot=bulkRows.reduce(function(s,o){return s+(o.brand===b?Number(o.qty):0);},0);
       return'<td class="'+(tot?'qval':'')+'">'+( tot||'')+'</td>';
     }).join('');
-    var nankyuEmptyCells='<td style="height:'+rowHeight+';"></td><td></td>'+NANKU_BRANDS.map(function(){return'<td></td>';}).join('')+'<td></td>';
+    var nankyuEmptyCells='<td style="height:'+rowHeight+';"></td><td></td>'+NANKU_BRANDS.map(function(){return'<td></td>';}).join('')+'<td></td><td></td>';
     var emptyRows=('<tr>'+nankyuEmptyCells+'</tr>').repeat(emptyNeeded);
     /* 紙袋テーブル */
     var bagSection='';
@@ -795,18 +796,17 @@ function renderSheetHTML(trucks,orders){
       +'<div class="os-header">'
         +'<div style="font-size:12px;font-weight:700;">No.<span style="border-bottom:1.5px solid #000;padding:0 6px;font-size:13px;">'+(pi+1)+'</span></div>'
         +'<div><div class="os-company">南九州フィードワン販売&#40;株&#41;</div><div class="os-title">飼料注文書</div></div>'
-        +'<div class="os-right"><span class="os-date">'+(today.getFullYear()-2018)+'年'+(today.getMonth()+1)+'月'+today.getDate()+'日</span><br><span style="font-size:15px;font-weight:700;">有限会社ひこちゃん牧場</span><br><span style="font-size:19px;font-weight:900;">溝辺農場</span></div>'
+        +'<div class="os-right"><span class="os-date">'+(today.getFullYear()-2018)+'年'+(today.getMonth()+1)+'月'+today.getDate()+'日</span><br><span style="font-size:14px;font-weight:700;">有限会社ひこちゃん牧場</span><br><span style="font-size:16px;font-weight:700;">溝辺農場</span></div>'
       +'</div>'
       +'<div class="os-fax">Fax: 志布志飼料&#40;株&#41;(0994-73-1334) 坂元運送&#40;株&#41;(099-262-0638)</div>'
       +'<div class="os-delivery"><span class="dlabel">配達日</span><span class="ddate">'+(d.getMonth()+1)+'月'+d.getDate()+'日('+wd+')</span><span class="os-unit">単位:t</span></div>'
-      +'<div style="margin:1mm 0 3mm;padding:2mm 5mm;border:2px solid #000;display:inline-block;font-size:17px;font-weight:900;letter-spacing:.15em;">翌日配達　可　・　不可</div>'
       +'<table class="ostbl" style="font-size:'+rowFontSize+';"><thead><tr>'
         +'<th style="width:8mm;">便</th><th style="width:16mm;">タンク</th>'
         +NANKU_BRANDS.map(function(b){return'<th style="width:10mm;">'+b.replace('たから','たから<br>')+'</th>';}).join('')
-        +'<th style="width:12mm;">添加剤</th>'
+        +'<th style="width:12mm;">添加剤</th><th style="width:14mm;">翌日<br>配達</th>'
       +'</tr></thead>'
       +'<tbody>'+dataRows+emptyRows
-        +'<tr class="ototal"><td colspan="2" style="text-align:right;font-size:12px;">合計(t)</td>'+totCols+'<td></td></tr>'
+        +'<tr class="ototal"><td colspan="2" style="text-align:right;font-size:12px;">合計(t)</td>'+totCols+'<td></td><td></td></tr>'
       +'</tbody></table>'
       +bagSection
       +'<div class="os-memo-wrap no-print" style="margin-top:2mm;border:1.5px solid #1A3A5C;border-radius:4px;padding:4px 8px;">'
