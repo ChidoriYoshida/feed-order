@@ -214,9 +214,9 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:13px;}
     <div class="tbl-wrap">
       <table class="otbl">
         <thead><tr>
-          <th>農場</th><th>配送日</th><th>タンク</th><th>銘柄</th><th>数量</th><th>添加剤</th><th>担当者</th><th>編集</th><th>削除</th>
+          <th>農場</th><th>配送日</th><th>タンク</th><th>銘柄</th><th>数量</th><th>添加剤</th><th>翌日配達</th><th>担当者</th><th>編集</th><th>削除</th>
         </tr></thead>
-        <tbody id="orders-tbody"><tr><td colspan="9" style="text-align:center;padding:20px;color:var(--muted);">注文がありません</td></tr></tbody>
+        <tbody id="orders-tbody"><tr><td colspan="10" style="text-align:center;padding:20px;color:var(--muted);">注文がありません</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -435,7 +435,7 @@ function clearFilter(){
 function renderOrdersTable(list){
   var tbody=document.getElementById('orders-tbody');
   if(!list.length){
-    tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--muted);">注文がありません</td></tr>';
+    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--muted);">注文がありません</td></tr>';
     return;
   }
   var fi={'溝辺農場':'bf0'};
@@ -452,6 +452,7 @@ function renderOrdersTable(list){
       +'<td>'+o.brand+'</td>'
       +'<td style="text-align:right;font-weight:600;">'+qtyDisp+'</td>'
       +'<td style="text-align:center;"><span class="badge '+(o.additive==='yes'?'add-yes':'add-no')+'">'+(o.additive==='yes'?'有':'無')+'</span></td>'
+      +'<td style="text-align:center;">'+(o.nextDay==='yes'?'<span class="badge add-yes">可</span>':'<span class="badge add-no">不可</span>')+'</td>'
       +'<td style="text-align:center;">'+(o.staff||'')+'</td>'
       +'<td style="text-align:center;"><button class="tbtn tbtn-blue" style="padding:4px 8px;font-size:11px;" onclick="editOrder(\''+oid+'\')">編集</button></td>'
       +'<td style="text-align:center;"><button class="btn-del" onclick="deleteLocal(\''+oid+'\')">x</button></td>'
