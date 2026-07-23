@@ -837,7 +837,8 @@ function printAndArchive(){
   var snapPlan=JSON.parse(JSON.stringify(plan));
   var snapOrders=JSON.parse(JSON.stringify(dispOrders));
   var ids=snapOrders.map(function(o){return o.id;});
-  var dates=[];snapOrders.forEach(function(o){if(dates.indexOf(o.date)<0)dates.push(o.date);});
+  /* ページ番号(pi)はrenderSheetHTMLと同じ基準（trucks由来・日付ソート済み）で揃える */
+  var dates=[];snapPlan.forEach(function(t){if(!t.isSinsa&&dates.indexOf(t.date)<0)dates.push(t.date);});dates.sort();
   var dispIds=new Set(ids);
 
   /* メモ内容を先に収集 */
@@ -855,8 +856,8 @@ function printAndArchive(){
     if(res&&res.result==='success')showToast(res.confirmed+'件を確定済みにしました');
   });
   dates.forEach(function(date){
-    var nankuTrucks=snapPlan.filter(function(t){return!t.isSinsa;});
-    var nankuOrders=snapOrders.filter(function(o){return o.brand!=='シンサウメイク';});
+    var nankuTrucks=snapPlan.filter(function(t){return!t.isSinsa&&t.date===date;});
+    var nankuOrders=snapOrders.filter(function(o){return o.brand!=='シンサウメイク'&&o.date===date;});
     var minNankuTrucks=nankuTrucks.map(function(t){
       return{date:t.date,id:t.id,isSinsa:false,
         usedQty:t.usedQty,recSize:t.recSize,farms:t.farms,
