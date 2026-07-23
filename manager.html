@@ -1095,6 +1095,9 @@ function loadArchive(){
     if(!res.archives.length){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">保存された注文書はありません</div>';return;}
     window._archives=res.archives.slice().sort(function(a,b){
       /* 保存日時（実際にアーカイブされた日時）の新しい順。変更・再印刷した分が常にトップに来る */
+      var ta=Date.parse(String(a.saved||'').replace(' ','T'));
+      var tb=Date.parse(String(b.saved||'').replace(' ','T'));
+      if(!isNaN(ta)&&!isNaN(tb)&&ta!==tb)return tb-ta;
       var sa=String(a.saved||'');
       var sb=String(b.saved||'');
       if(sa!==sb)return sa>sb?-1:1;
