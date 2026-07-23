@@ -833,7 +833,7 @@ function renderSheetHTML(trucks,orders){
       +bagSection
       +'<div class="os-memo-wrap no-print" style="margin-top:2mm;border:1.5px solid #1A3A5C;border-radius:4px;padding:4px 8px;">'
         +'<div style="font-size:'+( totalRows>=11?'9px':'11px')+';font-weight:700;color:#1A3A5C;margin-bottom:2px;">📝 変更メモ（印刷に反映されます）</div>'
-        +'<textarea id="os-memo-input-'+pi+'" placeholder="例：タンク31を4tから6tに変更、タンク32キャンセル など" style="width:100%;border:none;outline:none;font-size:'+(totalRows>=11?'10px':'12px')+';font-family:inherit;resize:vertical;min-height:'+(totalRows>=11?'24px':'36px')+';background:transparent;" oninput="updateMemoPreview('+pi+')"></textarea>'
+        +'<textarea id="os-memo-input-'+pi+'" data-date="'+date+'" placeholder="例：タンク31を4tから6tに変更、タンク32キャンセル など" style="width:100%;border:none;outline:none;font-size:'+(totalRows>=11?'10px':'12px')+';font-family:inherit;resize:vertical;min-height:'+(totalRows>=11?'24px':'36px')+';background:transparent;" oninput="updateMemoPreview('+pi+')"></textarea>'
       +'</div>'
       +'<div class="os-memo-print" id="os-memo-print-'+pi+'" style="display:none;margin-top:2mm;border:1.5px solid #000;padding:3px 8px;min-height:'+(totalRows>=11?'8mm':'10mm')+';">'
         +'<div style="font-size:'+(totalRows>=11?'8px':'10px')+';font-weight:700;margin-bottom:1px;">変更メモ</div>'
@@ -862,13 +862,12 @@ function printAndArchive(){
   var dates=[];snapPlan.forEach(function(t){if(!t.isSinsa&&dates.indexOf(t.date)<0)dates.push(t.date);});dates.sort();
   var dispIds=new Set(ids);
 
-  /* メモ内容を先に収集 */
+  /* メモ内容を先に収集（各テキストエリアのdata-date属性から直接、確実に紐づける） */
   var memoByDate={};
   var memoInputs=document.querySelectorAll('[id^="os-memo-input-"]');
   memoInputs.forEach(function(ta){
-    var pi=parseInt(ta.id.replace('os-memo-input-',''));
     var txt=ta.value.trim();
-    var dateForMemo=dates[pi]||dates[0];
+    var dateForMemo=ta.dataset.date||dates[parseInt(ta.id.replace('os-memo-input-',''))]||dates[0];
     if(txt&&dateForMemo)memoByDate[dateForMemo]=txt;
   });
 
@@ -1095,9 +1094,13 @@ function loadArchive(){
     if(!res||!res.archives){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">取得エラー</div>';return;}
     if(!res.archives.length){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">保存された注文書はありません</div>';return;}
     window._archives=res.archives.slice().sort(function(a,b){
+      /* 保存日時（実際にアーカイブされた日時）の新しい順。変更・再印刷した分が常にトップに来る */
+      var sa=String(a.saved||'');
+      var sb=String(b.saved||'');
+      if(sa!==sb)return sa>sb?-1:1;
+      /* 保存日時が同じ場合は配達日の新しい順 */
       var da=String(a.date||'').replace('-sinsa','');
       var db=String(b.date||'').replace('-sinsa','');
-      /* 配達日の新しい順（文字列比較でYYYY-MM-DDは正しく比較できる） */
       if(da>db)return -1;
       if(da<db)return 1;
       /* 同日：南九州（sinsa無し）が上、中部飼料（sinsa付き）が下 */
