@@ -772,7 +772,7 @@ function renderSheetHTML(trucks,orders){
     dayTrucks.forEach(function(t){
       t.items.forEach(function(o){
         if(o.brand==='シンサウメイク')return; /* 念のため二重除外 */
-        bulkRows.push({truck:t.id,farm:o.farm,tank:o.tank,brand:o.brand,qty:o.qty,additive:o.additive,isBag:false});
+        bulkRows.push({id:o.id,truck:t.id,farm:o.farm,tank:o.tank,brand:o.brand,qty:o.qty,additive:o.additive,changed:!!o.changed,isBag:false});
       });
     });
     /* 注文書の表示順：農場順→タンク番号昇順（便番号に依存しない） */
@@ -790,6 +790,12 @@ function renderSheetHTML(trucks,orders){
       var cols=NANKU_BRANDS.map(function(b){return b===o.brand?Number(o.qty):'';});
       return'<tr class="'+(farmCls[o.farm]||'')+'" style="height:'+rowHeight+';">'
         +'<td></td>'
+        +'<td class="change-cell" style="text-align:center;">'
+          +'<label style="cursor:pointer;display:inline-block;">'
+            +'<input type="checkbox" class="no-print change-check" data-changed-id="'+o.id+'"'+(o.changed?' checked':'')+' onchange="this.nextElementSibling.style.visibility=this.checked?\'visible\':\'hidden\';">'
+            +'<span style="visibility:'+(o.changed?'visible':'hidden')+';font-weight:900;font-size:'+rowFontSize+';">※</span>'
+          +'</label>'
+        +'</td>'
         +'<td style="white-space:nowrap;font-size:'+farmFontSize+';font-weight:700;text-align:center;">'+(o.farm==='古井農場'?'古井':o.farm==='第2農場'?'第２':'第３')+'</td>'
         +'<td style="text-align:center;font-weight:600;font-size:'+rowFontSize+';">'+o.tank+'</td>'
         +cols.map(function(v){return'<td class="'+(v?'qval':'')+'">'+( v||'')+'</td>';}).join('')
@@ -800,7 +806,7 @@ function renderSheetHTML(trucks,orders){
       var tot=bulkRows.reduce(function(s,o){return s+(o.brand===b?Number(o.qty):0);},0);
       return'<td class="'+(tot?'qval':'')+'">'+( tot||'')+'</td>';
     }).join('');
-    var nankyuEmptyCells='<td style="height:'+rowHeight+';"></td><td></td><td></td>'+NANKU_BRANDS.map(function(){return'<td></td>';}).join('')+'<td></td>';
+    var nankyuEmptyCells='<td style="height:'+rowHeight+';"></td><td></td><td></td><td></td>'+NANKU_BRANDS.map(function(){return'<td></td>';}).join('')+'<td></td>';
     var emptyRows=('<tr>'+nankyuEmptyCells+'</tr>').repeat(emptyNeeded);
     /* 紙袋テーブル */
     var bagSection='';
@@ -831,12 +837,12 @@ function renderSheetHTML(trucks,orders){
       +'<div class="os-fax">Fax: 志布志飼料&#40;株&#41;(0994-73-1334) 坂元運送&#40;株&#41;(099-262-0638)</div>'
       +'<div class="os-delivery"><span class="dlabel">配達日</span><span class="ddate">'+(d.getMonth()+1)+'月'+d.getDate()+'日('+wd+')</span><span class="os-unit">単位:t</span></div>'
       +'<table class="ostbl" style="font-size:'+rowFontSize+';"><thead><tr>'
-        +'<th style="width:8mm;">便</th><th style="width:11mm;">農場</th><th style="width:11mm;">タンク</th>'
+        +'<th style="width:8mm;">便</th><th style="width:9mm;">変更</th><th style="width:11mm;">農場</th><th style="width:11mm;">タンク</th>'
         +NANKU_BRANDS.map(function(b){return'<th style="width:10mm;">'+b.replace('たから','たから<br>')+'</th>';}).join('')
         +'<th style="width:12mm;">添加剤</th>'
       +'</tr></thead>'
       +'<tbody>'+dataRows+emptyRows
-        +'<tr class="ototal"><td colspan="3" style="text-align:right;font-size:11px;">合計(t)</td>'+totCols+'<td></td></tr>'
+        +'<tr class="ototal"><td colspan="4" style="text-align:right;font-size:11px;">合計(t)</td>'+totCols+'<td></td></tr>'
       +'</tbody></table>'
       +bagSection
       +'<div class="os-memo-wrap no-print" style="margin-top:2mm;border:1.5px solid #1A3A5C;border-radius:4px;padding:4px 8px;">'
@@ -879,6 +885,21 @@ function printAndArchive(){
     if(txt&&dateForMemo)memoByDate[dateForMemo]=txt;
   });
 
+  /* 「変更」チェックの状態を収集し、対象の注文にchangedフラグを付与 */
+  var changedIds=new Set();
+  document.querySelectorAll('.change-check').forEach(function(cb){
+    if(cb.checked)changedIds.add(String(cb.dataset.changedId));
+  });
+  snapOrders.forEach(function(o){
+    o.changed=changedIds.has(String(o.id));
+  });
+  /* snapPlanは別コピーのため、doMergedPrintでの表示用にこちらにも反映 */
+  snapPlan.forEach(function(t){
+    (t.items||[]).forEach(function(o){
+      o.changed=changedIds.has(String(o.id));
+    });
+  });
+
   /* アーカイブ保存（既存データとマージ・get完了後にsave） */
   gasCall('mark_confirmed',{ids:ids},function(res){
     if(res&&res.result==='success')showToast(res.confirmed+'件を確定済みにしました');
@@ -889,7 +910,7 @@ function printAndArchive(){
     var minNankuTrucks=nankuTrucks.map(function(t){
       return{date:t.date,id:t.id,isSinsa:false,
         usedQty:t.usedQty,recSize:t.recSize,farms:t.farms,
-        items:t.items.map(function(o){return{id:o.id};})};
+        items:t.items.map(function(o){return{id:o.id,changed:changedIds.has(String(o.id))};})};
     });
 
     /* 既存アーカイブを取得してマージしてからsave */
