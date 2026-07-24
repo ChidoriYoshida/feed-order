@@ -181,6 +181,7 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:14px;}
   /* @pageはsetPrintPageSizeで動的に制御するためここには記述しない */
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
   <div class="toolbar no-print">
@@ -260,7 +261,14 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:14px;}
 
 <div id="tab-archive" style="display:none;">
   <div class="card">
-    <div class="sec-title">過去の注文書（1ヶ月間保存）</div>
+    <div class="sec-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <span>過去の注文書（40日間保存）</span>
+      <span style="display:flex;align-items:center;gap:6px;">
+        <input type="month" id="export-month" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;">
+        <button class="tbtn tbtn-blue" style="font-size:13px;padding:7px 12px;" onclick="exportMonthlyExcel()">📊 月次エクスポート(Excel)</button>
+      </span>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">※アーカイブは保存から約1ヶ月で自動的に消えるため、先月分は月初のうちにエクスポートしてください。</div>
     <div id="archive-list"><div style="text-align:center;padding:20px;color:var(--muted);">読み込み中...</div></div>
   </div>
 </div>
@@ -1086,6 +1094,83 @@ function printSinsaArchive(){
     +html
     +'</body></html>');
   w.document.close();
+}
+
+/* 月次エクスポート（Excel） */
+function exportMonthlyExcel(){
+  var monthVal=document.getElementById('export-month').value; // "YYYY-MM"
+  if(!monthVal){
+    var t=new Date();
+    monthVal=t.getFullYear()+'-'+pad(t.getMonth()+1);
+    document.getElementById('export-month').value=monthVal;
+  }
+  showToast('集計中…少々お待ちください');
+  gasCall('get_archive',null,function(res){
+    if(!res||!res.archives){showToast('取得エラー');return;}
+    var rows=[];
+    var monthArchives=res.archives.filter(function(a){
+      var d=String(a.date||'').replace('-sinsa','');
+      return d.indexOf(monthVal)===0;
+    });
+    /* 同じ配達日でnanku/sinsaの重複が無いよう日付でユニーク化（-sinsaは注文を合算するため個別に扱う） */
+    monthArchives.forEach(function(a){
+      var baseDate=String(a.date||'').replace('-sinsa','');
+      var payload;
+      try{payload=JSON.parse(a.payload);}catch(e){return;}
+      var trucksForDay=(payload.trucks||[]).filter(function(t){return t.date===baseDate;});
+      var idToBin=new Map();
+      trucksForDay.forEach(function(t,idx){
+        (t.items||[]).forEach(function(it){idToBin.set(String(it.id),(idx+1)+'便');});
+      });
+      var orders=(payload.orders||[]).slice().sort(function(x,y){
+        return String(x.tank||'').localeCompare(String(y.tank||''));
+      });
+      orders.forEach(function(o,idx){
+        rows.push({
+          date:baseDate,
+          farm:o.farm||'',
+          tank:o.isBag?'-':(o.tank||''),
+          brand:o.brand||'',
+          qty:Number(o.qty)||0,
+          unit:o.isBag?'袋':'t',
+          additive:o.additive==='yes'?'有':'無',
+          bin:o.isBag?'':(idToBin.get(String(o.id))||''),
+          memo:idx===0?(payload.memo||''):''
+        });
+      });
+    });
+    if(!rows.length){showToast(monthVal+'分のデータが見つかりませんでした');return;}
+    rows.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0;});
+
+    var sheetRows=[['配達日','農場','タンク','銘柄','数量','単位','添加剤','便','変更メモ']];
+    var curDate=null,dayT=0,dayBag=0,monthT=0,monthBag=0;
+    function pushSubtotal(dateLabel){
+      sheetRows.push(['小計('+dateLabel+')','','','','','','','','']);
+      sheetRows.push(['','','','合計(t)',dayT,'','','','']);
+      if(dayBag>0)sheetRows.push(['','','','合計(袋)',dayBag,'','','','']);
+      sheetRows.push(['','','','','','','','','']);
+    }
+    rows.forEach(function(r){
+      if(curDate!==null&&r.date!==curDate){
+        pushSubtotal(curDate);
+        dayT=0;dayBag=0;
+      }
+      curDate=r.date;
+      sheetRows.push([r.date,r.farm,r.tank,r.brand,r.qty,r.unit,r.additive,r.bin,r.memo]);
+      if(r.unit==='t'){dayT+=r.qty;monthT+=r.qty;}else{dayBag+=r.qty;monthBag+=r.qty;}
+    });
+    if(curDate!==null)pushSubtotal(curDate);
+    sheetRows.push(['■月合計','','','','','','','','']);
+    sheetRows.push(['','','','合計(t)',monthT,'','','','']);
+    sheetRows.push(['','','','合計(袋)',monthBag,'','','','']);
+
+    var ws=XLSX.utils.aoa_to_sheet(sheetRows);
+    ws['!cols']=[{wch:11},{wch:10},{wch:8},{wch:14},{wch:8},{wch:6},{wch:6},{wch:8},{wch:30}];
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,monthVal);
+    XLSX.writeFile(wb,'注文実績_'+monthVal+'.xlsx');
+    showToast('Excelを出力しました');
+  });
 }
 
 function loadArchive(){
