@@ -821,7 +821,7 @@ function renderSheetHTML(trucks,orders){
         +'<th style="width:13mm;">添加剤</th><th style="width:11mm;">翌日<br>配達</th>'
       +'</tr></thead>'
       +'<tbody>'+dataRows+emptyRows
-        +'<tr class="ototal"><td colspan="3" style="text-align:right;font-size:12px;">合計(t)</td>'+totCols+'<td></td><td></td></tr>'
+        +'<tr class="ototal"><td colspan="3" style="text-align:right;font-size:12px;">合計(t)</td>'+totCols+'<td style="font-weight:700;">'+bulkRows.reduce(function(s,o){return s+Number(o.qty);},0).toFixed(1)+'</td><td></td></tr>'
       +'</tbody></table>'
       +bagSection
       +'<div class="os-memo-wrap no-print" style="margin-top:2mm;border:1.5px solid #1A3A5C;border-radius:4px;padding:4px 8px;">'
