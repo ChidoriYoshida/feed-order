@@ -152,7 +152,7 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:14px;}
   .toolbar,.tab-bar,#tab-orders,#tab-plan,#tab-archive,.no-print{display:none!important;}
   body{background:#fff;}
   #tab-sheet{display:block!important;}
-  .os-page{margin:0;box-shadow:none;padding:14mm 8mm 8mm 18mm;width:100%;}
+  .os-page{margin:0;box-shadow:none;padding:10mm 8mm 6mm 18mm;width:100%;}
   .os-page:not(:last-child){page-break-after:always;}
   .os-sep{display:none!important;}
   /* 変更メモ：印刷時は入力欄を非表示・印刷用欄を表示 */
@@ -781,10 +781,10 @@ function renderSheetHTML(trucks,orders){
     /* 行数に応じてフォント・行高さを動的調整（必ず1枚に収める） */
     var totalRows=bulkRows.length;
     var emptyNeeded=Math.max(0,12-totalRows);
-    var rowFontSize=totalRows<=8?'14px':totalRows<=10?'12px':'11px';
-    var rowHeight=totalRows<=8?'8.5mm':totalRows<=10?'7.5mm':'6.5mm';
-    var farmFontSize=totalRows<=8?'10px':totalRows<=10?'9px':'9px';
-    var addFontSize=totalRows<=8?'11px':totalRows<=10?'10px':'9px';
+    var rowFontSize=totalRows<=8?'12px':totalRows<=10?'11px':'10px';
+    var rowHeight=totalRows<=8?'7.5mm':totalRows<=10?'6.5mm':'6mm';
+    var farmFontSize=totalRows<=8?'9px':totalRows<=10?'9px':'8px';
+    var addFontSize=totalRows<=8?'10px':totalRows<=10?'9px':'9px';
     /* バラ飼料テーブル */
     var dataRows=bulkRows.map(function(o){
       var cols=NANKU_BRANDS.map(function(b){return b===o.brand?Number(o.qty):'';});
