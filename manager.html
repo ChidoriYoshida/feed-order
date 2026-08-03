@@ -1130,6 +1130,10 @@ function printSinsaArchive(){
 
 /* 月次エクスポート（Excel） */
 function exportMonthlyExcel(){
+  if(typeof XLSX==='undefined'){
+    showToast('Excel機能の読み込みに失敗しました。ネットワーク環境（社内フィルタ等）をご確認の上、再読み込みしてお試しください。');
+    return;
+  }
   var monthVal=document.getElementById('export-month').value; // "YYYY-MM"
   if(!monthVal){
     var t=new Date();
@@ -1138,6 +1142,7 @@ function exportMonthlyExcel(){
   }
   showToast('集計中…少々お待ちください');
   gasCall('get_archive',null,function(res){
+   try{
     if(!res||!res.archives){showToast('取得エラー');return;}
     var rows=[];
     var monthArchives=res.archives.filter(function(a){
@@ -1202,6 +1207,9 @@ function exportMonthlyExcel(){
     XLSX.utils.book_append_sheet(wb,ws,monthVal);
     XLSX.writeFile(wb,'注文実績_'+monthVal+'.xlsx');
     showToast('Excelを出力しました');
+   }catch(err){
+    showToast('エクスポート中にエラーが発生しました：'+err.message);
+   }
   });
 }
 
