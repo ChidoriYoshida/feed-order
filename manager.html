@@ -82,7 +82,7 @@ table.otbl tr:hover td{background:#f0f5fb;}
 .os-unit{margin-left:auto;font-size:12px;font-weight:600;}
 table.ostbl{width:100%;border-collapse:collapse;font-size:12px;}
 table.ostbl th,table.ostbl td{border:1px solid #666;text-align:center;padding:4px 2px;vertical-align:middle;}
-table.ostbl thead th{background:#ddd;font-weight:700;font-size:11px;line-height:1.3;}
+table.ostbl thead th{background:#ddd;font-weight:700;font-size:12px;line-height:1.3;}
 table.ostbl .of0 td{background:#D6E8F7;}
 table.ostbl .of1 td{background:#E8E6FB;}
 table.ostbl .of2 td{background:#FDE9C8;}
@@ -787,8 +787,8 @@ function renderSheetHTML(trucks,orders){
     var emptyNeeded=Math.max(0,12-totalRows);
     var rowFontSize=totalRows<=8?'12px':totalRows<=10?'11px':'10px';
     var rowHeight=totalRows<=8?'7.5mm':totalRows<=10?'6.5mm':'6mm';
-    var farmFontSize=totalRows<=8?'9px':totalRows<=10?'9px':'8px';
-    var addFontSize=totalRows<=8?'10px':totalRows<=10?'9px':'9px';
+    var farmFontSize=totalRows<=8?'12px':totalRows<=10?'11px':'10px';
+    var addFontSize=totalRows<=8?'11px':totalRows<=10?'10px':'9px';
     /* バラ飼料テーブル */
     var dataRows=bulkRows.map(function(o){
       var cols=NANKU_BRANDS.map(function(b){return b===o.brand?Number(o.qty):'';});
@@ -839,7 +839,7 @@ function renderSheetHTML(trucks,orders){
         +'<th style="width:12mm;">添加剤</th>'
       +'</tr></thead>'
       +'<tbody>'+dataRows+emptyRows
-        +'<tr class="ototal"><td colspan="4" style="text-align:right;font-size:11px;">合計(t)</td>'+totCols+'<td style="font-weight:700;">'+bulkRows.reduce(function(s,o){return s+Number(o.qty);},0).toFixed(1)+'</td></tr>'
+        +'<tr class="ototal"><td colspan="4" style="text-align:right;font-size:12px;">合計(t)</td>'+totCols+'<td style="font-weight:700;">'+bulkRows.reduce(function(s,o){return s+Number(o.qty);},0).toFixed(1)+'</td></tr>'
       +'</tbody></table>'
     );
     html+='<div class="os-page">'
