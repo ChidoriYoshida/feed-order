@@ -844,6 +844,11 @@ function renderSheetHTML(trucks,orders){
   return html;
 }
 
+/* 注文の「内容」を表すキー（IDが異なっても同一注文とみなすための判定に使用） */
+function orderContentKey(o){
+  return [o.date,o.tank,o.brand,o.qty,o.isBag?'1':'0'].join('|');
+}
+
 function printAndArchive(){
   var hasBag=dispOrders.some(function(o){return o.isBag;});
   if(!plan.length&&!hasBag){showToast('先に配車計画を作成してください（紙袋のみの場合は配車計画は不要です）');return;}
@@ -911,8 +916,10 @@ function printAndArchive(){
           var existing=JSON.parse(res.payload);
           var existOrders=existing.orders||[];
           var newIds=new Set(nankuOrders.map(function(o){return String(o.id);}));
+          /* IDだけでなく内容（タンク・銘柄・数量・紙袋区分）が一致する場合も重複とみなす */
+          var newContentKeys=new Set(nankuOrders.map(orderContentKey));
           existOrders.forEach(function(o){
-            if(!newIds.has(String(o.id)))mergedOrders.push(o);
+            if(!newIds.has(String(o.id))&&!newContentKeys.has(orderContentKey(o)))mergedOrders.push(o);
           });
         }catch(e){}
       }
@@ -967,8 +974,9 @@ function printAndArchive(){
           var existing=JSON.parse(res.payload);
           var existOrders=existing.orders||[];
           var newIds=new Set(nankuOrdersForPrint.map(function(o){return String(o.id);}));
+          var newContentKeys=new Set(nankuOrdersForPrint.map(orderContentKey));
           existOrders.forEach(function(o){
-            if(!newIds.has(String(o.id)))mergedOrdersAll.push(o);
+            if(!newIds.has(String(o.id))&&!newContentKeys.has(orderContentKey(o)))mergedOrdersAll.push(o);
           });
         }catch(e){}
       }
