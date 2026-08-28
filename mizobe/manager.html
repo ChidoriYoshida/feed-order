@@ -780,7 +780,7 @@ function renderSheetHTML(trucks,orders){
             +'<span style="visibility:'+(o.changed?'visible':'hidden')+';font-weight:900;font-size:'+rowFontSize+';">※</span>'
           +'</label>'
         +'</td>'
-        +'<td style="text-align:center;font-weight:600;font-size:'+rowFontSize+';">'+o.tank+'</td>'
+        +'<td style="text-align:center;font-weight:700;font-size:15px;">'+o.tank+'</td>'
         +cols.map(function(v){return'<td class="'+(v?'qval':'')+'">'+( v||'')+'</td>';}).join('')
         +'<td style="text-align:center;font-size:'+addFontSize+';">'+(o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span> 無':'有 <span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>')+'</td>'
         +'<td style="text-align:center;font-size:'+rowFontSize+';font-weight:700;">'+(o.nextDay==='yes'?'〇':'')+'</td>'
