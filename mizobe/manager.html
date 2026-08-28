@@ -6,8 +6,8 @@
 <title>飼料注文 管理・注文書</title>
 <style>
 :root{
-  --navy:#1A3A5C;--blue:#2E6DA4;--green:#1D9E75;--green-d:#0f6e56;
-  --farm0:#D6E8F7;--farm0h:#4472C4;--farm1:#E8E6FB;--farm1h:#7B66D6;--farm2:#FDE9C8;--farm2h:#ED7D31;
+  --navy:#3D2B66;--blue:#6B4BA3;--green:#1D9E75;--green-d:#0f6e56;
+  --farm0:#EDE4F5;--farm0h:#6B4BA3;--farm1:#E8E6FB;--farm1h:#7B66D6;--farm2:#FDE9C8;--farm2h:#ED7D31;
   --border:#d0d0cc;--text:#1a1a18;--muted:#777;
   --radius:10px;--shadow:0 2px 12px rgba(0,0,0,.10);
 }
@@ -52,7 +52,7 @@ table.otbl tr:hover td{background:#f0f5fb;}
 .truck-card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px;}
 .truck-head{background:var(--navy);color:#fff;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
 .truck-meta{font-size:11px;color:#9bb;display:flex;gap:10px;flex-wrap:wrap;}
-.bag-truck-head{background:#2E6DA4;color:#fff;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.bag-truck-head{background:#6B4BA3;color:#fff;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
 .bar-outer{height:6px;background:#e0e0e0;}
 .bar-inner{height:100%;transition:width .4s;}
 .bar-green{background:var(--green);}
@@ -83,23 +83,23 @@ table.otbl tr:hover td{background:#f0f5fb;}
 table.ostbl{width:100%;border-collapse:collapse;font-size:12px;}
 table.ostbl th,table.ostbl td{border:1px solid #666;text-align:center;padding:4px 2px;vertical-align:middle;}
 table.ostbl thead th{background:#ddd;font-weight:700;font-size:12px;line-height:1.3;}
-table.ostbl .of0 td{background:#D6E8F7;}
+table.ostbl .of0 td{background:#EDE4F5;}
 table.ostbl .of1 td{background:#E8E6FB;}
 table.ostbl .of2 td{background:#FDE9C8;}
 table.ostbl .obag td{background:#EBF3FA;}
-table.ostbl .ototal td{background:#1A3A5C;color:#fff;font-weight:700;}
-table.ostbl .qval{font-size:17px;font-weight:700;color:#1A3A5C;}
+table.ostbl .ototal td{background:#3D2B66;color:#fff;font-weight:700;}
+table.ostbl .qval{font-size:17px;font-weight:700;color:#3D2B66;}
 table.ostbl .ototal .qval{color:#fff;}
 .os-bag-section{margin-top:3mm;border:1px solid #7DB8E0;border-radius:4px;overflow:hidden;}
-.os-bag-header{background:#2E6DA4;color:#fff;padding:2mm 3mm;font-size:11px;font-weight:700;}
+.os-bag-header{background:#6B4BA3;color:#fff;padding:2mm 3mm;font-size:11px;font-weight:700;}
 table.os-bag-tbl{width:100%;border-collapse:collapse;font-size:12px;}
 table.os-bag-tbl th,table.os-bag-tbl td{border:1px solid #7DB8E0;text-align:center;padding:4px 2px;vertical-align:middle;}
-table.os-bag-tbl thead th{background:#D6E8F7;font-weight:700;}
-table.os-bag-tbl .obagtotal td{background:#D6E8F7;}
+table.os-bag-tbl thead th{background:#EDE4F5;font-weight:700;}
+table.os-bag-tbl .obagtotal td{background:#EDE4F5;}
 .os-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:3mm;}
 .os-contact{font-size:10px;}
 .os-sign{display:grid;grid-template-columns:repeat(3,28mm);gap:0;}
-.sign-box .sh{background:#2E6DA4;color:#fff;text-align:center;padding:2px;font-size:8px;font-weight:700;}
+.sign-box .sh{background:#6B4BA3;color:#fff;text-align:center;padding:2px;font-size:8px;font-weight:700;}
 .sign-box .sb{height:12mm;border:1px solid #999;}
 .sign-box .sf{background:#f0f0f0;text-align:center;font-size:7px;color:#bbb;border:1px solid #bbb;border-top:none;}
 .arch-item{border:0.5px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:stretch;gap:10px;background:#fff;}
@@ -507,7 +507,7 @@ function onMFarmChange(){
 function onMTankChange(){
   var farm=document.getElementById('m-farm').value;
   var tank=document.getElementById('m-tank').value;
-  var brands=(tank!=='-'&&TANK_BRAND_LIMIT[tank])?TANK_BRAND_LIMIT[tank]:(BRAND_MASTER[farm]||[]);
+  var brands=tank==='-'?BAG_BRANDS:(TANK_BRAND_LIMIT[tank]?TANK_BRAND_LIMIT[tank]:(BRAND_MASTER[farm]||[]));
   document.getElementById('m-brand').innerHTML=brands.map(function(b){return'<option value="'+b+'">'+b+'</option>';}).join('');
   onMBrandChange();
 }
@@ -831,8 +831,8 @@ function renderSheetHTML(trucks,orders){
       +'<div class="os-delivery"><span class="dlabel">配達日</span><span class="ddate">'+(d.getMonth()+1)+'月'+d.getDate()+'日('+wd+')</span><span class="os-unit">単位:t</span></div>'
       +bulkTableHtml
       +bagSection
-      +'<div class="os-memo-wrap no-print" style="margin-top:2mm;border:1.5px solid #1A3A5C;border-radius:4px;padding:4px 8px;">'
-        +'<div style="font-size:'+( totalRows>=11?'9px':'11px')+';font-weight:700;color:#1A3A5C;margin-bottom:2px;">📝 変更メモ（印刷に反映されます）</div>'
+      +'<div class="os-memo-wrap no-print" style="margin-top:2mm;border:1.5px solid #3D2B66;border-radius:4px;padding:4px 8px;">'
+        +'<div style="font-size:'+( totalRows>=11?'9px':'11px')+';font-weight:700;color:#3D2B66;margin-bottom:2px;">📝 変更メモ（印刷に反映されます）</div>'
         +'<textarea id="os-memo-input-'+pi+'" data-date="'+date+'" placeholder="例：タンク31を4tから6tに変更、タンク32キャンセル など" style="width:100%;border:none;outline:none;font-size:'+(totalRows>=11?'10px':'12px')+';font-family:inherit;resize:vertical;min-height:'+(totalRows>=11?'24px':'36px')+';background:transparent;" oninput="updateMemoPreview('+pi+')"></textarea>'
       +'</div>'
       +'<div class="os-memo-print" id="os-memo-print-'+pi+'" style="display:none;margin-top:2mm;border:1.5px solid #000;padding:3px 8px;min-height:'+(totalRows>=11?'8mm':'10mm')+';">'
@@ -1019,7 +1019,7 @@ function printAndArchive(){
       +'@media print{.os-page{margin:0;page-break-after:always;}@page{size:A4 landscape;margin:'+printMargin+';}}'
       +'</style></head>'
       +'<body>'
-      +'<div class="no-print" style="padding:8px;background:#1A3A5C;color:#fff;display:flex;gap:8px;align-items:center;">'
+      +'<div class="no-print" style="padding:8px;background:#3D2B66;color:#fff;display:flex;gap:8px;align-items:center;">'
         +'<button onclick="window.print()" style="background:#1D9E75;color:#fff;border:none;border-radius:6px;padding:8px 18px;cursor:pointer;font-weight:700;font-size:13px;">🖨 南九州フィードワン印刷</button>'
         +'<button onclick="var w2=window.open(\'\',\'_blank\');w2.document.write(decodeURIComponent(document.getElementById(\'_sd\').textContent));w2.document.close();" style="background:#7B3FA0;color:#fff;border:none;border-radius:6px;padding:8px 18px;cursor:pointer;font-weight:700;font-size:13px;">🖨 中部飼料㈱印刷</button>'
       +'</div>'
@@ -1348,7 +1348,7 @@ function viewArchive(i){
         +'</style>'
         +'</head>'
         +'<body>'
-        +'<div class="no-print" style="padding:8px;background:#1A3A5C;color:#fff;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">'
+        +'<div class="no-print" style="padding:8px;background:#3D2B66;color:#fff;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">'
           +'<span style="flex:1;">注文書 '+dateLabel2+'</span>'
           +'<button onclick="saveMemoAndPrint()" style="background:#F57F17;color:#fff;border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-weight:700;font-size:12px;">💾 メモ保存して印刷</button>'
           +'<button onclick="window.print()" style="background:#1D9E75;color:#fff;border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-weight:700;font-size:12px;">🖨 印刷のみ</button>'
@@ -1443,7 +1443,7 @@ function onEFarmChange(){
 function onETankChange(){
   var farm=document.getElementById('e-farm').value;
   var tank=document.getElementById('e-tank').value;
-  var brands=(tank!=='-'&&TANK_BRAND_LIMIT[tank])?TANK_BRAND_LIMIT[tank]:(BRAND_MASTER[farm]||[]);
+  var brands=tank==='-'?BAG_BRANDS:(TANK_BRAND_LIMIT[tank]?TANK_BRAND_LIMIT[tank]:(BRAND_MASTER[farm]||[]));
   document.getElementById('e-brand').innerHTML=brands.map(function(b){return'<option value="'+b+'">'+b+'</option>';}).join('');
   onEBrandChange();
 }
@@ -1512,7 +1512,7 @@ function updateMemoPreview(pi){
 
 function showToast(msg){
   var t=document.getElementById('_toast');
-  if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(40px);background:#1A3A5C;color:#fff;padding:9px 20px;border-radius:20px;font-size:12px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;';document.body.appendChild(t);}
+  if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(40px);background:#3D2B66;color:#fff;padding:9px 20px;border-radius:20px;font-size:12px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;';document.body.appendChild(t);}
   t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
   clearTimeout(toastTimer);
   toastTimer=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(40px)';},3000);

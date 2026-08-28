@@ -6,8 +6,8 @@
 <title>飼料注文 入力</title>
 <style>
 :root{
-  --navy:#1A3A5C;--blue:#2E6DA4;--green:#1D9E75;--green-d:#0f6e56;
-  --farm0:#D6E8F7;--farm0h:#4472C4;--farm1:#E8E6FB;--farm1h:#7B66D6;--farm2:#FDE9C8;--farm2h:#ED7D31;
+  --navy:#3D2B66;--blue:#6B4BA3;--green:#1D9E75;--green-d:#0f6e56;
+  --farm0:#EDE4F5;--farm0h:#6B4BA3;--farm1:#E8E6FB;--farm1h:#7B66D6;--farm2:#FDE9C8;--farm2h:#ED7D31;
   --border:#d0d0cc;--text:#1a1a18;--muted:#777;--radius:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -287,9 +287,9 @@ document.addEventListener('DOMContentLoaded',function(){
     showTab('cal');
     /* 閲覧モード表示バナーを追加 */
     var banner=document.createElement('div');
-    banner.style.cssText='background:#2E6DA4;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:700;display:flex;justify-content:center;align-items:center;gap:12px;';
+    banner.style.cssText='background:#6B4BA3;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:700;display:flex;justify-content:center;align-items:center;gap:12px;';
     banner.innerHTML='👁 閲覧モード（注文の入力はできません）'
-      +'<button onclick="var p=prompt(\'通常モードのパスワードを入力\');if(p===\'Mizobe1\'){localStorage.setItem(\'auth\',\'Mizobe1\');location.reload();}" style="background:#fff;color:#2E6DA4;border:none;border-radius:4px;padding:3px 10px;cursor:pointer;font-size:11px;font-weight:700;">🔓 切替</button>';
+      +'<button onclick="var p=prompt(\'通常モードのパスワードを入力\');if(p===\'Mizobe1\'){localStorage.setItem(\'auth\',\'Mizobe1\');location.reload();}" style="background:#fff;color:#6B4BA3;border:none;border-radius:4px;padding:3px 10px;cursor:pointer;font-size:11px;font-weight:700;">🔓 切替</button>';
     document.body.insertBefore(banner,document.body.firstChild);
   }
 
