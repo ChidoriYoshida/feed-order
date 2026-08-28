@@ -1185,6 +1185,14 @@ function exportMonthlyExcel(){
       });
     });
     if(!rows.length){showToast(monthVal+'分のデータが見つかりませんでした');return;}
+    /* 同一内容（配達日・農場・タンク・銘柄・数量・単位）の行が複数あれば1件にまとめる（アーカイブ側の重複対策） */
+    var seenRowKeys={};
+    rows=rows.filter(function(r){
+      var k=[r.date,r.farm,r.tank,r.brand,r.qty,r.unit].join('|');
+      if(seenRowKeys[k])return false;
+      seenRowKeys[k]=true;
+      return true;
+    });
     rows.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0;});
 
     var sheetRows=[['配達日','農場','タンク','銘柄','数量','単位','添加剤','便','変更メモ']];
