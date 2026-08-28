@@ -113,6 +113,15 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
 .pn-lbl{font-size:10px;color:var(--muted);margin-bottom:3px;}
 .pn-date{font-size:13px;font-weight:700;color:var(--navy);}
 .pn-cnt{font-size:10px;color:var(--muted);margin-top:2px;}
+.pred-row{display:flex;align-items:center;justify-content:space-between;padding:8px 4px;border-bottom:0.5px solid var(--border);gap:8px;}
+.pred-row:last-child{border-bottom:none;}
+.pred-tank{font-weight:700;font-size:13px;min-width:28px;}
+.pred-brand{font-size:11px;color:var(--muted);}
+.pred-last{font-size:10px;color:var(--muted);}
+.pred-next{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap;}
+.pred-next.soon{background:#FCEEDA;color:#E67E22;}
+.pred-next.normal{background:#EDE4F5;color:#6B4BA3;}
+.pred-qty{font-size:10px;color:var(--muted);white-space:nowrap;}
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:200;white-space:nowrap;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
@@ -198,6 +207,11 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
 <div class="card">
   <div class="card-lbl">前回・次回の配達</div>
   <div class="pn-grid" id="pn-grid"></div>
+</div>
+<div class="card">
+  <div class="card-lbl">タンク別 次回注文予想</div>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">過去の注文実績からの目安です。実際の在庫状況とは異なる場合があります。</div>
+  <div id="predict-list"></div>
 </div>
 </div>
 <div id="toast" class="">1件を送信しました</div>
@@ -569,7 +583,7 @@ function loadCalendar(){
       }
     }
     if(res&&res.memos){calMemos=res.memos||{};}
-    calLoaded=true;renderCalendar();renderPrevNext();
+    calLoaded=true;renderCalendar();renderPrevNext();renderPredictions();
   };
   script.onerror=function(){
     delete window[cbName];
@@ -739,6 +753,56 @@ function renderPrevNext(){
       +'<div class="pn-cnt">'+cnt+'件 / '+qty.toFixed(1)+'t</div></div>';
   }
   document.getElementById('pn-grid').innerHTML=makeCard('前回','◀',prev)+makeCard('次回','▶',next);
+}
+
+function renderPredictions(){
+  var el=document.getElementById('predict-list');
+  if(!el)return;
+  var byTank={};
+  calOrders.filter(function(o){return!o.isBag;}).forEach(function(o){
+    if(!byTank[o.tank])byTank[o.tank]=[];
+    byTank[o.tank].push(o);
+  });
+  var today=new Date();
+  var todayStr=today.getFullYear()+'-'+pad(today.getMonth()+1)+'-'+pad(today.getDate());
+  var results=[];
+  Object.keys(byTank).forEach(function(tank){
+    var list=byTank[tank].slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0;});
+    var uniqDates=[];
+    list.forEach(function(o){if(uniqDates.indexOf(o.date)<0)uniqDates.push(o.date);});
+    if(uniqDates.length<2)return; /* 予測には最低2回分の実績が必要 */
+    var toDateObj=function(s){var p=s.split('-');return new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));};
+    var intervals=[];
+    for(var i=1;i<uniqDates.length;i++){
+      intervals.push(Math.round((toDateObj(uniqDates[i])-toDateObj(uniqDates[i-1]))/86400000));
+    }
+    var avgInterval=intervals.reduce(function(a,b){return a+b;},0)/intervals.length;
+    var qtys=list.map(function(o){return o.qty;});
+    var avgQty=qtys.reduce(function(a,b){return a+b;},0)/qtys.length;
+    var lastDate=uniqDates[uniqDates.length-1];
+    var brand=list[list.length-1].brand;
+    var predictedDate=toDateObj(lastDate);
+    predictedDate.setDate(predictedDate.getDate()+Math.round(avgInterval));
+    var predStr=predictedDate.getFullYear()+'-'+pad(predictedDate.getMonth()+1)+'-'+pad(predictedDate.getDate());
+    results.push({tank:tank,brand:brand,lastDate:lastDate,predStr:predStr,predictedDate:predictedDate,avgQty:avgQty});
+  });
+  if(!results.length){el.innerHTML='<div style="font-size:11px;color:var(--muted);padding:8px 0;">予測に十分な実績データがまだありません（同じタンクで2回以上の注文実績が必要です）。</div>';return;}
+  results.sort(function(a,b){return a.predStr<b.predStr?-1:a.predStr>b.predStr?1:0;});
+  el.innerHTML=results.map(function(r){
+    var daysUntil=Math.round((r.predictedDate-new Date(today.getFullYear(),today.getMonth(),today.getDate()))/86400000);
+    var soon=daysUntil<=2;
+    var lp=r.lastDate.split('-'),ld=new Date(parseInt(lp[0]),parseInt(lp[1])-1,parseInt(lp[2]));
+    var pp=r.predStr.split('-'),pd=new Date(parseInt(pp[0]),parseInt(pp[1])-1,parseInt(pp[2]));
+    return'<div class="pred-row">'
+      +'<div style="display:flex;align-items:center;gap:8px;min-width:0;">'
+        +'<span class="pred-tank">'+r.tank+'</span>'
+        +'<span class="pred-brand">'+r.brand+'</span>'
+      +'</div>'
+      +'<span class="pred-last">最終'+(ld.getMonth()+1)+'/'+ld.getDate()+'</span>'
+      +'<span class="pred-next '+(soon?'soon':'normal')+'">'+(pd.getMonth()+1)+'/'+pd.getDate()+'頃</span>'
+      +'<span class="pred-qty">約'+r.avgQty.toFixed(1)+'t</span>'
+    +'</div>';
+  }).join('');
 }
 
 function toast(msg){
