@@ -231,7 +231,7 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:13px;}
       </div>
       <div class="modal-field"><label>配送日</label><input type="date" id="m-date"></div>
       <div class="modal-field"><label>タンク</label><select id="m-tank" onchange="onMTankChange()"><option value="-">-(紙袋製品)</option><option value="1">1(上限20t)</option><option value="2">2(上限20t)</option><option value="3">3(上限20t)</option><option value="4">4(上限20t)</option><option value="5">5(上限20t)</option><option value="6">6(上限20t)</option><option value="7">7(上限10t)</option><option value="20">20(上限10t)</option><option value="21">21(上限10t)</option><option value="22">22(上限10t)</option><option value="23">23(上限10t)</option></select></div>
-      <div class="modal-field"><label>銘柄</label><select id="m-brand" onchange="onMBrandChange()"><option value="リキッド70">リキッド70</option><option value="リキッド20">リキッド20</option><option value="リキッド12">リキッド12</option><option value="リキッド母豚">リキッド母豚</option><option value="リキッド授乳">リキッド授乳</option><option value="ミュー餌付">ミュー餌付</option><option value="ミュー前期">ミュー前期</option><option value="ママコロ餌付">ママコロ餌付</option><option value="やまとX">やまとX</option></select></div>
+      <div class="modal-field"><label>銘柄</label><select id="m-brand" onchange="onMBrandChange()"><option value="リキッド70">リキッド70</option><option value="リキッド20">リキッド20</option><option value="リキッド12">リキッド12</option><option value="リキッド母豚">リキッド母豚</option><option value="リキッド授乳">リキッド授乳</option><option value="ミュー餌付">ミュー餌付</option><option value="ミュー前期">ミュー前期</option><option value="ママコロ餌付">ママコロ餌付</option><option value="九州やまとX">九州やまとX</option></select></div>
       <div class="modal-field"><label id="m-qty-label">数量(t)</label><input type="number" id="m-qty" min="1" step="1" placeholder="例:4"></div>
       <div class="modal-field"><label>添加剤</label>
         <select id="m-add"><option value="no">無</option><option value="yes">有</option></select>
@@ -327,7 +327,7 @@ var TANK_BRAND_LIMIT={
   '23':['リキッド母豚','リキッド授乳']
 };
 var TANK_MAX_QTY={'1':20,'2':20,'3':20,'4':20,'5':20,'6':20,'7':10,'20':10,'21':10,'22':10,'23':10};
-var BAG_BRANDS=['ミュー餌付','ミュー前期','ママコロ餌付','やまとX'];
+var BAG_BRANDS=['ミュー餌付','ミュー前期','ママコロ餌付','九州やまとX'];
 var BRAND_MASTER={
   '溝辺農場':['リキッド70','リキッド20','リキッド12','リキッド母豚','リキッド授乳']
 };
