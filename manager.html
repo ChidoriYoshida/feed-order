@@ -234,7 +234,7 @@ tr.sinsa-total td{background:#7B3FA0;color:#fff;font-weight:700;font-size:14px;}
       </div>
       <div class="modal-field"><label>配送日</label><input type="date" id="m-date"></div>
       <div class="modal-field"><label>タンク</label><select id="m-tank" onchange="onMTankChange()"><option value="-">-(紙袋製品)</option><option value="11">11(育成)</option><option value="12">12(育成)</option><option value="21">21(母豚)</option><option value="22">22(母豚)</option><option value="23">23(母豚)</option><option value="24">24(母豚)</option><option value="25">25(母豚)</option><option value="26">26(母豚)</option><option value="27">27(母豚)</option><option value="28">28(母豚)</option><option value="29">29(母豚)</option><option value="30">30(母豚)</option><option value="31">31(分娩)</option><option value="32">32(分娩)</option><option value="33">33(分娩)</option><option value="34">34(分娩)</option><option value="35">35(分娩)</option><option value="36">36(分娩)</option><option value="37">37(分娩)</option><option value="38">38(分娩)</option><option value="41">41(子豚)</option><option value="42">42(子豚)</option><option value="43">43(子豚)</option><option value="44">44(子豚)</option></select></div>
-      <div class="modal-field"><label>銘柄</label><select id="m-brand" onchange="onMBrandChange()"><option value="シンサウメイク">シンサウメイク</option><option value="たから母豚">たから母豚</option><option value="たから授乳">たから授乳</option><option value="たから12">たから12</option><option value="たから20PL">たから20PL</option><option value="たから40PL">たから40PL</option><option value="たから70PL">たから70PL</option><option value="ママコロ餌付">ママコロ餌付</option><option value="ママコロ前期">ママコロ前期</option><option value="ミュー前期">ミュー前期</option><option value="やまとX">やまとX</option></select></div>
+      <div class="modal-field"><label>銘柄</label><select id="m-brand" onchange="onMBrandChange()"><option value="シンサウメイク">シンサウメイク</option><option value="たから母豚">たから母豚</option><option value="たから授乳">たから授乳</option><option value="たから12">たから12</option><option value="たから20PL">たから20PL</option><option value="たから40PL">たから40PL</option><option value="たから70PL">たから70PL</option><option value="ママコロ餌付">ママコロ餌付</option><option value="ママコロ前期">ママコロ前期</option><option value="ミュー前期">ミュー前期</option><option value="九州やまとX">九州やまとX</option></select></div>
       <div class="modal-field"><label id="m-qty-label">数量(t)</label><input type="number" id="m-qty" min="0.5" step="0.5" placeholder="例:4"></div>
       <div class="modal-field"><label>添加剤</label>
         <select id="m-add"><option value="no">無</option><option value="yes">有</option></select>
@@ -347,9 +347,9 @@ var TANK_BRAND_LIMIT={
   '44':['たから20PL'],
   '50':['シンサウメイク']
 };
-var BAG_BRANDS=['ママコロ餌付','ママコロ前期','ミュー前期','やまとX'];
+var BAG_BRANDS=['ママコロ餌付','ママコロ前期','ミュー前期','九州やまとX'];
 var BRAND_MASTER={
-  '古井農場':['シンサウメイク','たから母豚','たから授乳','たから12','たから20PL','たから40PL','たから70PL','ママコロ餌付','ママコロ前期','ミュー前期','やまとX'],
+  '古井農場':['シンサウメイク','たから母豚','たから授乳','たから12','たから20PL','たから40PL','たから70PL','ママコロ餌付','ママコロ前期','ミュー前期','九州やまとX'],
   '第2農場':['たから20PL','たから40PL','たから70PL'],
   '第3農場':['たから20PL','たから40PL','たから70PL']
 };
