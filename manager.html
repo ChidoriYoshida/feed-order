@@ -759,8 +759,9 @@ function setPrintPageSize(orient){
   }
 }
 
-function renderSheetHTML(trucks,orders){
-  var today=new Date();
+function renderSheetHTML(trucks,orders,issueDateOverride){
+  var today=issueDateOverride?new Date(String(issueDateOverride).replace(' ','T')):new Date();
+  if(isNaN(today.getTime()))today=new Date();
   var farmCls={'古井農場':'of0','第2農場':'of1','第3農場':'of2'};
   var dates=[];
   trucks.forEach(function(t){if(!t.isSinsa&&dates.indexOf(t.date)<0)dates.push(t.date);});
@@ -1347,7 +1348,7 @@ function viewArchive(i){
       var normalizedOrders=orders.map(function(o){
         return Object.assign({},o,{date:String(o.date||'').replace('-sinsa','')});
       });
-      var sinsaHtml=renderSinsaSheetHTML(normalizedOrders);
+      var sinsaHtml=renderSinsaSheetHTML(normalizedOrders,a.saved||null);
       w.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>中部飼料注文書</title>'
         +'<style>'+getSinsaCSS()+'</style>'
         +'</head><body>'
@@ -1357,8 +1358,8 @@ function viewArchive(i){
         +'</div>'
         +sinsaHtml+'</body></html>');
     }else{
-      /* 南九州注文書として表示 */
-      var html=renderSheetHTML(trucks,orders);
+      /* 南九州注文書として表示：発行日は「今日」ではなく実際に保存した日時を使う */
+      var html=renderSheetHTML(trucks,orders,a.saved||null);
       /* アーカイブ内のメモを反映 */
       var archivedMemo=payload.memo||'';
       if(archivedMemo){
@@ -1560,8 +1561,9 @@ function buildSinsaSheet(){
   showToast('中部飼料㈱向け注文書を作成しました');
 }
 
-function renderSinsaSheetHTML(orders){
-  var today=new Date();
+function renderSinsaSheetHTML(orders,issueDateOverride){
+  var today=issueDateOverride?new Date(String(issueDateOverride).replace(' ','T')):new Date();
+  if(isNaN(today.getTime()))today=new Date();
   /* 配送日ごとにページ分け */
   var dates=[];
   orders.forEach(function(o){if(dates.indexOf(o.date)<0)dates.push(o.date);});
