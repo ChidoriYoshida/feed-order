@@ -739,8 +739,9 @@ function setPrintPageSize(orient){
   }
 }
 
-function renderSheetHTML(trucks,orders){
-  var today=new Date();
+function renderSheetHTML(trucks,orders,issueDateOverride){
+  var today=issueDateOverride?new Date(String(issueDateOverride).replace(' ','T')):new Date();
+  if(isNaN(today.getTime()))today=new Date();
   var farmCls={'溝辺農場':'of0'};
   var dates=[];
   trucks.forEach(function(t){if(!t.isSinsa&&dates.indexOf(t.date)<0)dates.push(t.date);});
@@ -1334,8 +1335,8 @@ function viewArchive(i){
         +'</div>'
         +sinsaHtml+'</body></html>');
     }else{
-      /* 南九州注文書として表示 */
-      var html=renderSheetHTML(trucks,orders);
+      /* 南九州注文書として表示：発行日は「今日」ではなく実際に保存した日時を使う */
+      var html=renderSheetHTML(trucks,orders,a.saved||null);
       /* アーカイブ内のメモを反映 */
       var archivedMemo=payload.memo||'';
       if(archivedMemo){
