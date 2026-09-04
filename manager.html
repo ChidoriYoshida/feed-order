@@ -1236,22 +1236,23 @@ function loadArchive(){
     if(!res||!res.archives){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">取得エラー</div>';return;}
     if(!res.archives.length){document.getElementById('archive-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">保存された注文書はありません</div>';return;}
     window._archives=res.archives.slice().sort(function(a,b){
-      /* 保存日時（実際にアーカイブされた日時）の新しい順。変更・再印刷した分が常にトップに来る */
+      /* 配達日の新しい順を基準に並べる */
+      var da=String(a.date||'').replace('-sinsa','');
+      var db=String(b.date||'').replace('-sinsa','');
+      if(da>db)return -1;
+      if(db>da)return 1;
+      /* 同じ配達日の場合：南九州（sinsa無し）が上、中部飼料（sinsa付き）が下 */
+      var as=String(a.date||'').indexOf('-sinsa')>=0?1:0;
+      var bs=String(b.date||'').indexOf('-sinsa')>=0?1:0;
+      if(as!==bs)return as-bs;
+      /* さらに同じ場合は保存日時（実際にアーカイブした日時）の新しい順 */
       var ta=Date.parse(String(a.saved||'').replace(' ','T'));
       var tb=Date.parse(String(b.saved||'').replace(' ','T'));
       if(!isNaN(ta)&&!isNaN(tb)&&ta!==tb)return tb-ta;
       var sa=String(a.saved||'');
       var sb=String(b.saved||'');
       if(sa!==sb)return sa>sb?-1:1;
-      /* 保存日時が同じ場合は配達日の新しい順 */
-      var da=String(a.date||'').replace('-sinsa','');
-      var db=String(b.date||'').replace('-sinsa','');
-      if(da>db)return -1;
-      if(da<db)return 1;
-      /* 同日：南九州（sinsa無し）が上、中部飼料（sinsa付き）が下 */
-      var as=String(a.date||'').indexOf('-sinsa')>=0?1:0;
-      var bs=String(b.date||'').indexOf('-sinsa')>=0?1:0;
-      return as-bs;
+      return 0;
     });
     document.getElementById('archive-list').innerHTML=window._archives.map(function(a,i){
       var dateStr=String(a.date||'');
