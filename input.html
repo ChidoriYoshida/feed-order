@@ -179,8 +179,8 @@ body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:#
   <button class="btn-add" id="btn-add">注文を追加</button>
 </div>
 <div class="card">
-  <div class="card-lbl">入力済み <span id="order-count">(1件)</span></div>
-  <div id="order-list"><div class="order-item"><div class="oi-body"><div class="oi-main"><span class="badge bf1">第2農場</span> タンク 50 2t</div><div class="oi-sub">シンサウメイク <span class="badge add-yes">添加剤有</span> 担当:未記入</div></div><button class="oi-del" data-id="1">x</button></div></div>
+  <div class="card-lbl">入力済み <span id="order-count">(0件)</span></div>
+  <div id="order-list"></div>
   <div id="send-wrap" style="">
     <button class="btn-send" id="btn-send">注文担当者へ送信</button>
   </div>
@@ -433,10 +433,12 @@ function renderTanks(){
   }).join('');
 }
 
+var RESTRICTED_FALLBACK_EXCLUDE=['シンサウメイク'];
 function renderBrands(){
   var brands=FARMS[farmKey].brands;
   var limit=selTank?TANK_BRAND_LIMIT[selTank]:null;
-  var filtered=limit?brands.filter(function(b){return limit.indexOf(b.key)>=0;}):brands;
+  var filtered=limit?brands.filter(function(b){return limit.indexOf(b.key)>=0;})
+    :brands.filter(function(b){return RESTRICTED_FALLBACK_EXCLUDE.indexOf(b.key)<0;});
   document.getElementById('brand-list').innerHTML=filtered.map(function(b){
     return '<button class="brand-btn'+(selBrand===b.key?' active':'')+'" data-key="'+b.key+'" data-bag="'+(b.bag?1:0)+'">'+
       b.key+(b.bag?'<span class="bag-tag">紙袋</span>':'')+' </button>';

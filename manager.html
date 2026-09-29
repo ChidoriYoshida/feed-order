@@ -556,6 +556,37 @@ function manualAdd(){
   var add=document.getElementById('m-add').value;
   if(!brand||isNaN(qty)||qty<=0){showToast('銘柄と数量を入力してください');return;}
   var isBagItem=isBag(brand);
+  checkDuplicateThenProceed(farm,date,tank,brand,isBagItem,function(){
+    doManualAdd(farm,date,tank,brand,qty,add,isBagItem);
+  });
+}
+
+/* 同じ日付・農場・タンク（紙袋は同じ銘柄）に既存の注文がないか確認し、あれば警告してから続行する */
+function checkDuplicateThenProceed(farm,date,tank,brand,isBagItem,onProceed,excludeId){
+  showToast('重複を確認中…');
+  gasCall('get_confirmed',null,function(res){
+    var existing=(res&&res.orders)?res.orders:[];
+    var matches=existing.filter(function(o){
+      if(excludeId&&String(o['ID'])===String(excludeId))return false;
+      var oDate=String(o['配送日']||'').substring(0,10).replace(/\//g,'-');
+      var oFarm=String(o['農場']||'');
+      var oIsBag=o['紙袋']==='紙袋';
+      if(oDate!==date||oFarm!==farm)return false;
+      if(isBagItem||oIsBag)return isBagItem&&oIsBag&&String(o['銘柄']||'')===brand;
+      return String(o['タンク']||'')===tank;
+    });
+    if(matches.length){
+      var lines=matches.map(function(o){
+        var st=String(o['確定済み']||'')==='確定'?'確定済み':'未確定';
+        return '・'+(o['タンク']?'タンク'+o['タンク']+' ':'')+o['銘柄']+' '+o['数量(t)']+(o['紙袋']==='紙袋'?'袋':'t')+'（'+st+'／担当:'+(o['担当者']||'未記入')+'）';
+      }).join('\n');
+      if(!confirm('この日付・タンクにはすでに以下の注文があります。\n\n'+lines+'\n\nそれでも追加しますか？（二重入力の可能性があります）'))return;
+    }
+    onProceed();
+  });
+}
+
+function doManualAdd(farm,date,tank,brand,qty,add,isBagItem){
   var tempId='manual_'+Date.now();
   var o={id:tempId,farm:farm,date:date,tank:tank,brand:brand,qty:qty,unit:isBagItem?'袋':'t',additive:add,isBag:isBagItem,staff:'手動'};
   allOrders.push(o);dispOrders.push(o);
@@ -1504,6 +1535,12 @@ function saveEdit(){
   var add=document.getElementById('e-add').value;
   if(!date||!brand||isNaN(qty)||qty<=0){showToast('全項目を入力してください');return;}
   var isBagItem=isBag(brand);
+  checkDuplicateThenProceed(farm,date,tank,brand,isBagItem,function(){
+    doSaveEdit(farm,date,tank,brand,qty,add,isBagItem);
+  },editingId);
+}
+
+function doSaveEdit(farm,date,tank,brand,qty,add,isBagItem){
   var updated={id:editingId,farm:farm,date:date,tank:tank,brand:brand,qty:qty,unit:isBagItem?'袋':'t',additive:add,isBag:isBagItem,staff:''};
   for(var i=0;i<allOrders.length;i++){if(allOrders[i].id===editingId){updated.staff=allOrders[i].staff||'';allOrders[i]=updated;break;}}
   for(var i=0;i<dispOrders.length;i++){if(dispOrders[i].id===editingId){dispOrders[i]=updated;break;}}
