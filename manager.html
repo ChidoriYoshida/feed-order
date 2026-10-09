@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0073)file:///C:/Users/hikoc/Downloads/manager%20-%202026-08-07T130956.706.html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -916,12 +915,26 @@ function printAndArchive(){
   /* 深コピーでデータを固定 */
   var snapPlan=JSON.parse(JSON.stringify(plan));
   var snapOrders=JSON.parse(JSON.stringify(dispOrders));
-  var ids=snapOrders.map(function(o){return o.id;});
   /* ページ番号(pi)はrenderSheetHTMLと同じ基準（trucks由来・日付ソート済み）で揃える。紙袋のみの日付も含める */
   var dates=[];
   snapPlan.forEach(function(t){if(!t.isSinsa&&dates.indexOf(t.date)<0)dates.push(t.date);});
   snapOrders.forEach(function(o){if(o.isBag&&dates.indexOf(o.date)<0)dates.push(o.date);});
   dates.sort();
+  /* 【重要】確定にするのは「今回の注文書に実際に載っている注文」だけ。
+     配車計画作成後に届いた注文や、計画に含まれない日付の注文を巻き込んで確定にしない */
+  var planIds=new Set();
+  snapPlan.forEach(function(t){(t.items||[]).forEach(function(o){planIds.add(String(o.id));});});
+  var notOnSheet=snapOrders.filter(function(o){
+    if(planIds.has(String(o.id)))return false;
+    if(o.isBag&&dates.indexOf(o.date)>=0)return false;
+    return true;
+  });
+  if(notOnSheet.length){
+    var notOnSet=new Set(notOnSheet.map(function(o){return String(o.id);}));
+    snapOrders=snapOrders.filter(function(o){return!notOnSet.has(String(o.id));});
+    setTimeout(function(){showToast('注文書に載っていない'+notOnSheet.length+'件は未確定のまま残しました');},600);
+  }
+  var ids=snapOrders.map(function(o){return o.id;});
   var dispIds=new Set(ids);
 
   /* メモ内容を先に収集（各テキストエリアのdata-date属性から直接、確実に紐づける） */
