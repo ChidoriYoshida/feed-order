@@ -907,6 +907,15 @@ function printAndArchive(){
   if(currentPrintMode==='portrait'){showToast('中部飼料注文書表示中です。南九州注文書を先に作成してください');return;}
   if(!confirm('印刷後、受信注文を確定済みにしてアーカイブに保存します。よろしいですか？'))return;
 
+  /* 【重要】印刷ウィンドウは、ボタン操作の直後（通信の前）に開く。
+     通信完了後に開くと、ブラウザのポップアップブロックで開けず、印刷できないことがあるため */
+  var printWin=window.open('','_blank');
+  if(!printWin){
+    alert('印刷用のウィンドウを開けませんでした（ポップアップがブロックされています）。\nアドレスバー右端のポップアップ許可を「常に許可」にして、もう一度「印刷して完了」を押してください。\n※注文は確定されていません。');
+    return;
+  }
+  try{printWin.document.write('<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>注文書</title></head><body style="font-family:sans-serif;padding:40px;color:#555;">注文書を作成しています。そのままお待ちください…</body></html>');}catch(e){}
+
   /* 中部飼料注文書データをリセット前にスナップ */
   var sinsaSnap=JSON.parse(JSON.stringify(
     dispOrders.filter(function(o){return o.brand==='シンサウメイク'&&!o.isBag;})
@@ -1033,6 +1042,7 @@ function printAndArchive(){
   var mergedOrdersAll=nankuOrdersForPrint.slice();
 
   if(printDates.length===0){doMergedPrint();}
+  setTimeout(function(){doMergedPrint();},8000); /* 通信が遅い場合も、8秒後には今回分だけで印刷用ページを表示 */
   printDates.forEach(function(date){
     gasCall('get_archive_by_date',{date:date},function(res){
       if(res&&res.result==='success'&&res.payload){
@@ -1051,7 +1061,10 @@ function printAndArchive(){
     });
   });
 
+  var mergedPrinted=false;
   function doMergedPrint(){
+    if(mergedPrinted)return;
+    mergedPrinted=true;
     var mergedSnapOrders=snapOrders.filter(function(o){return o.brand==='シンサウメイク';}).concat(mergedOrdersAll);
     var html=renderSheetHTML(snapPlan,mergedSnapOrders);
     html=html.replace(/id="os-memo-print-(\d+)" style="display:none;/g,'id="os-memo-print-$1" style="display:block;');
@@ -1072,7 +1085,8 @@ function printAndArchive(){
     gasCall('update_archive_memo',{date:date,memo:memoByDate[date]},function(){});
   });
   var style=document.querySelector('style').outerHTML;
-  var w=window.open('','_blank');
+  var w=printWin;
+  try{w.document.open();}catch(e){}
 
   if(sinsaSnap.length>0){
     var sinsaHtml=renderSinsaSheetHTML(sinsaSnap);
