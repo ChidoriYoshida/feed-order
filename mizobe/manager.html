@@ -402,11 +402,45 @@ function loadOrders(){
         isBag:isBagItem
       };
     }).filter(function(o){return o.farm&&o.brand&&o.qty>0;});
-    allOrders=raw;
-    dispOrders=raw.slice();
-    renderOrdersTable(dispOrders);
-    updateKPI();
-    showToast(raw.length+'件の注文を取得しました');
+    /* 過去の注文書（アーカイブ）に載っている注文は「確定済み」。確定の記録が失われて未確定に戻っていても、ここで除外して確定に戻す */
+    gasCall('get_archive',null,function(ar){
+      var archivedIds={};
+      if(ar&&ar.archives){
+        ar.archives.forEach(function(a){
+          try{
+            var pl=typeof a.payload==='string'?JSON.parse(a.payload):a.payload;
+            ((pl&&pl.orders)||[]).forEach(function(o){archivedIds[String(o.id)]=true;});
+          }catch(e){}
+        });
+      }
+      var stale=raw.filter(function(o){return archivedIds[o.id]&&!recalledIds[o.id];});
+      var fresh=raw.filter(function(o){return!(archivedIds[o.id]&&!recalledIds[o.id]);});
+      allOrders=fresh;
+      dispOrders=fresh.slice();
+      renderOrdersTable(dispOrders);
+      updateKPI();
+      if(stale.length){
+        confirmWithRetry(stale.map(function(o){return o.id;}),3);
+        showToast(fresh.length+'件を取得（確定済みの'+stale.length+'件は除外し、確定に戻しました）');
+      }else{
+        showToast(fresh.length+'件の注文を取得しました');
+      }
+    });
+  });
+}
+
+/* 呼び戻した注文は、今回の画面では除外しない */
+var recalledIds={};
+
+/* 確定の記録を、失敗したら数回やり直して送る（通信エラーで確定が付かないのを防ぐ） */
+function confirmWithRetry(ids,tries,done){
+  gasCall('mark_confirmed',{ids:ids},function(res){
+    if(res&&res.result==='success'){if(done)done(res);return;}
+    if(tries>1){setTimeout(function(){confirmWithRetry(ids,tries-1,done);},1500);}
+    else{
+      showToast('確定の記録に失敗しました。「注文を取得」で再度確認してください');
+      if(done)done(null);
+    }
   });
 }
 
@@ -905,8 +939,8 @@ function printAndArchive(){
   });
 
   /* アーカイブ保存（既存データとマージ・get完了後にsave） */
-  gasCall('mark_confirmed',{ids:ids},function(res){
-    if(res&&res.result==='success')showToast(res.confirmed+'件を確定済みにしました');
+  confirmWithRetry(ids,3,function(res){
+    if(res)showToast(res.confirmed+'件を確定済みにしました');
   });
   dates.forEach(function(date){
     var nankuTrucks=snapPlan.filter(function(t){return!t.isSinsa&&t.date===date;});
@@ -1299,6 +1333,7 @@ function restoreOrders(i){
         /* ローカルのallOrdersに追加 */
         orders.forEach(function(o){
           o.id=String(o.id);
+          recalledIds[o.id]=true;
           if(!allOrders.some(function(existing){return String(existing.id)===o.id;})){
             allOrders.push(o);
           }
