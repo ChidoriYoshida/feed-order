@@ -905,7 +905,11 @@ function printAndArchive(){
   var hasBag=dispOrders.some(function(o){return o.isBag;});
   if(!plan.length&&!hasBag){showToast('先に配車計画を作成してください（紙袋のみの場合は配車計画は不要です）');return;}
   if(currentPrintMode==='portrait'){showToast('中部飼料注文書表示中です。南九州注文書を先に作成してください');return;}
-  if(!confirm('印刷後、受信注文を確定済みにしてアーカイブに保存します。よろしいですか？'))return;
+  /* 確認ダイアログに「配達日ごとの件数」を出す（日付が意図と違っていれば、ここで気づける） */
+  var _cnt={};
+  dispOrders.forEach(function(o){_cnt[o.date]=(_cnt[o.date]||0)+1;});
+  var _lines=Object.keys(_cnt).sort().map(function(d){return '  '+fmtDate(d)+'　'+_cnt[d]+'件';}).join('\n');
+  if(!confirm('次の配達日の注文を確定済みにして、印刷・アーカイブ保存します。\n\n'+_lines+'\n\n日付が意図と違う場合は「キャンセル」を押してください。'))return;
 
   /* 【重要】印刷ウィンドウは、ボタン操作の直後（通信の前）に開く。
      通信完了後に開くと、ブラウザのポップアップブロックで開けず、印刷できないことがあるため */
@@ -1017,8 +1021,10 @@ function printAndArchive(){
             var existingSinsa=JSON.parse(res.payload);
             var existSinsaOrders=existingSinsa.orders||[];
             var newSinsaIds=new Set(sinsaOrdersForArch.map(function(o){return String(o.id);}));
+            /* IDだけでなく内容（農場・タンク・銘柄・数量・日付）が同じ注文も重複とみなす */
+            var newSinsaKeys=new Set(sinsaOrdersForArch.map(orderContentKey));
             existSinsaOrders.forEach(function(o){
-              if(!newSinsaIds.has(String(o.id)))mergedSinsaOrders.push(o);
+              if(!newSinsaIds.has(String(o.id))&&!newSinsaKeys.has(orderContentKey(o)))mergedSinsaOrders.push(o);
             });
           }catch(e){}
         }
