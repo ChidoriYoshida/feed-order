@@ -816,7 +816,7 @@ function renderSheetHTML(trucks,orders,issueDateOverride){
         +'</td>'
         +'<td style="text-align:center;font-weight:700;font-size:15px;">'+o.tank+'</td>'
         +cols.map(function(v){return'<td class="'+(v?'qval':'')+'">'+( v||'')+'</td>';}).join('')
-        +'<td style="text-align:center;font-size:'+addFontSize+';">'+(o.additive==='yes'?'<span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">有</span> 無':'有 <span style="border:1.5px solid #000;border-radius:50%;padding:0 1px;">無</span>')+'</td>'
+        +'<td style="text-align:center;font-size:'+addFontSize+';">'+(o.additive==='yes'?'<b>有</b>':'')+'</td>'
         +'<td style="text-align:center;font-size:'+rowFontSize+';font-weight:700;">'+(o.nextDay==='yes'?'〇':'')+'</td>'
         +'</tr>';
     }).join('');
@@ -1645,7 +1645,7 @@ function renderSinsaSheetHTML(orders){
         +'<td class="sinsa-farm">'+farmShort+'</td>'
         +'<td class="sinsa-tank">'+o.tank+'</td>'
         +brandCols
-        +'<td class="sinsa-add">'+(o.additive==='yes'?'<span class="sinsa-circle">有</span> 無':'有 <span class="sinsa-circle">無</span>')+'</td>'
+        +'<td class="sinsa-add">'+(o.additive==='yes'?'<b>有</b>':'')+'</td>'
         +'</tr>';
     }).join('');
 
